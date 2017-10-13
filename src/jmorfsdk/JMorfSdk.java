@@ -1,11 +1,11 @@
-package jmorfsdk;
+ppackage jmorfsdk;
 
 import jmorfsdk.grammeme.MorfologyParameters;
 import jmorfsdk.grammeme.MorfologyCharacteristics;
-import jmorfsdk.form.OmoForms;
 import jmorfsdk.form.MainForm;
 import jmorfsdk.form.WordForm;
 import jmorfsdk.form.Form;
+import jmorfsdk.form.OmoForms;
 import jmorfsdk.grammeme.MorfologyParameters.*;
 import java.io.*;
 import java.util.*;
@@ -14,16 +14,16 @@ import java.util.logging.*;
 public class JMorfSdk {
     
     //По этому мапу находим морфологические характеристики слова
-    private final HashMap<Integer, OmoForms> omoforms = new HashMap();
+    private final HashMap<Integer, OmoForms> omoForms = new HashMap();
     //По этому мапу находим словоформу с заданными характеристиками
-    private final HashMap<Integer, MainForm> mainforms = new HashMap();
+    private final HashMap<Integer, MainForm> mainForms = new HashMap();
         
     private void addOmoform(OmoForms of) {
-        omoforms.put(of.hashCode(), of);
+        omoForms.put(of.hashCode(), of);
     }
     
     public void addMainForm(MainForm mf) {
-        mainforms.put(mf.hashCode(), mf);
+        mainForms.put(mf.hashCode(), mf);
         addOmoform(new OmoForms(mf));
     }
     
@@ -32,8 +32,8 @@ public class JMorfSdk {
      * @param wf 
      */
     public void addWordForm(Form wf) {
-        if (omoforms.containsKey(wf.hashCode())) {
-            omoforms.get(wf.hashCode()).AddWordform(wf);
+        if (omoForms.containsKey(wf.hashCode())) {
+            omoForms.get(wf.hashCode()).AddWordform(wf);
         } else {
             addOmoform(new OmoForms(wf));
         }
@@ -41,8 +41,8 @@ public class JMorfSdk {
 
     //Если слово было найдено возвращаем омоформы этого слова, если нет, то пустую структуру, не реализовано до конца
     public OmoForms getNormalWord(String strWord) {
-        if (omoforms.containsKey(strWord.hashCode())) {
-            return new OmoForms(omoforms.get(strWord.hashCode()));
+        if (omoForms.containsKey(strWord.hashCode())) {
+            return new OmoForms(omoForms.get(strWord.hashCode()));
         } else {
             /*
                 добавить вывод неизвестного слова в какой нибудь файл
