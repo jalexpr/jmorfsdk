@@ -1,9 +1,9 @@
-package jmorfsdk.grammeme;
+package jmorfsdk.old.grammeme;
 
-import jmorfsdk.grammeme.MorfologyParameters.*;
+import jmorfsdk.old.grammeme.OldMorfologyParameters.*;
 import java.util.*;
 
-public class MorfologyCharacteristics {
+public class OldMorfologyCharacteristics {
 
     private ANim odush = ANim.INDETERMINATELY;
     private GNdr rod = GNdr.INDETERMINATELY;

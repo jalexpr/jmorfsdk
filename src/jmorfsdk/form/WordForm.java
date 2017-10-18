@@ -1,14 +1,14 @@
 
 package jmorfsdk.form;
 
-import jmorfsdk.grammeme.MorfologyCharacteristics;
-import jmorfsdk.grammeme.MorfologyParameters.*;
+import jmorfsdk.old.grammeme.OldMorfologyCharacteristics;
+import jmorfsdk.old.grammeme.OldMorfologyParameters.*;
 
 public class WordForm extends Form{
     
     private final MainForm mainForm;
     
-    public WordForm(String strWord, MorfologyCharacteristics morfChar, MainForm mainForm) {
+    public WordForm(String strWord, OldMorfologyCharacteristics morfChar, MainForm mainForm) {
         super(strWord, morfChar);
         this.mainForm = mainForm;
         mainForm.addWordfFormMap(this);

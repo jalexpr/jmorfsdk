@@ -1,6 +1,6 @@
-package jmorfsdk.grammeme;
+package jmorfsdk.old.grammeme;
 
-public class MorfologyParameters {
+public class OldMorfologyParameters {
 
     /**
      * Часть речи

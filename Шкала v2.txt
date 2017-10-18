@@ -1,0 +1,183 @@
+
+	5
+	//Если первый или второй индекс не равне 1, то часть речи не известна
+	//прилагательное - 	1001*
+	//глагол 		- 	1010*
+	//причастие 	- 	1011*
+	//деепричастие - 	110** - кроме 11000, но он нигде не используется
+	//числительное - 	1110*
+	//местоимение - 	1111*
+	00000 	<grammeme parent=""><name>POST</name><alias>ЧР</alias><description>часть речи</description></grammeme>
+	
+    10001 	<grammeme parent="POST"><name>NOUN</name><alias>СУЩ</alias><description>имя существительное</description></grammeme>
+	
+    10010	<grammeme parent="POST"><name>ADJF</name><alias>ПРИЛ</alias><description>имя прилагательное (полное)</description></grammeme>
+    10011	<grammeme parent="POST"><name>ADJS</name><alias>КР_ПРИЛ</alias><description>имя прилагательное (краткое)</description></grammeme>
+	
+    10100	<grammeme parent="POST"><name>VERB</name><alias>ГЛ</alias><description>глагол (личная форма)</description></grammeme>
+    10101	<grammeme parent="POST"><name>INFN</name><alias>ИНФ</alias><description>глагол (инфинитив)</description></grammeme>
+	
+    10110	<grammeme parent="POST"><name>PRTF</name><alias>ПРИЧ</alias><description>причастие (полное)</description></grammeme>
+    10111	<grammeme parent="POST"><name>PRTS</name><alias>КР_ПРИЧ</alias><description>причастие (краткое)</description></grammeme>
+	
+    11001	<grammeme parent="POST"><name>GRND</name><alias>ДЕЕПР</alias><description>деепричастие</description></grammeme>
+	11010	<grammeme parent=""><name>Fimp</name><alias>*несов</alias><description>деепричастие от глагола несовершенного вида</description></grammeme>
+    11011	<grammeme parent=""><name>V_sh</name><alias>*ши</alias><description>деепричастие на _ши</description></grammeme>
+	
+    11100	<grammeme parent="POST"><name>NUMR</name><alias>ЧИСЛ</alias><description>числительное</description></grammeme>
+    11101	<grammeme parent=""><name>Coll</name><alias>собир</alias><description>собирательное числительное</description></grammeme>
+	
+    11110	<grammeme parent="POST"><name>NPRO</name><alias>МС</alias><description>местоимение существительное</description></grammeme>
+    11111	<grammeme parent=""><name>Anph</name><alias>Анаф</alias><description>Анафорическое (местоимение)</description></grammeme>
+	
+    01001	<grammeme parent="POST"><name>ADVB</name><alias>Н</alias><description>наречие</description></grammeme>
+    01010	<grammeme parent="POST"><name>COMP</name><alias>КОМП</alias><description>компаратив</description></grammeme>
+    01011	<grammeme parent="POST"><name>PRED</name><alias>ПРЕДК</alias><description>предикатив</description></grammeme>
+    01100	<grammeme parent="POST"><name>PREP</name><alias>ПР</alias><description>предлог</description></grammeme>
+    01101	<grammeme parent="POST"><name>CONJ</name><alias>СОЮЗ</alias><description>союз</description></grammeme>
+    01110	<grammeme parent="POST"><name>PRCL</name><alias>ЧАСТ</alias><description>частица</description></grammeme>
+    01111	<grammeme parent="POST"><name>INTJ</name><alias>МЕЖД</alias><description>междометие</description></grammeme>
+	
+	//34 + 29 = 63 без части речи
+		
+	2 << 0
+    00		<grammeme parent=""><name>ANim</name><alias>Од_неод</alias><description>одушевлённость / одушевлённость не выражена</description></grammeme>
+    10		<grammeme parent="ANim"><name>anim</name><alias>од</alias><description>одушевлённое</description></grammeme>
+    11		<grammeme parent="ANim"><name>inan</name><alias>неод</alias><description>неодушевлённое</description></grammeme>
+	
+	3 zx<< 2
+	//если первый бит не 1, то неопределенно
+    000		<grammeme parent=""><name>GNdr</name><alias>хр</alias><description>род / род не выражен</description></grammeme>
+    101		<grammeme parent="ms_f"><name>masc</name><alias>мр</alias><description>мужской род</description></grammeme>
+    110		<grammeme parent="ms_f"><name>femn</name><alias>жр</alias><description>женский род</description></grammeme>
+    111		<grammeme parent="GNdr"><name>neut</name><alias>ср</alias><description>средний род</description></grammeme>
+    111		<grammeme parent="GNdr"><name>ms_f</name><alias>мж</alias><description>общий род (м/ж)</description></grammeme>
+	
+	2 << 5
+	//если первый бит не 1, то неопределенно
+    00		<grammeme parent=""><name>NMbr</name><alias>Число</alias><description>число</description></grammeme>
+    10		<grammeme parent="NMbr"><name>sing</name><alias>ед</alias><description>единственное число</description></grammeme>
+    11		<grammeme parent="NMbr"><name>plur</name><alias>мн</alias><description>множественное число</description></grammeme>
+	    
+	4 << 7
+	//именительный 	- 	1*01 
+	//родителельный	- 	1*10
+	//винительный	-	1*00
+	//предложный 	- 	1*11
+	0000	<grammeme parent=""><name>CAse</name><alias>Падеж</alias><description>категория падежа</description></grammeme>
+	0001	<grammeme parent="CAse"><name>nomn</name><alias>им</alias><description>именительный падеж</description></grammeme>
+    0010	<grammeme parent="CAse"><name>gent</name><alias>рд</alias><description>родительный падеж</description></grammeme>
+    0011	<grammeme parent="CAse"><name>datv</name><alias>дт</alias><description>дательный падеж</description></grammeme>
+    0100	<grammeme parent="CAse"><name>accs</name><alias>вн</alias><description>винительный падеж</description></grammeme>
+    0101	<grammeme parent="CAse"><name>ablt</name><alias>тв</alias><description>творительный падеж</description></grammeme>
+    0111	<grammeme parent="CAse"><name>loct</name><alias>пр</alias><description>предложный падеж</description></grammeme>
+    1001	<grammeme parent="nomn"><name>voct</name><alias>зв</alias><description>звательный падеж</description></grammeme>
+    1010	<grammeme parent="gent"><name>gen1</name><alias>рд1</alias><description>первый родительный падеж</description></grammeme>
+    1110	<grammeme parent="gent"><name>gen2</name><alias>рд2</alias><description>второй родительный (частичный) падеж</description></grammeme>
+    1000	<grammeme parent="accs"><name>acc2</name><alias>вн2</alias><description>второй винительный падеж</description></grammeme>
+    1011	<grammeme parent="loct"><name>loc1</name><alias>пр1</alias><description>первый предложный падеж</description></grammeme>
+    1111	<grammeme parent="loct"><name>loc2</name><alias>пр2</alias><description>второй предложный (местный) падеж</description></grammeme>
+		
+	2 << 11
+	//если первый бит не 1, то неопределенно
+    00		<grammeme parent=""><name>ASpc</name><alias>Вид</alias><description>категория вида</description></grammeme>
+    10		<grammeme parent="ASpc"><name>perf</name><alias>сов</alias><description>совершенный вид</description></grammeme>
+    11		<grammeme parent="ASpc"><name>impf</name><alias>несов</alias><description>несовершенный вид</description></grammeme>
+	
+	2 << 13
+	//если первый бит не 1, то неопределенно
+    00		<grammeme parent=""><name>TRns</name><alias>Перех</alias><description>категория переходности</description></grammeme>
+    10		<grammeme parent="TRns"><name>tran</name><alias>перех</alias><description>переходный</description></grammeme>
+    11		<grammeme parent="TRns"><name>intr</name><alias>неперех</alias><description>непереходный</description></grammeme>
+
+	2 << 15
+    00		<grammeme parent=""><name>PErs</name><alias>Лицо</alias><description>категория лица</description></grammeme>
+    01		<grammeme parent="PErs"><name>1per</name><alias>1л</alias><description>1 лицо</description></grammeme>
+    10		<grammeme parent="PErs"><name>2per</name><alias>2л</alias><description>2 лицо</description></grammeme>
+    11		<grammeme parent="PErs"><name>3per</name><alias>3л</alias><description>3 лицо</description></grammeme>
+	
+	2 << 17
+    00		<grammeme parent=""><name>TEns</name><alias>Время</alias><description>категория времени</description></grammeme>
+	01		<grammeme parent="TEns"><name>pres</name><alias>наст</alias><description>настоящее время</description></grammeme>
+    10		<grammeme parent="TEns"><name>past</name><alias>прош</alias><description>прошедшее время</description></grammeme>
+    11		<grammeme parent="TEns"><name>futr</name><alias>буд</alias><description>будущее время</description></grammeme>
+	
+	2 << 19
+	//если первый бит не 1, то неопределенно
+    00		<grammeme parent=""><name>MOod</name><alias>Накл</alias><description>категория наклонения</description></grammeme>
+    10		<grammeme parent="MOod"><name>indc</name><alias>изъяв</alias><description>изъявительное наклонение</description></grammeme>
+    11		<grammeme parent="MOod"><name>impr</name><alias>повел</alias><description>повелительное наклонение</description></grammeme>
+	
+	2 << 21
+	//если первый бит не 1, то неопределенно
+    00		<grammeme parent=""><name>INvl</name><alias>Совм</alias><description>категория совместности</description></grammeme>
+    10		<grammeme parent="INvl"><name>incl</name><alias>вкл</alias><description>говорящий включён (идем, идемте) </description></grammeme>
+    11		<grammeme parent="INvl"><name>excl</name><alias>выкл</alias><description>говорящий не включён в действие (иди, идите)</description></grammeme>
+	
+	2 << 23
+	//если первый бит не 1, то неопределенно
+    00		<grammeme parent=""><name>VOic</name><alias>Залог</alias><description>категория залога</description></grammeme>
+    10		<grammeme parent="VOic"><name>actv</name><alias>действ</alias><description>действительный залог</description></grammeme>
+    11		<grammeme parent="VOic"><name>pssv</name><alias>страд</alias><description>страдательный залог</description></grammeme>
+			
+	3 << 25
+	//если первый бит не 1, то неопределенно
+    000		<grammeme parent=""><name>Abbr</name><alias>аббр</alias><description>аббревиатура</description></grammeme>
+	100		<grammeme parent=""><name>Name</name><alias>имя</alias><description>имя</description></grammeme>
+    101		<grammeme parent=""><name>Surn</name><alias>фам</alias><description>фамилия</description></grammeme>
+    110		<grammeme parent=""><name>Patr</name><alias>отч</alias><description>отчество</description></grammeme>
+    111		<grammeme parent=""><name>Init</name><alias>иниц</alias><description>Инициал</description></grammeme>
+
+	2 << 28
+	//если первый бит не 1, то неопределенно
+	00
+NB!!!	01	<grammeme parent=""><name>Apro</name><alias>мест_п</alias><description>местоименное</description></grammeme>
+    10	<grammeme parent=""><name>Anum</name><alias>числ_п</alias><description>порядковое</description></grammeme>
+	11	<grammeme parent=""><name>Poss</name><alias>притяж</alias><description>притяжательное</description></grammeme>
+	
+	2 << 30
+	//если первый бит не 1, то неопределенно
+	00
+    01	<grammeme parent=""><name>V_be</name><alias>*ье</alias><description>форма на _ье</description></grammeme>
+    10	<grammeme parent=""><name>V_ie</name><alias>*ие</alias><description>форма на _ие; отчество через _ие_</description></grammeme>
+    11	<grammeme parent=""><name>V_bi</name><alias>*ьи</alias><description>форма на _ьи</description></grammeme>
+
+	2 << 32
+	//если первый бит не 1, то неопределенно
+    1	<grammeme parent=""><name>Infr</name><alias>разг</alias><description>разговорное</description></grammeme>
+    1	<grammeme parent=""><name>Slng</name><alias>жарг</alias><description>жаргонное</description></grammeme>
+    1	<grammeme parent=""><name>Arch</name><alias>арх</alias><description>устаревшее</description></grammeme>
+	
+	<< 34
+	//если первый бит не 1, то нет данных
+	
+	1	<grammeme parent=""><name>Sgtm</name><alias>sg</alias><description>singularia tantum</description></grammeme>
+    1	<grammeme parent=""><name>Pltm</name><alias>pl</alias><description>pluralia tantum</description></grammeme>
+	1	<grammeme parent=""><name>V_en</name><alias>*енен</alias><description>форма на _енен</description></grammeme>
+	1	<grammeme parent=""><name>Impe</name><alias>безл</alias><description>безличный</description></grammeme>
+    1	<grammeme parent=""><name>Impx</name><alias>безл?</alias><description>возможно безличное употребление</description></grammeme>
+	1 	<grammeme parent=""><name>Mult</name><alias>мног</alias><description>многократный</description></grammeme>
+    1	<grammeme parent=""><name>Refl</name><alias>возвр</alias><description>возвратный</description></grammeme>
+	1	<grammeme parent=""><name>Fixd</name><alias>0</alias><description>неизменяемое</description></grammeme>
+	1	<grammeme parent=""><name>Geox</name><alias>гео</alias><description>топоним</description></grammeme>
+	1	<grammeme parent=""><name>Orgn</name><alias>орг</alias><description>организация</description></grammeme>
+	1	<grammeme parent=""><name>Trad</name><alias>tm</alias><description>торговая марка</description></grammeme>
+	1	<grammeme parent=""><name>Subx</name><alias>субст?</alias><description>возможна субстантивация</description></grammeme>
+	1	<grammeme parent=""><name>Supr</name><alias>превосх</alias><description>превосходная степень</description></grammeme>
+	1	<grammeme parent=""><name>Qual</name><alias>кач</alias><description>качественное</description></grammeme>
+	1	<grammeme parent=""><name>V_ey</name><alias>*ею</alias><description>форма на _ею</description></grammeme>
+    1	<grammeme parent=""><name>V_oy</name><alias>*ою</alias><description>форма на _ою</description></grammeme>
+    1	<grammeme parent=""><name>Cmp2</name><alias>сравн2</alias><description>сравнительная степень на по_</description></grammeme>
+    1	<grammeme parent=""><name>V_ej</name><alias>*ей</alias><description>форма компаратива на _ей</description></grammeme>
+    1 	<grammeme parent=""><name>Litr</name><alias>лит</alias><description>литературный вариант</description></grammeme>
+    1	<grammeme parent=""><name>Erro</name><alias>опеч</alias><description>опечатка</description></grammeme>
+    1	<grammeme parent=""><name>Dist</name><alias>искаж</alias><description>искажение</description></grammeme>
+    1	<grammeme parent=""><name>Ques</name><alias>вопр</alias><description>вопросительное</description></grammeme>
+    1	<grammeme parent=""><name>Dmns</name><alias>указ</alias><description>указательное</description></grammeme>
+    1	<grammeme parent=""><name>Prnt</name><alias>вводн</alias><description>вводное слово</description></grammeme>
+    1	<grammeme parent=""><name>Prdx</name><alias>предк?</alias><description>может выступать в роли предикатива</description></grammeme>
+    1	<grammeme parent=""><name>Coun</name><alias>счетн</alias><description>счётная форма</description></grammeme>
+    1	<grammeme parent=""><name>Af_p</name><alias>*предл</alias><description>форма после предлога</description></grammeme>
+    1	<grammeme parent=""><name>Inmx</name><alias>не/одуш?</alias><description>может использоваться как одуш. / неодуш. </description></grammeme>
+    1	<grammeme parent=""><name>Vpre</name><alias>в_предл</alias><description>Вариант предлога ( со, подо, ...)</description></grammeme>
+    1	<grammeme parent=""><name>Adjx</name><alias>прил?</alias><description>может выступать в роли прилагательного</description></grammeme>

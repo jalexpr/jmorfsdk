@@ -1,6 +1,6 @@
 package jmorfsdk.form;
 
-import jmorfsdk.grammeme.MorfologyCharacteristics;
+import jmorfsdk.old.grammeme.OldMorfologyCharacteristics;
 import java.util.Objects;
 
 /**
@@ -11,18 +11,18 @@ import java.util.Objects;
 public class Form {
 
     private final String strWordform;
-    private final MorfologyCharacteristics morfChar;
+    private final OldMorfologyCharacteristics morfChar;
     private static long sizeForm = 0;
 
     //если нужно вернуть пустую структуру
     public Form(String strWord) {
-        this(strWord, new MorfologyCharacteristics());
-    }
+        this(strWord, new OldMorfologyCharacteristics());
+    }   
 
-    public Form(String strWordform, MorfologyCharacteristics morfChar) {
+    public Form(String strWordform, OldMorfologyCharacteristics morfChar) {
         this.strWordform = strWordform;
         this.morfChar = morfChar;
-        this.sizeForm++;
+        Form.sizeForm++;
     }
    
     public String getStringForm() {

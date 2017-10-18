@@ -16,14 +16,15 @@ public class OmoForms extends ArrayList<Form>{
     }
     
     public OmoForms(Form wf) {
+        super();
         add(wf);
     }
-    
-    //копирование офомормы
-    public OmoForms(OmoForms omoform){
-        
+     
+    //Копирование колекции
+    public OmoForms(OmoForms source){
+        super(source);
     }
-    
+            
     public String getStringOmoform() {
         try {
             return get(0).getStringForm();
@@ -33,7 +34,7 @@ public class OmoForms extends ArrayList<Form>{
         }
     }
 
-    public boolean AddWordform(Form wordform) {
+    public boolean addForm(Form wordform) {
         return add(wordform);
     }
     
@@ -54,32 +55,6 @@ public class OmoForms extends ArrayList<Form>{
             return false;
         }
         final OmoForms other = (OmoForms) obj;
-        if (!Objects.equals(this.getStringOmoform(), other.getStringOmoform())) {
-            return false;
-        }
-        return true;
-    }
-    
-    @Override
-    public Iterator iterator() {
-        return new Iterator() {
-
-            private int current = 0;
-
-            @Override
-            public boolean hasNext() {
-                return current < OmoForms.this.size();
-            }
-
-            @Override
-            public Form next() {
-                Form result = OmoForms.this.get(current);
-                if (!hasNext()) {
-                    throw new IndexOutOfBoundsException("End of list.");
-                }
-                current++;
-                return result;
-            }
-        };
+        return Objects.equals(this.getStringOmoform(), other.getStringOmoform());
     }
 }
