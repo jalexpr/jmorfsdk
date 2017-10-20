@@ -1,12 +1,7 @@
 package jmorfsdk;
 
-import jmorfsdk.old.grammeme.OldMorfologyParameters;
-import jmorfsdk.old.grammeme.OldMorfologyCharacteristics;
-import jmorfsdk.form.MainForm;
-import jmorfsdk.form.Form;
-import jmorfsdk.form.WordForm;
-import jmorfsdk.form.OmoForms;
-import jmorfsdk.old.grammeme.OldMorfologyParameters.*;
+import jmorfsdk.grammeme.forconversion.MorfologyCharacteristicsForConversion;
+import jmorfsdk.form.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
@@ -61,6 +56,7 @@ public class JMorfSdk {
 
     /**
      * загрузка библиотеки на вход путь к файлу
+     *
      * @param pathLibrary
      * @param encoding
      * @return true - удалось загрузить, иначе false
@@ -76,10 +72,19 @@ public class JMorfSdk {
             //пропускаем первую строчку, там хранится сведения о файле
             buffInput.readLine();
 
-            while (buffInput.ready()) {
-                addLemmaOldFormat(buffInput.readLine());
+            int count = 0;
+            while (buffInput.ready() && count < 50000) {
+                String line = buffInput.readLine();
+                try {
+                    addLemmaOldFormat(line);
+                } catch (Exception ex) {
+                    System.err.println(line);
+                    Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
+                    // System.exit(0);
+                }
+                //count++;
             }
-            
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger("Файл не найден" + JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {
@@ -93,49 +98,78 @@ public class JMorfSdk {
                 Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         return false;
     }
 
-    private void addLemmaOldFormat(String strLemma) {
+    private void addLemmaOldFormat(String strLemma) throws Exception {
         //переводим в верхний регистр, чтобы потом enum характеристики определялась по стрингу
         strLemma = strLemma.toUpperCase();
 
         String[] strForms = strLemma.split("\"");
         String[] mainWordParam = strForms[0].split(" ");
 
-        //первая словоформа всегда в начальной форме добавляем постоянную 
+        //первая словоформа всегда в начальной форме добавляем постоянную
         //характеристику - часть речи, остальные меняются в зависимости от части речи
-        MainForm mainForm = new MainForm(mainWordParam[0], Post.valueOf(mainWordParam[1]));
-        
+        MainForm mainForm;
+        if (mainWordParam.length > 1) {
+            mainForm = new MainForm(mainWordParam[0], MorfologyCharacteristicsForConversion.addMorfCharacteristicsPost(mainWordParam[1]));
+        } else {
+            mainForm = new MainForm(mainWordParam[0], Byte.parseByte("0"));
+        }
+
         addMainForm(mainForm);
 
         //остальные будут словоформы с их не постоянными характеристиками
         for (int i = 1; i < strForms.length; i++) {
             String[] strParams = strForms[i].split(" ");
 
-            OldMorfologyCharacteristics morfCharact = new OldMorfologyCharacteristics();
+            MorfologyCharacteristicsForConversion morfCharact = new MorfologyCharacteristicsForConversion();
 
             //в первой словоофрме есть не постоянные характеристики
             for (int j = 2; j < mainWordParam.length; j++) {
-                morfCharact.addMorfCharacteristics(OldMorfologyParameters.getEnum(mainWordParam[j]));
+                morfCharact.addMorfCharacteristics(mainWordParam[j]);
             }
 
             //добавляем остальные характеристики
             for (int j = 1; j < strParams.length; j++) {
                 //на случаей если в документе не верная характеристика
-                if (!morfCharact.addMorfCharacteristics(OldMorfologyParameters.getEnum(strParams[j]))) {
-                    System.err.println("Ошибка загрузки библиотеки!\nНе верный формат параметра: " + strParams[j]);
-                }
+                morfCharact.addMorfCharacteristics(strParams[j]);
             }
 
             addFormInOmoForm(new WordForm(strParams[0], morfCharact, mainForm));
         }
     }
 
+    public void save() {
+        try {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("dictionary.txt"), "Windows-1251"));
+
+            for (MainForm mainForm : mainForms.values()) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(mainForm.getStringForm()).append(" ").append(Long.toHexString(mainForm.getTypeOfSpeech()))
+                            .append("\"");
+                for (Form form : mainForm.getWordFormMap().values()) {
+                    sb.append(form.getStringForm()).append(" ").append(Long.toHexString(form.getValue()))
+                            .append("\"");
+                }
+                bw.write(sb.toString() + "\n");
+            }
+
+            bw.flush();
+
+            bw.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static void main(String[] args) {
         JMorfSdk jMorfSdk = new JMorfSdk();
         jMorfSdk.start("dict.opcorpora.xml", "Windows-1251");
+        jMorfSdk.save();
 
         System.out.println("");
     }

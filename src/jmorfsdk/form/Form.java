@@ -1,6 +1,6 @@
 package jmorfsdk.form;
 
-import jmorfsdk.old.grammeme.OldMorfologyCharacteristics;
+import jmorfsdk.grammeme.forconversion.MorfologyCharacteristicsForConversion;
 import java.util.Objects;
 
 /**
@@ -11,20 +11,20 @@ import java.util.Objects;
 public class Form {
 
     private final String strWordform;
-    private final OldMorfologyCharacteristics morfChar;
+    private final MorfologyCharacteristicsForConversion morfCharacteristics;
     private static long sizeForm = 0;
 
     //если нужно вернуть пустую структуру
     public Form(String strWord) {
-        this(strWord, new OldMorfologyCharacteristics());
-    }   
+        this(strWord, new MorfologyCharacteristicsForConversion());
+    }
 
-    public Form(String strWordform, OldMorfologyCharacteristics morfChar) {
+    public Form(String strWordform, MorfologyCharacteristicsForConversion morfChar) {
         this.strWordform = strWordform;
-        this.morfChar = morfChar;
+        this.morfCharacteristics = morfChar;
         Form.sizeForm++;
     }
-   
+
     public String getStringForm() {
         return strWordform;
     }
@@ -48,9 +48,12 @@ public class Form {
         final Form other = (Form) obj;
         return Objects.equals(this.strWordform, other.strWordform);
     }
-    
+
     public int hashCodeByMorfCharact() {
-        return morfChar.hashCode();
+        return morfCharacteristics.hashCode();
     }
-  
+
+    public long getValue() {
+        return morfCharacteristics.getMorfCharacterisics();
+    }
 }

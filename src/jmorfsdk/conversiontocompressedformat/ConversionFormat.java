@@ -63,22 +63,28 @@ public class ConversionFormat {
                 
                 if (!strBuf.equals("lammata")){
                     shortTag(strBuf, "lemma", "");
+                    shortTag(strBuf, "<f ", "");
+                    shortTag(strBuf, " f>", "");
                     shortTag(strBuf, " ", "");
-                    shortTag(strBuf, "<f", "");
-                    shortTag(strBuf, "f>", "");
                     shortTag(strBuf, ">", "");
                     shortTag(strBuf, "<", "");
                     shortTag(strBuf, "/", "");
-                    //shortTag(strBuf, "id=\"", "");
+                    shortTag(strBuf, "id=\"", "");
                     shortTag(strBuf, "\"gv=\"", " ");
-                    shortTag(strBuf, "\"t=\"", "\"");
-
+                    shortTag(strBuf, "\"ft=\"", "\"");
+                    shortTag(strBuf, "-", "_");
+                    shortTag(strBuf, "1per", "per1");
+                    shortTag(strBuf, "2per", "per2");
+                    shortTag(strBuf, "3per", "per3");
+                    shortTag(strBuf, "\"f", "");
+                    
                     int indexLt = strBuf.indexOf("\"lt=\"");
                     if (indexLt > -1){
                         shortTag(strBuf, strBuf.substring(0, indexLt), "");
                     }
 
                     shortTag(strBuf, "\"lt=\"", "\"");
+                    strBuf.deleteCharAt(0);
                 }
                 
                 bufWrit.write(strBuf + "\n");
@@ -113,13 +119,11 @@ public class ConversionFormat {
         }
     }
 
-//    public static void main(String[] args) {
-//        ConversionFormat convFormat = new ConversionFormat("dict.opcorpora.xml");
-//
-//        convFormat.shortTag();
-//
-//        //ansi.conversionUtf8GoAnsi();
-//    }
+    public static void main(String[] args) {
+        ConversionFormat convFormat = new ConversionFormat("dict.opcorpora.xml");
+        //convFormat.conversionUtf8GoAnsi();
+        convFormat.shortTag();
+    }
 
 }
  
