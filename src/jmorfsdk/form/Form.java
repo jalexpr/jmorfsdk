@@ -1,6 +1,38 @@
+/*
+ * Copyright (C) 2017  Alexander Porechny alex.porechny@mail.ru
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Attribution-NonCommercial-ShareAlike 3.0 Unported
+ * (CC BY-SA 3.0) as published by the Creative Commons.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+ * for more details.
+ *
+ * You should have received a copy of the Attribution-NonCommercial-ShareAlike
+ * 3.0 Unported (CC BY-SA 3.0) along with this program.
+ * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ *
+ * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
+ *
+ * Эта программа свободного ПО: Вы можете распространять и / или изменять ее
+ * в соответствии с условиями Attribution-NonCommercial-ShareAlike 3.0 Unported
+ * (CC BY-SA 3.0), опубликованными Creative Commons.
+ *
+ * Эта программа распространяется в надежде, что она будет полезна,
+ * но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; без подразумеваемой гарантии
+ * КОММЕРЧЕСКАЯ ПРИГОДНОСТЬ ИЛИ ПРИГОДНОСТЬ ДЛЯ ОПРЕДЕЛЕННОЙ ЦЕЛИ.
+ * См. Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+ * для более подробной информации.
+ *
+ * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
+ * Unported (CC BY-SA 3.0) вместе с этой программой.
+ * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ */
 package jmorfsdk.form;
 
-import jmorfsdk.grammeme.forconversion.MorfologyCharacteristicsForConversion;
 import java.util.Objects;
 
 /**
@@ -10,19 +42,19 @@ import java.util.Objects;
  */
 public class Form {
 
+    private static long amountForm = 0;
     private final String strWordform;
-    private final MorfologyCharacteristicsForConversion morfCharacteristics;
-    private static long sizeForm = 0;
+    private final long morfCharacteristics;
 
     //если нужно вернуть пустую структуру
     public Form(String strWord) {
-        this(strWord, new MorfologyCharacteristicsForConversion());
+        this(strWord, 0L);
     }
 
-    public Form(String strWordform, MorfologyCharacteristicsForConversion morfChar) {
+    public Form(String strWordform, long morfCharacteristics) {
+        Form.amountForm++;
         this.strWordform = strWordform;
-        this.morfCharacteristics = morfChar;
-        Form.sizeForm++;
+        this.morfCharacteristics = morfCharacteristics;
     }
 
     public String getStringForm() {
@@ -50,10 +82,6 @@ public class Form {
     }
 
     public int hashCodeByMorfCharact() {
-        return morfCharacteristics.hashCode();
-    }
-
-    public long getValue() {
-        return morfCharacteristics.getMorfCharacterisics();
+        return Long.toString(morfCharacteristics).hashCode();
     }
 }

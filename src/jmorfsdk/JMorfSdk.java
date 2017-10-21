@@ -1,6 +1,38 @@
+/*
+ * Copyright (C) 2017  Alexander Porechny alex.porechny@mail.ru
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Attribution-NonCommercial-ShareAlike 3.0 Unported
+ * (CC BY-SA 3.0) as published by the Creative Commons.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+ * for more details.
+ *
+ * You should have received a copy of the Attribution-NonCommercial-ShareAlike
+ * 3.0 Unported (CC BY-SA 3.0) along with this program.
+ * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ *
+ * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
+ *
+ * Эта программа свободного ПО: Вы можете распространять и / или изменять ее
+ * в соответствии с условиями Attribution-NonCommercial-ShareAlike 3.0 Unported
+ * (CC BY-SA 3.0), опубликованными Creative Commons.
+ *
+ * Эта программа распространяется в надежде, что она будет полезна,
+ * но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; без подразумеваемой гарантии
+ * КОММЕРЧЕСКАЯ ПРИГОДНОСТЬ ИЛИ ПРИГОДНОСТЬ ДЛЯ ОПРЕДЕЛЕННОЙ ЦЕЛИ.
+ * См. Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+ * для более подробной информации.
+ *
+ * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
+ * Unported (CC BY-SA 3.0) вместе с этой программой.
+ * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ */
 package jmorfsdk;
 
-import jmorfsdk.grammeme.forconversion.MorfologyCharacteristicsForConversion;
 import jmorfsdk.form.*;
 import java.io.*;
 import java.util.*;
@@ -45,131 +77,85 @@ public class JMorfSdk {
         return omoForms.containsKey(form.hashCode());
     }
 
-    /**
-     *
-     * @param form
-     * @return возвращаем омоформу для формы, иначе null
-     */
     public OmoForms getOmoFormByForm(Form form) {
         return omoForms.get(form.hashCode());
     }
 
-    /**
-     * загрузка библиотеки на вход путь к файлу
-     *
-     * @param pathLibrary
-     * @param encoding
-     * @return true - удалось загрузить, иначе false
-     *
-     */
-    public boolean start(String pathLibrary, String encoding) {
+    public void start(String pathLibrary, String encoding) {
+        System.out.println("Старт загрузки библиотеки");
+        BufferedReader buffInput = openStreamFromFile(pathLibrary, encoding);
+        loadFromFile(buffInput);
+        closeStream(buffInput);
+        System.out.println("Библиотека готова к работе.");
+    }
 
+    private BufferedReader openStreamFromFile(String pathLibrary, String encoding) {
         BufferedReader buffInput = null;
-
         try {
             buffInput = new BufferedReader(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            //пропускаем первую строчку, там хранится сведения о файле
+        return buffInput;
+    }
+
+    private void closeStream(BufferedReader buffInput) {
+        try {
+            buffInput.close();
+        } catch (IOException ex) {
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void loadFromFile(BufferedReader buffInput) {
+        try {
             buffInput.readLine();
-
             int count = 0;
             while (buffInput.ready() && count < 50000) {
-                String line = buffInput.readLine();
-                try {
-                    addLemmaOldFormat(line);
-                } catch (Exception ex) {
-                    System.err.println(line);
-                    Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-                    // System.exit(0);
-                }
+                addLemma(buffInput.readLine());
                 //count++;
             }
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger("Файл не найден" + JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger("Ошибка при чтении файла " + JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                buffInput.close();
-            } catch (IOException ex) {
-                Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
-
-        return false;
     }
 
-    private void addLemmaOldFormat(String strLemma) throws Exception {
-        //переводим в верхний регистр, чтобы потом enum характеристики определялась по стрингу
-        strLemma = strLemma.toUpperCase();
-
-        String[] strForms = strLemma.split("\"");
-        String[] mainWordParam = strForms[0].split(" ");
-
-        //первая словоформа всегда в начальной форме добавляем постоянную
-        //характеристику - часть речи, остальные меняются в зависимости от части речи
-        MainForm mainForm;
-        if (mainWordParam.length > 1) {
-            mainForm = new MainForm(mainWordParam[0], MorfologyCharacteristicsForConversion.addMorfCharacteristicsPost(mainWordParam[1]));
-        } else {
-            mainForm = new MainForm(mainWordParam[0], Byte.parseByte("0"));
-        }
-
+    private void addLemma(String strLemma) {
+        MainForm mainForm = createMainForm(strLemma);
         addMainForm(mainForm);
+        addWordForms(strLemma, mainForm);
+    }
 
-        //остальные будут словоформы с их не постоянными характеристиками
-        for (int i = 1; i < strForms.length; i++) {
-            String[] strParams = strForms[i].split(" ");
+    private MainForm createMainForm(String strForms) {
+        String mainWordForm;
+        if(strForms.matches("\"")) {
+            mainWordForm = strForms.substring(0, strForms.indexOf("\""));
+        } else {
+            mainWordForm = strForms;
+        }
+        String[] mainWordParameters = mainWordForm.split(" ");
+        return new MainForm(mainWordParameters[0], mainWordParameters[1], mainWordParameters[2]);
+    }
 
-            MorfologyCharacteristicsForConversion morfCharact = new MorfologyCharacteristicsForConversion();
+    private void addWordForms(String strLemma, MainForm mainForm) {
 
-            //в первой словоофрме есть не постоянные характеристики
-            for (int j = 2; j < mainWordParam.length; j++) {
-                morfCharact.addMorfCharacteristics(mainWordParam[j]);
-            }
+        String[] arrayWordForms = strLemma.split("\"");
 
-            //добавляем остальные характеристики
-            for (int j = 1; j < strParams.length; j++) {
-                //на случаей если в документе не верная характеристика
-                morfCharact.addMorfCharacteristics(strParams[j]);
-            }
-
-            addFormInOmoForm(new WordForm(strParams[0], morfCharact, mainForm));
+        for (int i = 1; i < arrayWordForms.length; i++) {
+            WordForm wordForm = createWordForm(arrayWordForms[i], mainForm);
+            addFormInOmoForm(wordForm);
         }
     }
 
-    public void save() {
-        try {
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("dictionary.txt"), "Windows-1251"));
-
-            for (MainForm mainForm : mainForms.values()) {
-                StringBuffer sb = new StringBuffer();
-                sb.append(mainForm.getStringForm()).append(" ").append(Long.toHexString(mainForm.getTypeOfSpeech()))
-                            .append("\"");
-                for (Form form : mainForm.getWordFormMap().values()) {
-                    sb.append(form.getStringForm()).append(" ").append(Long.toHexString(form.getValue()))
-                            .append("\"");
-                }
-                bw.write(sb.toString() + "\n");
-            }
-
-            bw.flush();
-
-            bw.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private WordForm createWordForm(String strForm, MainForm mainForm) {
+        String[] mainWordParam = strForm.split(" ");
+        return new WordForm(mainWordParam[0], mainWordParam[1], mainForm);
     }
 
     public static void main(String[] args) {
         JMorfSdk jMorfSdk = new JMorfSdk();
-        jMorfSdk.start("dict.opcorpora.xml", "Windows-1251");
-        jMorfSdk.save();
+        jMorfSdk.start("dictionary.format.number.txt", "Windows-1251");
 
         System.out.println("");
     }
