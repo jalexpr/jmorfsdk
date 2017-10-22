@@ -31,61 +31,22 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
-package jmorfsdk.form;
-
-import java.util.Objects;
+import jmorfsdk.JMorfSdk;
 
 /**
- * Словоформа - конкретного словоформа
  *
- * @author AlexP
+ * @author User
  */
-public class Form {
+public class Running {
 
-    private static long amountForm = 0;
-    private final String strWordform;
-    private final long morfCharacteristics;
+    public static void main(String[] args) {
+        JMorfSdk jMorfSdk = new JMorfSdk();
+        jMorfSdk.start("dictionary.format.number.txt", "Windows-1251");
+        jMorfSdk.finish();
+        jMorfSdk = null;
 
-    //если нужно вернуть пустую структуру
-    public Form(String strWord) {
-        this(strWord, 0L);
-    }
-
-    public Form(String strWordform, long morfCharacteristics) {
-        Form.amountForm++;
-        this.strWordform = strWordform;
-        this.morfCharacteristics = morfCharacteristics;
-    }
-
-    public String getStringForm() {
-        return strWordform;
-    }
-
-    @Override
-    public int hashCode() {
-        return strWordform.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+        for(int i = 0; i < 99999999; i++) {
+            System.out.println(i + " ");
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Form other = (Form) obj;
-        return Objects.equals(this.strWordform, other.strWordform);
-    }
-
-    public int hashCodeByMorfCharact() {
-        return Long.toString(morfCharacteristics).hashCode();
-    }
-
-    public long getMorfCharacteristic(long morfIdentifier) {
-        return morfCharacteristics & morfIdentifier;
     }
 }

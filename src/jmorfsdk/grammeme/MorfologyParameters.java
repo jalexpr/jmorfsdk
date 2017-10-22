@@ -52,6 +52,8 @@ public interface MorfologyParameters {
          * неодушевлённое
          */
         public static final long INANIMATE = 0x3L;
+
+        public static final long IDENTIFIER = 0x3L;
     }
 
     /**
@@ -75,6 +77,8 @@ public interface MorfologyParameters {
          * средний род
          */
         public static final long NEUTER = 0x7L << 2;
+
+        public static final long IDENTIFIER = 0x7L << 2;
     }
 
     /**
@@ -90,6 +94,8 @@ public interface MorfologyParameters {
          * множественное число
          */
         public static final long PLURAL = 0x3L << 5;
+
+        public static final long IDENTIFIER = 0x3L << 5;
     }
 
     /**
@@ -145,6 +151,8 @@ public interface MorfologyParameters {
          * звательный падеж
          */
         public static final long VOATIVE = 0x9L << 7;
+
+        public static final long IDENTIFIER = 0xFL << 7;
     }
 
     /**
@@ -160,6 +168,8 @@ public interface MorfologyParameters {
          * несовершенный вид
          */
         public static final long IMPERFECT = 0x3L << 11;
+
+        public static final long IDENTIFIER = 0x3L << 11;
     }
 
     /**
@@ -175,6 +185,8 @@ public interface MorfologyParameters {
          * непереходный
          */
         public static final long INTR = 0x3L << 13;
+
+        public static final long IDENTIFIER = 0x3L << 13;
     }
 
     /**
@@ -194,6 +206,8 @@ public interface MorfologyParameters {
          * 3 лицо
          */
         public static final long PER3 = 0x3L << 15;
+
+        public static final long IDENTIFIER = 0x3L << 15;
     }
 
     /**
@@ -213,6 +227,8 @@ public interface MorfologyParameters {
          * будущее время
          */
         public static final long FUTURE = 0x3L << 17;
+
+        public static final long IDENTIFIER = 0x3L << 17;
     }
 
     /**
@@ -228,21 +244,31 @@ public interface MorfologyParameters {
          * повелительное наклонение
          */
         public static final long IMPERATIVE = 0x3L << 19;
+
+        public static final long IDENTIFIER = 0x3L << 19;
     }
 
     /**
-     * говорящий включён (идем, идемте)
+     * говорящий включён / не включен в действие (идем / иди)
      */
-    public static final long INCL = 0x2L << 21;
-    /**
-     * говорящий не включён в действие (иди, идите)
-     */
-    public static final long EXCL = 0x3L << 21;
+    public interface Act {
+
+        /**
+         * говорящий включён (идем, идемте)
+         */
+        public static final long INCLUSIVE = 0x2L << 21;
+        /**
+         * говорящий не включён в действие (иди, идите)
+         */
+        public static final long EXCLUSIVE = 0x3L << 21;
+
+        public static final long IDENTIFIER = 0x3L << 21;
+    }
 
     /**
      * Залог действительный/страдательный
      */
-    public interface VOICE {
+    public interface Voice {
 
         /**
          * действительный залог
@@ -252,89 +278,203 @@ public interface MorfologyParameters {
          * страдательный залог
          */
         public static final long PASSIVE = 0x3L << 23;
+
+        public static final long IDENTIFIER = 0x3L << 23;
     }
 
     /**
-     * аббревиатура
+     * аббревиатура/имя/фамилия/отчество/инициалы
      */
-    public static final long ABBR = 0x1L << 25;
-    /**
-     * имя
-     */
-    public static final long NAME = 0x4L << 25;
-    /**
-     * фамилия
-     */
-    public static final long SURN = 0x5L << 25;
-    /**
-     * отчество
-     */
-    public static final long PARN = 0x6L << 25;
-    /**
-     * Инициал
-     */
-    public static final long INIT = 0x7L << 25;
+    public interface Name {
+
+        /**
+         * аббревиатура
+         */
+        public static final long ABBREVIATION = 0x1L << 25;
+        /**
+         * имя
+         */
+        public static final long NAME = 0x4L << 25;
+        /**
+         * фамилия
+         */
+        public static final long SURN = 0x5L << 25;
+        /**
+         * отчество
+         */
+        public static final long PARN = 0x6L << 25;
+        /**
+         * Инициал
+         */
+        public static final long INIT = 0x7L << 25;
+
+        public static final long IDENTIFIER = 0x7L << 25;
+    }
 
     /**
-     * местоименное
+     * типы местоимений
      */
-    public static final long APRO = 0x1L << 28;
-    /**
-     * порядковое
-     */
-    public static final long ANUM = 0x2L << 28;
-    /**
-     * притяжательное
-     */
-    public static final long POSS = 0x3L << 28;
+    public interface TepePronoun {
+
+        /**
+         * местоименное
+         */
+        public static final long APRO = 0x1L << 28;
+        /**
+         * порядковое
+         */
+        public static final long ANUM = 0x2L << 28;
+        /**
+         * притяжательное
+         */
+        public static final long POSS = 0x3L << 28;
+
+        public static final long IDENTIFIER = 0x3L << 28;
+    }
 
     /**
-     * форма на _ье
+     * форма на _ье/_ие отчество через _ие_/на _ьи
      */
-    public static final long V_BE = 0x1L << 30;
-    /**
-     * форма на _ие; отчество через _ие_
-     */
-    public static final long V_IE = 0x2L << 30;
-    /**
-     * форма на _ьи
-     */
-    public static final long V_BI = 0x3L << 30;
+    public interface TerminationForm {
+
+        /**
+         * форма на _ье
+         */
+        public static final long V_BE = 0x1L << 30;
+        /**
+         * форма на _ие; отчество через _ие_
+         */
+        public static final long V_IE = 0x2L << 30;
+        /**
+         * форма на _ьи
+         */
+        public static final long V_BI = 0x3L << 30;
+
+        public static final long IDENTIFIER = 0x3L << 30;
+    }
 
     public interface Alone {
 
-        public static final byte SHIFTBIT = 31;
-
+        public static final long SHIFTBIT = 31;
+        /**
+         * singularia tantum
+         */
         public static final long SGTM = 0x1L << SHIFTBIT;
+        /**
+         * pluralia tantum
+         */
         public static final long PLTM = 0x1L << SHIFTBIT << 1;
+        /**
+         * форма на _енен
+         */
         public static final long V_EN = 0x1L << SHIFTBIT << 2;
+        /**
+         * безличный
+         */
         public static final long IMPE = 0x1L << SHIFTBIT << 3;
+        /**
+         * возможно безличное употребление
+         */
         public static final long IMPX = 0x1L << SHIFTBIT << 4;
+        /**
+         * многократный
+         */
         public static final long MULT = 0x1L << SHIFTBIT << 5;
+        /**
+         * возвратный
+         */
         public static final long REFL = 0x1L << SHIFTBIT << 6;
+        /**
+         * неизменяемое
+         */
         public static final long FIXD = 0x1L << SHIFTBIT << 7;
+        /**
+         * топоним
+         */
         public static final long GEOX = 0x1L << SHIFTBIT << 8;
+        /**
+         * организация
+         */
         public static final long ORGN = 0x1L << SHIFTBIT << 9;
+        /**
+         * торговая марка
+         */
         public static final long TRAD = 0x1L << SHIFTBIT << 10;
+        /**
+         * возможна субстантивация
+         */
         public static final long SUBX = 0x1L << SHIFTBIT << 11;
+        /**
+         * превосходная степень
+         */
         public static final long SUPR = 0x1L << SHIFTBIT << 12;
+        /**
+         * качественное
+         */
         public static final long QUAL = 0x1L << SHIFTBIT << 13;
+        /**
+         * форма на _ею
+         */
         public static final long V_EY = 0x1L << SHIFTBIT << 14;
+        /**
+         * форма на _ою
+         */
         public static final long V_OY = 0x1L << SHIFTBIT << 15;
+        /**
+         * сравнительная степень на по_
+         */
         public static final long CMP2 = 0x1L << SHIFTBIT << 16;
+        /**
+         * форма компаратива на _ей
+         */
         public static final long V_EJ = 0x1L << SHIFTBIT << 17;
-        //--
+        /**
+         * литературный вариант
+         */
         public static final long LITR = 0x1L << SHIFTBIT << 18;
+        /**
+         * опечатка
+         */
         public static final long ERRO = 0x1L << SHIFTBIT << 19;
+        /**
+         * искажение
+         */
         public static final long DIST = 0x1L << SHIFTBIT << 20;
+        /**
+         * вопросительное
+         */
         public static final long QUES = 0x1L << SHIFTBIT << 21;
+        /**
+         * указательное
+         */
         public static final long DMNS = 0x1L << SHIFTBIT << 22;
+        /**
+         * вводное слово
+         */
         public static final long PRNT = 0x1L << SHIFTBIT << 23;
+        /**
+         * может выступать в роли предикатива
+         */
         public static final long PRDX = 0x1L << SHIFTBIT << 24;
+        /**
+         * счётная форма
+         */
         public static final long COUN = 0x1L << SHIFTBIT << 25;
+        /**
+         * форма после предлога
+         */
         public static final long AF_P = 0x1L << SHIFTBIT << 26;
+        /**
+         * может использоваться как одуш. / неодуш.
+         */
         public static final long INMX = 0x1L << SHIFTBIT << 27;
+        /**
+         * Вариант предлога ( со, подо, ...)
+         */
         public static final long VPRE = 0x1L << SHIFTBIT << 28;
+        /**
+         * может выступать в роли прилагательного
+         */
         public static final long ADJX = 0x1L << SHIFTBIT << 29;
         /**
          * разговорное
@@ -355,33 +495,35 @@ public interface MorfologyParameters {
      */
     public interface TypeOfSpeech {
 
-        public static final byte NOUN = 0x11;
+        public static final long NOUN = 0x11;
 
-        public static final byte ADJF = 0x12;
-        public static final byte ADJS = 0x17;
+        public static final long ADJECTIVEFULL = 0x12;
+        public static final long ADJECTIVESHORT = 0x17;
 
-        public static final byte VERB = 0x14;
-        public static final byte INFN = 0x17;
+        public static final long VERB = 0x14;
+        public static final long INFINITIVE = 0x17;
 
-        public static final byte PRTF = 0x16;
-        public static final byte PRTS = 0x17;
+        public static final long PARTICIPLEFULL = 0x16;
+        public static final long PARTICIPLE = 0x17;
 
-        public static final byte GRND = 0x19;
-        public static final byte FIMP = 0x1A;
-        public static final byte V_SH = 0x1B;
+        public static final long GERUND = 0x19;
+        public static final long GERUNDIMPERFECT = 0x1A;
+        public static final long GERUND_SHI = 0x1B;
 
-        public static final byte NUMR = 0x1C;
-        public static final byte COLL = 0x1D;
+        public static final long NUMERAL = 0x1C;
+        public static final long COLLECTIVENUMERAL = 0x1D;
 
-        public static final byte NPRO = 0x1E;
-        public static final byte ANPH = 0x1F;
+        public static final long NOUNPRONOUN = 0x1E;
+        public static final long ANAPHORICPRONOUN = 0x1F;
 
-        public static final byte ADVB = 0x9;
-        public static final byte COMP = 0xA;
-        public static final byte PRED = 0xB;
-        public static final byte PREP = 0xC;
-        public static final byte CONJ = 0xD;
-        public static final byte PRCL = 0xE;
-        public static final byte INTJ = 0xF;
+        public static final long ADVERB = 0x9;
+        public static final long COMPARATIVE = 0xA;
+        public static final long PREDICATE = 0xB;
+        public static final long PRETEXT = 0xC;
+        public static final long UNION = 0xD;
+        public static final long PARTICLE = 0xE;
+        public static final long INTERJECTION = 0xF;
+
+        public static final long IDENTIFIER = 0x1F;
     }
 }

@@ -38,12 +38,12 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
-public class JMorfSdk {
+public final class JMorfSdk {
 
     //По этому мапу находим морфологические характеристики слова
-    private final HashMap<Integer, OmoForms> omoForms = new HashMap();
+    private HashMap<Integer, OmoForms> omoForms = new HashMap();
     //По этому мапу находим словоформу с заданными характеристиками
-    private final HashMap<Integer, MainForm> mainForms = new HashMap();
+    private HashMap<Integer, MainForm> mainForms = new HashMap();
 
     private void addOmoForm(OmoForms of) {
         omoForms.put(of.hashCode(), of);
@@ -153,10 +153,8 @@ public class JMorfSdk {
         return new WordForm(mainWordParam[0], mainWordParam[1], mainForm);
     }
 
-    public static void main(String[] args) {
-        JMorfSdk jMorfSdk = new JMorfSdk();
-        jMorfSdk.start("dictionary.format.number.txt", "Windows-1251");
-
-        System.out.println("");
+    public void finish() {
+        omoForms = null;
+        mainForms = null;
     }
 }
