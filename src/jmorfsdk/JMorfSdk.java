@@ -37,6 +37,9 @@ import jmorfsdk.form.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 public final class JMorfSdk {
 
@@ -44,6 +47,12 @@ public final class JMorfSdk {
     private HashMap<Integer, OmoForms> omoForms = new HashMap();
     //По этому мапу находим словоформу с заданными характеристиками
     private HashMap<Integer, MainForm> mainForms = new HashMap();
+    private static String pathLibrary = "dictionary.format.number.txt";
+    private static String encoding = "Windows-1251";
+
+    static {
+        loadProperty();
+    }
 
     private void addOmoForm(OmoForms of) {
         omoForms.put(of.hashCode(), of);
@@ -81,15 +90,15 @@ public final class JMorfSdk {
         return omoForms.get(form.hashCode());
     }
 
-    public void start(String pathLibrary, String encoding) {
+    public void start() {
         System.out.println("Старт загрузки библиотеки");
-        BufferedReader buffInput = openStreamFromFile(pathLibrary, encoding);
+        BufferedReader buffInput = openStreamFromFile();
         loadFromFile(buffInput);
         closeStream(buffInput);
         System.out.println("Библиотека готова к работе.");
     }
 
-    private BufferedReader openStreamFromFile(String pathLibrary, String encoding) {
+    private BufferedReader openStreamFromFile() {
         BufferedReader buffInput = null;
         try {
             buffInput = new BufferedReader(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
@@ -129,7 +138,7 @@ public final class JMorfSdk {
 
     private MainForm createMainForm(String strForms) {
         String mainWordForm;
-        if(strForms.matches("\"")) {
+        if (strForms.matches("\"")) {
             mainWordForm = strForms.substring(0, strForms.indexOf("\""));
         } else {
             mainWordForm = strForms;
@@ -150,11 +159,49 @@ public final class JMorfSdk {
 
     private WordForm createWordForm(String strForm, MainForm mainForm) {
         String[] mainWordParam = strForm.split(" ");
-        return new WordForm(mainWordParam[0], mainWordParam[1], mainForm);
+        return new WordForm(mainWordParam[0], Long.getLong(mainWordParam[1], 0x0), mainForm);
     }
 
     public void finish() {
+        omoForms.clear();
+        mainForms.clear();
         omoForms = null;
         mainForms = null;
+    }
+
+    private static void loadProperty() {
+        try {
+            // Создается построитель документа
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            // Создается дерево DOM документа из файла
+            Document document = documentBuilder.parse("property.xml");
+            // Получаем корневой элемент
+            Node root = document.getDocumentElement();
+            readProperty(root);
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            System.err.println("Проблемы с property.xml" + ex);
+        }
+    }
+
+    private static void readProperty(Node root) {
+        // Просматриваем все подэлементы корневого
+        NodeList propertys = root.getChildNodes();
+        //Перебираем все элементы с подэлеменатми
+        for (int i = 0; i < propertys.getLength(); i++) {
+            Node node = propertys.item(i);
+            //Если элемент не текст
+            if (node.getNodeType() != Node.TEXT_NODE) {
+                switch (node.getNodeName()) {
+                        case "pathLibrary":
+                            pathLibrary = node.getChildNodes().item(0).getTextContent();
+                            break;
+                        case "encoding":
+                            encoding = node.getChildNodes().item(0).getTextContent();
+                            break;
+                        default:
+                            readProperty(node);
+                }
+            }
+        }
     }
 }

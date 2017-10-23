@@ -42,10 +42,6 @@ public class WordForm extends Form {
 
     private final MainForm mainForm;
 
-    public WordForm(String strWord, String morfCharacteristics, MainForm mainForm) {
-        this(strWord, Long.getLong(morfCharacteristics,0x0),  mainForm);
-    }
-
     public WordForm(String strWord, long morfCharacteristics, MainForm mainForm) {
         super(strWord, morfCharacteristics);
         this.mainForm = mainForm;

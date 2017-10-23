@@ -41,7 +41,7 @@ public class Running {
 
     public static void main(String[] args) {
         JMorfSdk jMorfSdk = new JMorfSdk();
-        jMorfSdk.start("dictionary.format.number.txt", "Windows-1251");
+        jMorfSdk.start();
         jMorfSdk.finish();
         jMorfSdk = null;
 
