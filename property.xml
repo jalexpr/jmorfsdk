@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BookCatalogue>
+	<property>
+		<Title>
+			<version>0.92</version>
+			<revision>404397"</revision>
+		</Title>
+		<pathLibrary>dictionary.format.number.txt</pathLibrary>
+		<encoding>Windows-1251</encoding>
+	</property>
+</BookCatalogue>
