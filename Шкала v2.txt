@@ -141,14 +141,8 @@ NB!!!	01	<grammeme parent=""><name>Apro</name><alias>мест_п</alias><descrip
     01	<grammeme parent=""><name>V_be</name><alias>*ье</alias><description>форма на _ье</description></grammeme>
     10	<grammeme parent=""><name>V_ie</name><alias>*ие</alias><description>форма на _ие; отчество через _ие_</description></grammeme>
     11	<grammeme parent=""><name>V_bi</name><alias>*ьи</alias><description>форма на _ьи</description></grammeme>
-
-	2 << 32
-	//если первый бит не 1, то неопределенно
-    1	<grammeme parent=""><name>Infr</name><alias>разг</alias><description>разговорное</description></grammeme>
-    1	<grammeme parent=""><name>Slng</name><alias>жарг</alias><description>жаргонное</description></grammeme>
-    1	<grammeme parent=""><name>Arch</name><alias>арх</alias><description>устаревшее</description></grammeme>
 	
-	<< 34
+	<< 31
 	//если первый бит не 1, то нет данных
 	
 	1	<grammeme parent=""><name>Sgtm</name><alias>sg</alias><description>singularia tantum</description></grammeme>
@@ -181,3 +175,6 @@ NB!!!	01	<grammeme parent=""><name>Apro</name><alias>мест_п</alias><descrip
     1	<grammeme parent=""><name>Inmx</name><alias>не/одуш?</alias><description>может использоваться как одуш. / неодуш. </description></grammeme>
     1	<grammeme parent=""><name>Vpre</name><alias>в_предл</alias><description>Вариант предлога ( со, подо, ...)</description></grammeme>
     1	<grammeme parent=""><name>Adjx</name><alias>прил?</alias><description>может выступать в роли прилагательного</description></grammeme>
+    1	<grammeme parent=""><name>Infr</name><alias>разг</alias><description>разговорное</description></grammeme>
+    1	<grammeme parent=""><name>Slng</name><alias>жарг</alias><description>жаргонное</description></grammeme>
+    1	<grammeme parent=""><name>Arch</name><alias>арх</alias><description>устаревшее</description></grammeme>
