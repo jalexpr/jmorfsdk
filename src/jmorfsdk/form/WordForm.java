@@ -33,11 +33,6 @@
  */
 package jmorfsdk.form;
 
-/**
- * WordForm
- *
- * @author AlexP
- */
 public class WordForm extends Form {
 
     private final MainForm mainForm;

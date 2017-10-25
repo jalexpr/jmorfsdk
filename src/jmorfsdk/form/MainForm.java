@@ -35,17 +35,11 @@ package jmorfsdk.form;
 
 import java.util.ArrayList;
 
-/**
- * Начальная словоформа слова.
- *
- * @author AlexP
- */
 public class MainForm extends Form {
 
     private final ArrayList<Form> wordFormList = new ArrayList<>();
     private final byte typeOfSpeech;
 
-    //если нужно вернуть пустую структуру
     public MainForm(String strWord){
         this(strWord, Byte.valueOf("0"), 0L);
     }

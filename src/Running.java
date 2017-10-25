@@ -33,10 +33,6 @@
  */
 import jmorfsdk.JMorfSdk;
 
-/**
- *
- * @author User
- */
 public class Running {
 
     public static void main(String[] args) {

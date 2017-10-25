@@ -36,14 +36,8 @@ package jmorfsdk.form;
 import java.util.*;
 import java.util.logging.*;
 
-/**
- * Omoform - один string, много характеристик
- *
- * @author AlexP
- */
 public class OmoForms extends ArrayList<Form>{
 
-    //если нужно вернуть пустую структуру
     public OmoForms(String strWord) {
         this(new Form(strWord));
     }
@@ -53,7 +47,6 @@ public class OmoForms extends ArrayList<Form>{
         add(wf);
     }
 
-    //Копирование колекции
     public OmoForms(OmoForms source){
         super(source);
     }

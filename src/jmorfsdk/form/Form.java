@@ -35,18 +35,12 @@ package jmorfsdk.form;
 
 import java.util.Objects;
 
-/**
- * Словоформа - конкретного словоформа
- *
- * @author AlexP
- */
 public class Form {
 
     private static long amountForm = 0;
     private final String strWordform;
     private final long morfCharacteristics;
 
-    //если нужно вернуть пустую структуру
     public Form(String strWord) {
         this(strWord, 0L);
     }

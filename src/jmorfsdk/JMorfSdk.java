@@ -43,9 +43,7 @@ import org.xml.sax.SAXException;
 
 public final class JMorfSdk {
 
-    //По этому мапу находим морфологические характеристики слова
     private HashMap<Integer, OmoForms> omoForms = new HashMap();
-    //По этому мапу находим словоформу с заданными характеристиками
     private HashMap<Integer, MainForm> mainForms = new HashMap();
     private static String pathLibrary = "dictionary.format.number.txt";
     private static String encoding = "Windows-1251";
@@ -62,12 +60,6 @@ public final class JMorfSdk {
         mainForms.put(mf.hashCode(), mf);
     }
 
-    /**
-     * Проверяем существование омоформы для входной формы, если нашли, то
-     * добавляем ее туда, иначе создаем новую
-     *
-     * @param form
-     */
     public void addFormInOmoForm(Form form) {
         if (isOmoFormExistForForm(form)) {
             getOmoFormByForm(form).addForm(form);
@@ -76,12 +68,6 @@ public final class JMorfSdk {
         }
     }
 
-    /**
-     * Проверка существования словоформы
-     *
-     * @param form
-     * @return если найде, то возвращаем true, иначе false
-     */
     public boolean isOmoFormExistForForm(Form form) {
         return omoForms.containsKey(form.hashCode());
     }
@@ -121,10 +107,13 @@ public final class JMorfSdk {
         try {
             buffInput.readLine();
             int count = 0;
-            while (buffInput.ready() && count < 50000) {
-                addLemma(buffInput.readLine());
-                //count++;
-            }
+            addLemma(buffInput.readLine());
+
+            //Ограничение загрузки, чтобы проще снимать дамп памяти.
+//            while (buffInput.ready() && count < 50000) {
+//                addLemma(buffInput.readLine());
+//                count++;
+//            }
         } catch (IOException ex) {
             Logger.getLogger("Ошибка при чтении файла " + JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -171,11 +160,8 @@ public final class JMorfSdk {
 
     private static void loadProperty() {
         try {
-            // Создается построитель документа
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            // Создается дерево DOM документа из файла
             Document document = documentBuilder.parse("property.xml");
-            // Получаем корневой элемент
             Node root = document.getDocumentElement();
             readProperty(root);
         } catch (ParserConfigurationException | SAXException | IOException ex) {
@@ -184,12 +170,10 @@ public final class JMorfSdk {
     }
 
     private static void readProperty(Node root) {
-        // Просматриваем все подэлементы корневого
+
         NodeList propertys = root.getChildNodes();
-        //Перебираем все элементы с подэлеменатми
         for (int i = 0; i < propertys.getLength(); i++) {
             Node node = propertys.item(i);
-            //Если элемент не текст
             if (node.getNodeType() != Node.TEXT_NODE) {
                 switch (node.getNodeName()) {
                         case "pathLibrary":
