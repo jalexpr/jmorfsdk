@@ -31,18 +31,22 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
+import java.io.IOException;
+import java.util.logging.*;
 import jmorfsdk.JMorfSdk;
-
 public class Running {
 
-    public static void main(String[] args) {
-        JMorfSdk jMorfSdk = new JMorfSdk();
-        jMorfSdk.start();
-        jMorfSdk.finish();
-        jMorfSdk = null;
+    public static void main(String[] args) throws IOException {
+        try {
+            JMorfSdk jMorfSdk = new JMorfSdk();
+            jMorfSdk.start();
 
-        for(int i = 0; i < 99999999; i++) {
-            System.out.println(i + " ");
+            //System.in.read();
+
+            jMorfSdk.finish();
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Running.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 }

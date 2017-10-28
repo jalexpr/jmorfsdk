@@ -36,7 +36,7 @@ package jmorfsdk.form;
 import java.util.*;
 import java.util.logging.*;
 
-public class OmoForms extends ArrayList<Form>{
+public class OmoForms extends ArrayList<Form> {
 
     public OmoForms(String strWord) {
         this(new Form(strWord));
@@ -47,7 +47,7 @@ public class OmoForms extends ArrayList<Form>{
         add(wf);
     }
 
-    public OmoForms(OmoForms source){
+    public OmoForms(OmoForms source) {
         super(source);
     }
 
@@ -65,7 +65,7 @@ public class OmoForms extends ArrayList<Form>{
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return getStringOmoform().hashCode();
     }
 

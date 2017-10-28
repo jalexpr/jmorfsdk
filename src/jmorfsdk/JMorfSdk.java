@@ -45,11 +45,20 @@ public final class JMorfSdk {
 
     private HashMap<Integer, OmoForms> omoForms = new HashMap();
     private HashMap<Integer, MainForm> mainForms = new HashMap();
+    private boolean isOutputMessagesToConsole = true;
     private static String pathLibrary = "dictionary.format.number.txt";
     private static String encoding = "Windows-1251";
+    private static String myRepository  = "https://github.com/jalexpr/JMorfSdk/";
 
     static {
         loadProperty();
+    }
+
+    public JMorfSdk() {
+    }
+
+    public JMorfSdk(boolean isOutputMessagesToConsole) {
+        this.isOutputMessagesToConsole = isOutputMessagesToConsole;
     }
 
     private void addOmoForm(OmoForms of) {
@@ -77,19 +86,30 @@ public final class JMorfSdk {
     }
 
     public void start() {
-        System.out.println("Старт загрузки библиотеки");
+        outputMessagesToConsole("Старт загрузки библиотеки");
+        
         BufferedReader buffInput = openStreamFromFile();
         loadFromFile(buffInput);
         closeStream(buffInput);
-        System.out.println("Библиотека готова к работе.");
+        outputMessagesToConsole("Библиотека готова к работе.");
     }
-
+    
     private BufferedReader openStreamFromFile() {
+        
         BufferedReader buffInput = null;
         try {
             buffInput = new BufferedReader(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            String messages = "Ошибка при чтении файла.\r\nПроверте наличие "
+                    + pathLibrary + ", в случае отсуствия скачайте с репозитория " + myRepository + "\r\n";
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
+            System.exit(0);
+        } catch (UnsupportedEncodingException ex) {
+            String messages = "Ошибка при чтении файла.\r\n1)Проверте кодировку " + pathLibrary + " в соотвевствии с параметрами в property.xml."
+                    + "\r\n2)При отсутствии property.xml кодировка по умолчанию " + encoding + "."
+                    + "\r\n3)В случае отсуствия файлов, скачайте с репозитория " + myRepository + "\r\n";
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
+            System.exit(0);
         }
 
         return buffInput;
@@ -104,19 +124,17 @@ public final class JMorfSdk {
     }
 
     private void loadFromFile(BufferedReader buffInput) {
+        
         try {
             buffInput.readLine();
-            int count = 0;
-            addLemma(buffInput.readLine());
 
-            //Ограничение загрузки, чтобы проще снимать дамп памяти.
-//            while (buffInput.ready() && count < 50000) {
-//                addLemma(buffInput.readLine());
-//                count++;
-//            }
+            while (buffInput.ready()) {
+                addLemma(buffInput.readLine());
+            }
         } catch (IOException ex) {
-            Logger.getLogger("Ошибка при чтении файла " + JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            String messages = "Проблема чтения с файла: " + pathLibrary + "\r\nСкачайте файл с репозитория " + myRepository;
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
+        } 
     }
 
     private void addLemma(String strLemma) {
@@ -165,7 +183,8 @@ public final class JMorfSdk {
             Node root = document.getDocumentElement();
             readProperty(root);
         } catch (ParserConfigurationException | SAXException | IOException ex) {
-            System.err.println("Проблемы с property.xml" + ex);
+            String messages = "Не удается найти property.xml\r\nПрименены параметры по умолчанию!\r\n";
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.WARNING, messages);
         }
     }
 
@@ -176,16 +195,22 @@ public final class JMorfSdk {
             Node node = propertys.item(i);
             if (node.getNodeType() != Node.TEXT_NODE) {
                 switch (node.getNodeName()) {
-                        case "pathLibrary":
-                            pathLibrary = node.getChildNodes().item(0).getTextContent();
-                            break;
-                        case "encoding":
-                            encoding = node.getChildNodes().item(0).getTextContent();
-                            break;
-                        default:
-                            readProperty(node);
+                    case "pathLibrary":
+                        pathLibrary = node.getChildNodes().item(0).getTextContent();
+                        break;
+                    case "encoding":
+                        encoding = node.getChildNodes().item(0).getTextContent();
+                        break;
+                    default:
+                        readProperty(node);
                 }
             }
+        }
+    }
+
+    private void outputMessagesToConsole(String messages) {
+        if (isOutputMessagesToConsole) {
+            System.out.println(messages);
         }
     }
 }
