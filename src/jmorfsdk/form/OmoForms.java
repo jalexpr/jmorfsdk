@@ -33,8 +33,9 @@
  */
 package jmorfsdk.form;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class OmoForms extends ArrayList<Form> {
 
@@ -81,6 +82,6 @@ public class OmoForms extends ArrayList<Form> {
             return false;
         }
         final OmoForms other = (OmoForms) obj;
-        return Objects.equals(this.getStringOmoform(), other.getStringOmoform());
+        return this.getStringOmoform().equals(other.getStringOmoform());
     }
 }

@@ -82,4 +82,8 @@ public class Form {
     public long getMorfCharacteristic(long morfIdentifier) {
         return morfCharacteristics & morfIdentifier;
     }
+
+    public long getMorfCharacteristic() {
+        return morfCharacteristics;
+    }
 }

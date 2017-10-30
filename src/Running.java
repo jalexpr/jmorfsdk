@@ -40,6 +40,7 @@ public class Running {
         try {
             JMorfSdk jMorfSdk = new JMorfSdk();
             jMorfSdk.start();
+            jMorfSdk.newSeva();
 
             //System.in.read();
 

@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 public class MainForm extends Form {
 
-    private final ArrayList<Form> wordFormList = new ArrayList<>();
+    private final ArrayList<WordForm> wordFormList = new ArrayList<>();
     private final byte typeOfSpeech;
 
     public MainForm(String strWord){
@@ -53,7 +53,7 @@ public class MainForm extends Form {
         this.typeOfSpeech = typeOfSpeech;
     }
 
-    public void addWordfFormList(Form wordform) {
+    public void addWordfFormList(WordForm wordform) {
         wordFormList.add(wordform);
     }
 
@@ -61,7 +61,8 @@ public class MainForm extends Form {
         return typeOfSpeech;
     }
 
-    public ArrayList<Form> getWordFormMap() {
+    @Deprecated
+    public ArrayList<WordForm> getWordFormList() {
         return wordFormList;
     }
 }
