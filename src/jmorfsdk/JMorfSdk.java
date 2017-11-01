@@ -49,6 +49,7 @@ public final class JMorfSdk {
         mainForms.put(mf.hashCode(), mf);
     }
 
+
     public void addWordForm(WordForm wordForm) {
         addFormInOmoForm(wordForm);
     }
@@ -61,16 +62,16 @@ public final class JMorfSdk {
         }
     }
 
+    private void addOmoForm(OmoForms of) {
+        omoForms.put(of.hashCode(), of);
+    }
+
     public boolean isOmoFormExistForForm(Form form) {
         return omoForms.containsKey(form.hashCode());
     }
 
-    public OmoForms getOmoFormByForm(Form form) {
-        return new OmoForms(omoForms.get(form.hashCode()));
-    }
-
-    private void addOmoForm(OmoForms of) {
-        omoForms.put(of.hashCode(), of);
+    private OmoForms getOmoFormByForm(Form form) {
+        return omoForms.get(form.hashCode());
     }
 
     public void finish() {
@@ -78,5 +79,9 @@ public final class JMorfSdk {
         mainForms.clear();
         omoForms = null;
         mainForms = null;
+    }
+
+    public OmoForms getOmoFormsByString(String stringForm) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

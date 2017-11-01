@@ -55,7 +55,7 @@ public class Form {
     }
 
     public String getStringForm() {
-        return new String(strWordform);
+        return strWordform;
     }
 
     public int getHashCode() {

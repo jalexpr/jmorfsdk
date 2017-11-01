@@ -78,7 +78,8 @@ public class OmoForms extends ArrayList<Form> {
         } else {
             try {
                 return getForm().getHashCode();
-            } catch (Exception e) {
+            } catch (Exception ex) {
+                Logger.getLogger("jmorfsdk.Omoform").log(Level.WARNING, "", ex);
                 return 0;
             }
         }
