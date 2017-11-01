@@ -34,14 +34,11 @@
 package jmorfsdk.form;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
 public class OmoForms extends ArrayList<Form> {
-
-    public OmoForms(String strWord) {
-        this(new Form(strWord));
-    }
 
     public OmoForms(Form wf) {
         super();
@@ -54,10 +51,18 @@ public class OmoForms extends ArrayList<Form> {
 
     public String getStringOmoform() {
         try {
-            return get(0).getStringForm();
+            return getForm().getStringForm();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private Form getForm() throws Exception{
+        try {
+            return get(0);
         } catch (IndexOutOfBoundsException e) {
             Logger.getLogger("jmorfsdk.Omoform").log(Level.WARNING, "Омоформа не имеет значений");
-            return "";
+            throw new Exception();
         }
     }
 
@@ -67,7 +72,16 @@ public class OmoForms extends ArrayList<Form> {
 
     @Override
     public int hashCode() {
-        return getStringOmoform().hashCode();
+        String stringOmoform = getStringOmoform();
+        if(stringOmoform != null) {
+            return getStringOmoform().hashCode();
+        } else {
+            try {
+                return getForm().getHashCode();
+            } catch (Exception e) {
+                return 0;
+            }
+        }
     }
 
     @Override
@@ -82,6 +96,11 @@ public class OmoForms extends ArrayList<Form> {
             return false;
         }
         final OmoForms other = (OmoForms) obj;
-        return this.getStringOmoform().equals(other.getStringOmoform());
+        String stringOmoform = getStringOmoform();
+        if(stringOmoform != null) {
+            return Objects.equals(this.getStringOmoform(), other.getStringOmoform());
+        } else {
+            return Objects.equals(this.hashCode(), other.hashCode());
+        }
     }
 }

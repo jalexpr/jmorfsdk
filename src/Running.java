@@ -34,15 +34,14 @@
 import java.io.IOException;
 import java.util.logging.*;
 import jmorfsdk.JMorfSdk;
+import jmorfsdk.load.LoadJMorfSdk;
 public class Running {
 
     public static void main(String[] args) throws IOException {
         try {
-            JMorfSdk jMorfSdk = new JMorfSdk();
-            jMorfSdk.start();
-            jMorfSdk.newSeva();
+            JMorfSdk jMorfSdk = LoadJMorfSdk.loadFullLibrary();
 
-            //System.in.read();
+            System.in.read();
 
             jMorfSdk.finish();
         } catch (IllegalArgumentException ex) {

@@ -31,25 +31,15 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
-package jmorfsdk.form;
+package jmorfsdk.load;
 
-public class WordForm extends Form {
+import jmorfsdk.JMorfSdk;
 
-    private final MainForm mainForm;
-
-    public WordForm(int hashCode, long morfCharacteristics, MainForm mainForm) {
-        super(hashCode, morfCharacteristics);
-        this.mainForm = mainForm;
-        mainForm.addWordfFormList(this);
-    }
+public interface LoadFromFile {
     
-    public WordForm(String strWord, long morfCharacteristics, MainForm mainForm) {
-        super(strWord, morfCharacteristics);
-        this.mainForm = mainForm;
-        mainForm.addWordfFormList(this);
-    }
-
-    public byte getTypeOfSpeech() {
-        return mainForm.getTypeOfSpeech();
-    }
+    public final static String MYREPOSITORY = "https://github.com/jalexpr/JMorfSdk/";
+    
+    public JMorfSdk loadLibraryForSearchInitialForm() throws Exception;
+    public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() throws Exception;
+    public JMorfSdk loadFullLibrary() throws Exception;
 }

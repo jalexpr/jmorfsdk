@@ -44,12 +44,13 @@ public class MainForm extends Form {
         this(strWord, Byte.valueOf("0"), 0L);
     }
 
-    public MainForm(String strForm, String typeOfSpeech, String morfCharacteristics) {
-        this(strForm, Byte.valueOf(typeOfSpeech, 16), Long.getLong(morfCharacteristics, 0x0));
-    }
-
     public MainForm(String strForm, byte typeOfSpeech, long morfCharacteristics) {
         super(strForm.toLowerCase(), morfCharacteristics);
+        this.typeOfSpeech = typeOfSpeech;
+    }
+
+    public MainForm(int hashCode, byte typeOfSpeech, long morfCharacteristics) {
+        super(hashCode, morfCharacteristics);
         this.typeOfSpeech = typeOfSpeech;
     }
 
@@ -61,8 +62,7 @@ public class MainForm extends Form {
         return typeOfSpeech;
     }
 
-    @Deprecated
-    public ArrayList<WordForm> getWordFormList() {
-        return wordFormList;
+    public ArrayList<WordForm> getWordFormList() throws Exception {
+        throw new Exception("не реализовано!");
     }
 }

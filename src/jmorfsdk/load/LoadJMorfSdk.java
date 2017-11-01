@@ -31,25 +31,43 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
-package jmorfsdk.form;
+package jmorfsdk.load;
 
-public class WordForm extends Form {
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jmorfsdk.JMorfSdk;
 
-    private final MainForm mainForm;
+public class LoadJMorfSdk {
 
-    public WordForm(int hashCode, long morfCharacteristics, MainForm mainForm) {
-        super(hashCode, morfCharacteristics);
-        this.mainForm = mainForm;
-        mainForm.addWordfFormList(this);
-    }
-    
-    public WordForm(String strWord, long morfCharacteristics, MainForm mainForm) {
-        super(strWord, morfCharacteristics);
-        this.mainForm = mainForm;
-        mainForm.addWordfFormList(this);
+    private static LoadFromFile loadFromFile = new LoadBasedOnHashCode();
+    private static final boolean ISOUTPUTMESSAGESTOCONSOLEDEFAULT = true;
+
+    public static JMorfSdk loadFullLibrary() {
+        return loadFullLibrary(ISOUTPUTMESSAGESTOCONSOLEDEFAULT);
     }
 
-    public byte getTypeOfSpeech() {
-        return mainForm.getTypeOfSpeech();
+    public static JMorfSdk loadFullLibrary(boolean isOutputMessagesToConsole) {
+        JMorfSdk jMorfSdk;
+        try {
+            outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
+            jMorfSdk = loadFromFile.loadFullLibrary();
+            outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
+            System.gc();
+            Runtime.getRuntime().gc();
+            return jMorfSdk;
+        } catch (Exception ex) {
+            Logger.getLogger(LoadJMorfSdk.class.getName()).log(Level.WARNING, null, ex);
+            return new JMorfSdk();
+        }
+    }
+
+    private static void outputMessagesToConsole(String messages, boolean isOutputMessagesToConsole) {
+        if (isOutputMessagesToConsole) {
+            System.out.println(messages);
+        }
+    }
+
+    public static void setLoadFromFile(LoadFromFile loadFromFile) {
+        LoadJMorfSdk.loadFromFile = loadFromFile;
     }
 }
