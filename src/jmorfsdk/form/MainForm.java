@@ -65,4 +65,8 @@ public class MainForm extends Form {
     public ArrayList<WordForm> getWordFormList() throws Exception {
         throw new Exception("не реализовано!");
     }
+    
+    public void trimToSize() {
+        wordFormList.trimToSize();
+    }
 }

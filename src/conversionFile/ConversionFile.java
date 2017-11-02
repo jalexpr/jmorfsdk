@@ -17,11 +17,12 @@ import java.util.logging.Logger;
 
 public class ConversionFile {
     
-    public BufferedReader inReader;
-    public FileOutputStream outHashCodeAndMorfCharacteristics;
-    public BufferedWriter outHashCodeAndMainFormString;
-    public BufferedWriter outHashCodeAndString;
-    public HashSet<String> omoForm;
+    private static final byte[] CONTROLVALUE = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
+    private final BufferedReader inReader;
+    private final FileOutputStream outHashCodeAndMorfCharacteristics;
+    private final BufferedWriter outHashCodeAndMainFormString;
+    private final BufferedWriter outHashCodeAndString;
+    private HashSet<String> omoForm;
     
     public ConversionFile(String inPath, String hashCodeAndMorfCharacteristicsPath, String hashCodeAndMainWordStringPath, String hashCodeAndStringPath){
         inReader = openBufferedReaderStreamFromFile(inPath, "Windows-1251");
@@ -36,7 +37,7 @@ public class ConversionFile {
             //Пропускаем первую строчку в которой хранится информация
             inReader.readLine();
             int count = 0;
-            while(inReader.ready() && count < 1) {
+            while(inReader.ready() && count < 25000) {
                 saveLemma(inReader.readLine());
 //                count++;
             }
@@ -136,7 +137,7 @@ public class ConversionFile {
         }
         return hashCodeString;
     }
-    
+        
     private static byte [] getBytes(int value) {
         byte[] bytes = new byte[]{
             (byte) (value >> 24),
@@ -175,6 +176,9 @@ public class ConversionFile {
         String[] mainWordParam = strForm.split(" ");
         try {
             int hashCodeForm = mainWordParam[0].hashCode();
+            if(hashCodeForm == 0) {
+                System.err.println("");
+            }
             outHashCodeAndMorfCharacteristics.write(getBytes(hashCodeForm));
             outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(mainWordParam[1], 16).longValue()));
             
@@ -186,7 +190,7 @@ public class ConversionFile {
     
     private void saveEndLemma(){
         try {
-            outHashCodeAndMorfCharacteristics.write(-1);
+            outHashCodeAndMorfCharacteristics.write(CONTROLVALUE);
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -214,4 +218,5 @@ public class ConversionFile {
         ConversionFile converFile = new ConversionFile(inPath, hashCodeAndMorfCharacteristicsPath, hashCodeAndMainFormStringPath, hashCodeAndStringPath);
         converFile.conversionFile();
     }
+    
 }

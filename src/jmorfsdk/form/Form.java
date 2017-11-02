@@ -38,8 +38,8 @@ import java.util.Objects;
 public class Form {
 
     private static long amountForm = 0;
-    private String strWordform;
-    private int hashCode;
+    private String strWordform = null;
+    private int myHashCode;
     private final long morfCharacteristics;
 
     public Form(String strWordform, long morfCharacteristics) {
@@ -50,7 +50,7 @@ public class Form {
 
     public Form(int hashCode, long morfCharacteristics) {
         Form.amountForm++;
-        this.hashCode = hashCode;
+        this.myHashCode = hashCode;
         this.morfCharacteristics = morfCharacteristics;
     }
 
@@ -59,7 +59,7 @@ public class Form {
     }
 
     public int getHashCode() {
-        return hashCode;
+        return myHashCode;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Form {
         if(strWordform != null) {
             return strWordform.hashCode();
         } else {
-            return hashCode;
+            return myHashCode;
         }
     }
 
@@ -86,7 +86,7 @@ public class Form {
         if(strWordform != null) {
             return Objects.equals(this.strWordform, other.strWordform);
         } else {
-            return Objects.equals(this.hashCode, other.hashCode);
+            return Objects.equals(this.myHashCode, other.myHashCode);
         }
     }
 

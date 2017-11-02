@@ -51,14 +51,10 @@ public final class JMorfSdk {
 
 
     public void addWordForm(WordForm wordForm) {
-        addFormInOmoForm(wordForm);
-    }
-
-    private void addFormInOmoForm(Form form) {
-        if (isOmoFormExistForForm(form)) {
-            getOmoFormByForm(form).addForm(form);
+        if (isOmoFormExistForForm(wordForm)) {
+            getOmoFormByForm(wordForm).addForm(wordForm);
         } else {
-            addOmoForm(new OmoForms(form));
+            addOmoForm(new OmoForms(wordForm));
         }
     }
 
@@ -83,5 +79,15 @@ public final class JMorfSdk {
 
     public OmoForms getOmoFormsByString(String stringForm) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public void trimToSize() {
+        mainForms.forEach((key, value) -> {
+            value.trimToSize();
+        });
+        
+        omoForms.forEach((key, value) -> {
+            value.trimToSize();
+        });
     }
 }

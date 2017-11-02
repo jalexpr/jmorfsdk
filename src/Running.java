@@ -40,7 +40,7 @@ public class Running {
     public static void main(String[] args) throws IOException {
         try {
             JMorfSdk jMorfSdk = LoadJMorfSdk.loadFullLibrary();
-
+            
             System.in.read();
 
             jMorfSdk.finish();

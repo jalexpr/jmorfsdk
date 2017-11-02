@@ -59,6 +59,7 @@ public class LoadBasedOnHashCode implements LoadFromFile {
     private static String pathHashAndMainFormString = "dictionary.format.hash+mainFormString.txt";
     private static String pathHashAndWordFormString = "dictionary.format.hash+wordFormString.txt";
     private static String encoding = "Windows-1251";
+    private static final Integer CONTROLVALUE = 0;//new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
 
     @Override
     public JMorfSdk loadLibraryForSearchInitialForm() throws Exception {
@@ -108,19 +109,21 @@ public class LoadBasedOnHashCode implements LoadFromFile {
 
             while (pointer < bytesFile.length) {
 
-                int hashCode = getHashCodeFromBytes(bytesFile);
+                int nextHashCode = getHashCodeFromBytes(bytesFile);
                 byte typeOfSpeech = getTypeOfSpeechFromBytes(bytesFile);
                 long morfCharacteristics = getMorfCharacteristicsFromBytes(bytesFile);
 
-                MainForm mainForm = new MainForm(hashCode, typeOfSpeech, morfCharacteristics);
+                MainForm mainForm = new MainForm(nextHashCode, typeOfSpeech, morfCharacteristics);
                 jMorfSdk.addMainForm(mainForm);
-
-                while (bytesFile[pointer] != Byte.parseByte("-1")) {
-                    hashCode = getHashCodeFromBytes(bytesFile);
+                
+                nextHashCode = getHashCodeFromBytes(bytesFile);
+                while (nextHashCode != CONTROLVALUE) {
                     morfCharacteristics = getMorfCharacteristicsFromBytes(bytesFile);
-                    jMorfSdk.addWordForm(createWordForm(hashCode, morfCharacteristics, mainForm));
+                    jMorfSdk.addWordForm(createWordForm(nextHashCode, morfCharacteristics, mainForm));
+                    nextHashCode = getHashCodeFromBytes(bytesFile);
                 }
-                pointer++;
+                
+                pointer += 4;
             }
 
         } catch (IOException ex) {
@@ -130,13 +133,18 @@ public class LoadBasedOnHashCode implements LoadFromFile {
         }
     }
 
-
     private int getHashCodeFromBytes(byte[] bytesFile) {
+        return (int) getValueCodeFromBytes(bytesFile, 4);
+    }
+    
+    private long getValueCodeFromBytes(byte[] bytesFile, int countByte) {
         int hashCode = 0;
-        for (int i = 0; i < 4; i++) {
-            hashCode += bytesFile[pointer] << 8 * i;
-            pointer++;
+        for (int i = 0; i < countByte; i++) {
+            int f = 0xFF & bytesFile[pointer + countByte - i - 1];
+            int g1 = f << (8 * i);
+            hashCode |= g1;
         }
+        pointer += countByte;
         return hashCode;
     }
 
@@ -147,12 +155,7 @@ public class LoadBasedOnHashCode implements LoadFromFile {
     }
 
     private long getMorfCharacteristicsFromBytes(byte[] bytesFile) {
-        long morfCharacteristics = 0;
-        for (int i = 0; i < 8; i++) {
-            morfCharacteristics += bytesFile[pointer] << 8 * i;
-            pointer++;
-        }
-        return morfCharacteristics;
+        return getValueCodeFromBytes(bytesFile, 8);
     }
 
     private WordForm createWordForm(int hashCode, long morfCharacteristics, MainForm mainForm) {

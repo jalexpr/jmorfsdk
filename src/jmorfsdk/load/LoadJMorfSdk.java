@@ -52,8 +52,8 @@ public class LoadJMorfSdk {
             outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
             jMorfSdk = loadFromFile.loadFullLibrary();
             outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
-            System.gc();
-            Runtime.getRuntime().gc();
+//            System.gc();
+//            Runtime.getRuntime().gc();
             return jMorfSdk;
         } catch (Exception ex) {
             Logger.getLogger(LoadJMorfSdk.class.getName()).log(Level.WARNING, null, ex);

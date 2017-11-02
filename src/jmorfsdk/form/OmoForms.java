@@ -38,15 +38,11 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-public class OmoForms extends ArrayList<Form> {
-
-    public OmoForms(Form wf) {
+public class OmoForms extends ArrayList<WordForm> {
+    
+    public OmoForms(WordForm wf) {
         super();
         add(wf);
-    }
-
-    public OmoForms(OmoForms source) {
-        super(source);
     }
 
     public String getStringOmoform() {
@@ -57,7 +53,7 @@ public class OmoForms extends ArrayList<Form> {
         }
     }
 
-    private Form getForm() throws Exception{
+    private WordForm getForm() throws Exception{
         try {
             return get(0);
         } catch (IndexOutOfBoundsException e) {
@@ -66,22 +62,17 @@ public class OmoForms extends ArrayList<Form> {
         }
     }
 
-    public boolean addForm(Form wordform) {
+    public boolean addForm(WordForm wordform) {
         return add(wordform);
     }
 
     @Override
     public int hashCode() {
-        String stringOmoform = getStringOmoform();
-        if(stringOmoform != null) {
-            return getStringOmoform().hashCode();
-        } else {
-            try {
-                return getForm().getHashCode();
-            } catch (Exception ex) {
-                Logger.getLogger("jmorfsdk.Omoform").log(Level.WARNING, "", ex);
-                return 0;
-            }
+        try {
+            return getForm().getHashCode();
+        } catch (Exception ex) {
+            Logger.getLogger("jmorfsdk.Omoform").log(Level.WARNING, "", ex);
+            return 0;
         }
     }
 
