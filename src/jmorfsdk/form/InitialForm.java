@@ -35,23 +35,20 @@ package jmorfsdk.form;
 
 import java.util.ArrayList;
 
-public class MainForm extends Form {
+public class InitialForm extends Form {
 
     private final ArrayList<WordForm> wordFormList = new ArrayList<>();
     private final byte typeOfSpeech;
+    private String strInitialForm;
 
-    public MainForm(String strWord){
+    public InitialForm(String strWord){
         this(strWord, Byte.valueOf("0"), 0L);
     }
 
-    public MainForm(String strForm, byte typeOfSpeech, long morfCharacteristics) {
-        super(strForm.toLowerCase(), morfCharacteristics);
+    public InitialForm(String strWordform, byte typeOfSpeech, long morfCharacteristics) {
+        super(morfCharacteristics);
         this.typeOfSpeech = typeOfSpeech;
-    }
-
-    public MainForm(int hashCode, byte typeOfSpeech, long morfCharacteristics) {
-        super(hashCode, morfCharacteristics);
-        this.typeOfSpeech = typeOfSpeech;
+        this.strInitialForm = strWordform;
     }
 
     public void addWordfFormList(WordForm wordform) {
@@ -61,6 +58,10 @@ public class MainForm extends Form {
     public byte getTypeOfSpeech() {
         return typeOfSpeech;
     }
+    
+    public long morfCharacteristics() {
+        return morfCharacteristics;
+    }
 
     public ArrayList<WordForm> getWordFormList() throws Exception {
         throw new Exception("не реализовано!");
@@ -68,5 +69,25 @@ public class MainForm extends Form {
     
     public void trimToSize() {
         wordFormList.trimToSize();
+    }
+    
+    @Override
+    public int hashCode() {
+        return strInitialForm.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final InitialForm other = (InitialForm) obj;
+        return this.hashCode() == other.hashCode();
     }
 }

@@ -33,68 +33,13 @@
  */
 package jmorfsdk.form;
 
-import java.util.Objects;
-
 public class Form {
 
-    private static long amountForm = 0;
-    private String strWordform = null;
-    private int myHashCode;
-    private final long morfCharacteristics;
+    protected final long morfCharacteristics;
+    public static int formCount = 0;
 
-    public Form(String strWordform, long morfCharacteristics) {
-        Form.amountForm++;
-        this.strWordform = strWordform;
+    public Form(long morfCharacteristics) {
         this.morfCharacteristics = morfCharacteristics;
-    }
-
-    public Form(int hashCode, long morfCharacteristics) {
-        Form.amountForm++;
-        this.myHashCode = hashCode;
-        this.morfCharacteristics = morfCharacteristics;
-    }
-
-    public String getStringForm() {
-        return strWordform;
-    }
-
-    public int getHashCode() {
-        return myHashCode;
-    }
-
-    @Override
-    public int hashCode() {
-        if(strWordform != null) {
-            return strWordform.hashCode();
-        } else {
-            return myHashCode;
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Form other = (Form) obj;
-        if(strWordform != null) {
-            return Objects.equals(this.strWordform, other.strWordform);
-        } else {
-            return Objects.equals(this.myHashCode, other.myHashCode);
-        }
-    }
-
-    public long getMorfCharacteristic(long morfIdentifier) {
-        return morfCharacteristics & morfIdentifier;
-    }
-
-    public long getMorfCharacteristic() {
-        return morfCharacteristics;
+        formCount++;
     }
 }

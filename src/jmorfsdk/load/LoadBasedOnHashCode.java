@@ -37,13 +37,16 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import jmorfsdk.JMorfSdk;
-import jmorfsdk.form.MainForm;
+import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -53,10 +56,8 @@ import org.xml.sax.SAXException;
 public class LoadBasedOnHashCode implements LoadFromFile {
 
     private int pointer = 0;
-    public BufferedReader inHashCodeAndString;
-    public BufferedReader inHashCodeAndMainFormString;
     private static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic.txt";
-    private static String pathHashAndMainFormString = "dictionary.format.hash+mainFormString.txt";
+    private static String pathHashAndInitialFormString = "dictionary.format.hash+initialFormString.txt";
     private static String pathHashAndWordFormString = "dictionary.format.hash+wordFormString.txt";
     private static String encoding = "Windows-1251";
     private static final Integer CONTROLVALUE = 0;//new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
@@ -64,7 +65,7 @@ public class LoadBasedOnHashCode implements LoadFromFile {
     @Override
     public JMorfSdk loadLibraryForSearchInitialForm() throws Exception {
         JMorfSdk jMorfSdk = new JMorfSdk();
-        loadFromFileHashCodeAndMorfCharacteristic(jMorfSdk);
+        loadLibraryToFindInitialFormAndMorfCharacteristec(jMorfSdk);
         return jMorfSdk;
     }
 
@@ -78,15 +79,78 @@ public class LoadBasedOnHashCode implements LoadFromFile {
         return loadLibraryForSearchInitialForm();
     }
 
-    public void loadFromFileHashCodeAndMorfCharacteristic(JMorfSdk jMorfSdk) {
+    public void loadLibraryToFindInitialFormAndMorfCharacteristec(JMorfSdk jMorfSdk) {
         try {
-            FileInputStream inHashCodeAndMorfCharacteristics = openFileInputStreamFromFile(pathHashAndMorfCharacteristics);
-            loadFromFileHashString(inHashCodeAndMorfCharacteristics, jMorfSdk);
-            closeStream(inHashCodeAndMorfCharacteristics);
-            inHashCodeAndMorfCharacteristics = null;
+            FileInputStream inputStreamHashCodeAndMorfCharacteristics = openFileInputStreamFromFile(pathHashAndMorfCharacteristics);
+            BufferedReader readerInitialFormHashAndString = openBufferedReaderFromFile(pathHashAndInitialFormString, encoding);
+            loadFromFileHashString(jMorfSdk, inputStreamHashCodeAndMorfCharacteristics, readerInitialFormHashAndString);
+            closeStream(inputStreamHashCodeAndMorfCharacteristics);
         } catch (Exception ex) {
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, "", ex);
+            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, "Не удалось загрузить бибилиотек!\n", ex);
         }
+    }
+
+    private BufferedReader openBufferedReaderFromFile(String pathLibrary, String encoding) throws Exception {
+        try {
+            return new BufferedReader(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
+        } catch (FileNotFoundException ex) {
+            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", pathLibrary, MYREPOSITORY);
+            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, messages);
+            throw new Exception();
+        }
+    }
+
+    private void loadFromFileHashString(JMorfSdk jMorfSdk, FileInputStream inputStreamHashCodeAndMorfCharacteristics, BufferedReader readerInitialFormHashAndString) {
+
+        HashMap<Integer, String> initialFormString = loadFormHashAndString(readerInitialFormHashAndString);
+        
+        byte[] bytesFile;
+        try {
+            bytesFile = new byte[inputStreamHashCodeAndMorfCharacteristics.available()];
+
+            inputStreamHashCodeAndMorfCharacteristics.read(bytesFile);
+
+            while (pointer < bytesFile.length) {
+
+                int nextHashCode = getHashCodeFromBytes(bytesFile);
+                String strWordform = initialFormString.get(nextHashCode);
+                byte typeOfSpeech = getTypeOfSpeechFromBytes(bytesFile);
+                long morfCharacteristics = getMorfCharacteristicsFromBytes(bytesFile);
+
+                InitialForm initialForm = new InitialForm(strWordform, typeOfSpeech, morfCharacteristics);
+                jMorfSdk.addInitialForm(initialForm);
+                
+                nextHashCode = getHashCodeFromBytes(bytesFile);
+                while (nextHashCode != CONTROLVALUE) {
+                    morfCharacteristics = getMorfCharacteristicsFromBytes(bytesFile);
+                    jMorfSdk.addWordForm(nextHashCode, createWordForm(morfCharacteristics, initialForm));
+                    nextHashCode = getHashCodeFromBytes(bytesFile);
+                }
+                
+                pointer += 4;
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            bytesFile = null;
+            initialFormString.clear();
+            initialFormString = null;
+        }
+    }
+    
+    private HashMap<Integer, String> loadFormHashAndString(BufferedReader readerFormHashAndString) {
+        HashMap<Integer, String> initialForm = new HashMap<>();
+        try {
+            while(readerFormHashAndString.ready()) {
+                String formString = readerFormHashAndString.readLine();
+                initialForm.put(formString.hashCode(), formString);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        
+        return initialForm;
     }
 
     private FileInputStream openFileInputStreamFromFile(String pathLibrary) throws Exception {
@@ -98,41 +162,7 @@ public class LoadBasedOnHashCode implements LoadFromFile {
             throw new Exception();
         }
     }
-
-    private void loadFromFileHashString(FileInputStream inHashCodeAndMorfCharacteristics, JMorfSdk jMorfSdk) {
-
-        byte[] bytesFile;
-        try {
-            bytesFile = new byte[inHashCodeAndMorfCharacteristics.available()];
-
-            inHashCodeAndMorfCharacteristics.read(bytesFile);
-
-            while (pointer < bytesFile.length) {
-
-                int nextHashCode = getHashCodeFromBytes(bytesFile);
-                byte typeOfSpeech = getTypeOfSpeechFromBytes(bytesFile);
-                long morfCharacteristics = getMorfCharacteristicsFromBytes(bytesFile);
-
-                MainForm mainForm = new MainForm(nextHashCode, typeOfSpeech, morfCharacteristics);
-                jMorfSdk.addMainForm(mainForm);
-                
-                nextHashCode = getHashCodeFromBytes(bytesFile);
-                while (nextHashCode != CONTROLVALUE) {
-                    morfCharacteristics = getMorfCharacteristicsFromBytes(bytesFile);
-                    jMorfSdk.addWordForm(createWordForm(nextHashCode, morfCharacteristics, mainForm));
-                    nextHashCode = getHashCodeFromBytes(bytesFile);
-                }
-                
-                pointer += 4;
-            }
-
-        } catch (IOException ex) {
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            bytesFile = null;
-        }
-    }
-
+    
     private int getHashCodeFromBytes(byte[] bytesFile) {
         return (int) getValueCodeFromBytes(bytesFile, 4);
     }
@@ -158,8 +188,8 @@ public class LoadBasedOnHashCode implements LoadFromFile {
         return getValueCodeFromBytes(bytesFile, 8);
     }
 
-    private WordForm createWordForm(int hashCode, long morfCharacteristics, MainForm mainForm) {
-        return new WordForm(hashCode, morfCharacteristics, mainForm);
+    private WordForm createWordForm(long morfCharacteristics, InitialForm initialForm) {
+        return new WordForm(morfCharacteristics, initialForm);
     }
 
     private void closeStream(FileInputStream inHashCodeAndMorfCharacteristics) {

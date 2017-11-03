@@ -46,7 +46,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import jmorfsdk.JMorfSdk;
-import jmorfsdk.form.MainForm;
+import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -118,35 +118,35 @@ public class LoadFormTxt implements LoadFromFile {
     }
 
     private void addLemma(String strLemma) {
-        MainForm mainForm = createMainForm(strLemma);
-        jMorfSdk.addMainForm(mainForm);
-        addWordForms(strLemma, mainForm);
+        InitialForm initialForm = createInitialForm(strLemma);
+        jMorfSdk.addInitialForm(initialForm);
+        addWordForms(strLemma, initialForm);
     }
 
-    private MainForm createMainForm(String strForms) {
-        String mainWordForm;
+    private InitialForm createInitialForm(String strForms) {
+        String initialWordForm;
         if (strForms.contains("\"")) {
-            mainWordForm = strForms.substring(0, strForms.indexOf("\""));
+            initialWordForm = strForms.substring(0, strForms.indexOf("\""));
         } else {
-            mainWordForm = strForms;
+            initialWordForm = strForms;
         }
-        String[] mainWordParameters = mainWordForm.split(" ");
-        return new MainForm(mainWordParameters[0], Byte.decode("0x" + mainWordParameters[1]),
-                new BigInteger(mainWordParameters[2], 16).longValue());
+        String[] initialWordParameters = initialWordForm.split(" ");
+        return new InitialForm (initialWordParameters[0], Byte.decode("0x" + initialWordParameters[1]),
+                new BigInteger (initialWordParameters[2], 16).longValue());
     }
 
-    private void addWordForms(String strLemma, MainForm mainForm) {
+    private void addWordForms(String strLemma, InitialForm initialForm) {
 
         String[] arrayWordForms = strLemma.split("\"");
 
         for (int i = 1; i < arrayWordForms.length; i++) {
-            jMorfSdk.addWordForm(createWordForm(arrayWordForms[i], mainForm));
+            String[] initialWordParam = arrayWordForms[i].split(" ");
+            jMorfSdk.addWordForm(initialWordParam[0], createWordForm(arrayWordForms[1], initialForm));
         }
     }
 
-    private WordForm createWordForm(String strForm, MainForm mainForm) {
-        String[] mainWordParam = strForm.split(" ");
-        return new WordForm(mainWordParam[0], new BigInteger(mainWordParam[1], 16).longValue(), mainForm);
+    private WordForm createWordForm(String strMorfCharacteristics, InitialForm initialForm) {
+        return new WordForm(new BigInteger(strMorfCharacteristics, 16).longValue(), initialForm);
     }
 
     private void closeBufferedReader() {

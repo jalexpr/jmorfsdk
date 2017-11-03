@@ -35,21 +35,43 @@ package jmorfsdk.form;
 
 public class WordForm extends Form {
 
-    private final MainForm mainForm;
+    private final InitialForm initialForm;
 
-    public WordForm(int hashCode, long morfCharacteristics, MainForm mainForm) {
-        super(hashCode, morfCharacteristics);
-        this.mainForm = mainForm;
-        mainForm.addWordfFormList(this);
-    }
-    
-    public WordForm(String strWord, long morfCharacteristics, MainForm mainForm) {
-        super(strWord, morfCharacteristics);
-        this.mainForm = mainForm;
-        mainForm.addWordfFormList(this);
+    public WordForm(long morfCharacteristics, InitialForm initialForm) {
+        super(morfCharacteristics);
+        this.initialForm = initialForm;
+        initialForm.addWordfFormList(this);
     }
 
     public byte getTypeOfSpeech() {
-        return mainForm.getTypeOfSpeech();
+        return getInitialForm().getTypeOfSpeech();
+    }
+
+    public InitialForm getInitialForm() {
+        return initialForm;
+    }
+
+    public long getMorfCharacteristics() {
+        return morfCharacteristics;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) morfCharacteristics & initialForm.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OmoForms other = (OmoForms) obj;
+        return this.hashCode() == other.hashCode();
     }
 }

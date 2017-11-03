@@ -20,14 +20,14 @@ public class ConversionFile {
     private static final byte[] CONTROLVALUE = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
     private final BufferedReader inReader;
     private final FileOutputStream outHashCodeAndMorfCharacteristics;
-    private final BufferedWriter outHashCodeAndMainFormString;
+    private final BufferedWriter outHashCodeAndInitialFormString;
     private final BufferedWriter outHashCodeAndString;
     private HashSet<String> omoForm;
     
-    public ConversionFile(String inPath, String hashCodeAndMorfCharacteristicsPath, String hashCodeAndMainWordStringPath, String hashCodeAndStringPath){
+    public ConversionFile(String inPath, String hashCodeAndMorfCharacteristicsPath, String hashCodeAndInitialFormStringPath, String hashCodeAndStringPath){
         inReader = openBufferedReaderStreamFromFile(inPath, "Windows-1251");
         outHashCodeAndMorfCharacteristics = openFileInputStreamFromFile(hashCodeAndMorfCharacteristicsPath);
-        outHashCodeAndMainFormString = openBufferedWriterStreamFromFile(hashCodeAndMainWordStringPath, "windows-1251");
+        outHashCodeAndInitialFormString = openBufferedWriterStreamFromFile(hashCodeAndInitialFormStringPath, "windows-1251");
         outHashCodeAndString = openBufferedWriterStreamFromFile(hashCodeAndStringPath, "windows-1251");
     }
     
@@ -48,7 +48,7 @@ public class ConversionFile {
         try {
             inReader.close();
             outHashCodeAndMorfCharacteristics.flush();
-            outHashCodeAndMainFormString.flush();
+            outHashCodeAndInitialFormString.flush();
             outHashCodeAndString.flush();
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,29 +102,28 @@ public class ConversionFile {
     }
     
     private void saveLemma(String strForms) {
-        saveMainForm(strForms);
+        saveInitialForm(strForms);
         saveWordForms(strForms);
         saveEndLemma();
     }
     
-    private void saveMainForm(String strForms) {
-        String mainWordForm;
+    private void saveInitialForm(String strForms) {
+        String strInitialForm;
         if (strForms.contains("\"")) {
-            mainWordForm = strForms.substring(0, strForms.indexOf("\""));
+            strInitialForm = strForms.substring(0, strForms.indexOf("\""));
         } else {
-            mainWordForm = strForms;
+            strInitialForm = strForms;
         }
-        String[] mainWordParameters = mainWordForm.split(" ");
+        String[] initialFormParameters = strInitialForm.split(" ");
         
         try {
-            int hashCodeForm = mainWordParameters[0].hashCode();
+            int hashCodeForm = initialFormParameters[0].hashCode();
             outHashCodeAndMorfCharacteristics.write(getBytes(hashCodeForm));
-            outHashCodeAndMorfCharacteristics.write(Byte.decode("0x" + mainWordParameters[1]));
-            outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(mainWordParameters[2], 16).longValue()));
+            outHashCodeAndMorfCharacteristics.write(Byte.decode("0x" + initialFormParameters[1]));
+            outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(initialFormParameters[2], 16).longValue()));
             
-            outHashCodeAndMainFormString.write(hashCodeToStringHer(hashCodeForm));
-            outHashCodeAndMainFormString.write(mainWordParameters[0]);            
-            outHashCodeAndMainFormString.newLine();
+            outHashCodeAndInitialFormString.write(initialFormParameters[0]);            
+            outHashCodeAndInitialFormString.newLine();
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -173,16 +172,13 @@ public class ConversionFile {
     
     private void saveWordForm(String strForm) {
         
-        String[] mainWordParam = strForm.split(" ");
+        String[] wordlFormParameters = strForm.split(" ");
         try {
-            int hashCodeForm = mainWordParam[0].hashCode();
-            if(hashCodeForm == 0) {
-                System.err.println("");
-            }
+            int hashCodeForm = wordlFormParameters[0].hashCode();
             outHashCodeAndMorfCharacteristics.write(getBytes(hashCodeForm));
-            outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(mainWordParam[1], 16).longValue()));
+            outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(wordlFormParameters[1], 16).longValue()));
             
-            omoForm.add(mainWordParam[0]);
+            omoForm.add(wordlFormParameters[0]);
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -200,7 +196,6 @@ public class ConversionFile {
         for(Object obj : omoForm.toArray()) {
             String str = (String) obj;
             try {
-                outHashCodeAndString.write(hashCodeToStringHer(str.hashCode()));
                 outHashCodeAndString.write(str); 
                 outHashCodeAndString.newLine();
             } catch (IOException ex) {
@@ -212,10 +207,10 @@ public class ConversionFile {
     public static void main(String[] args) {
         String inPath = "dictionary.format.number.txt";
         String hashCodeAndMorfCharacteristicsPath = "dictionary.format.hash+morfCharacteristic.txt";
-        String hashCodeAndMainFormStringPath = "dictionary.format.hash+mainFormString.txt";
+        String hashCodeAndInitialFormStringPath = "dictionary.format.hash+initialFormString.txt";
         String hashCodeAndStringPath = "dictionary.format.hash+wordFormString.txt";
         
-        ConversionFile converFile = new ConversionFile(inPath, hashCodeAndMorfCharacteristicsPath, hashCodeAndMainFormStringPath, hashCodeAndStringPath);
+        ConversionFile converFile = new ConversionFile(inPath, hashCodeAndMorfCharacteristicsPath, hashCodeAndInitialFormStringPath, hashCodeAndStringPath);
         converFile.conversionFile();
     }
     

@@ -41,7 +41,7 @@ public class Running {
         try {
             JMorfSdk jMorfSdk = LoadJMorfSdk.loadFullLibrary();
             
-            System.in.read();
+//            System.in.read();
 
             jMorfSdk.finish();
         } catch (IllegalArgumentException ex) {

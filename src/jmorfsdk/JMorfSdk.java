@@ -33,28 +33,35 @@
  */
 package jmorfsdk;
 
-import jmorfsdk.form.MainForm;
+import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.OmoForms;
 import jmorfsdk.form.WordForm;
-import jmorfsdk.form.Form;
 import java.util.HashMap;
 
 public final class JMorfSdk {
 
-    //!NB MainForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
+    //!NB InitialForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
     private HashMap<Integer, OmoForms> omoForms = new HashMap();
-    private HashMap<Integer, MainForm> mainForms = new HashMap();
+    private HashMap<Integer, InitialForm> initialForms = new HashMap();
 
-    public void addMainForm(MainForm mf) {
-        mainForms.put(mf.hashCode(), mf);
+    public void addInitialForm(InitialForm mf) {
+        initialForms.put(mf.hashCode(), mf);
     }
 
-
-    public void addWordForm(WordForm wordForm) {
-        if (isOmoFormExistForForm(wordForm)) {
-            getOmoFormByForm(wordForm).addForm(wordForm);
+    public void addWordForm(String strWordForm, WordForm wordForm) {
+        int hashCode = strWordForm.hashCode();
+        if (isOmoFormExistForForm(hashCode)) {
+            getOmoFormByForm(hashCode).addForm(wordForm);
         } else {
-            addOmoForm(new OmoForms(wordForm));
+            addOmoForm(new OmoForms(wordForm, hashCode));
+        }
+    }
+    
+    public void addWordForm(int hashCode, WordForm wordForm) {
+        if (isOmoFormExistForForm(hashCode)) {
+            getOmoFormByForm(hashCode).addForm(wordForm);
+        } else {
+            addOmoForm(new OmoForms(wordForm, hashCode));
         }
     }
 
@@ -62,19 +69,19 @@ public final class JMorfSdk {
         omoForms.put(of.hashCode(), of);
     }
 
-    public boolean isOmoFormExistForForm(Form form) {
-        return omoForms.containsKey(form.hashCode());
+    public boolean isOmoFormExistForForm(int hashCode) {
+        return omoForms.containsKey(hashCode);
     }
 
-    private OmoForms getOmoFormByForm(Form form) {
-        return omoForms.get(form.hashCode());
+    private OmoForms getOmoFormByForm(int hashCode) {
+        return omoForms.get(hashCode);
     }
 
     public void finish() {
         omoForms.clear();
-        mainForms.clear();
+        initialForms.clear();
         omoForms = null;
-        mainForms = null;
+        initialForms = null;
     }
 
     public OmoForms getOmoFormsByString(String stringForm) {
@@ -82,7 +89,7 @@ public final class JMorfSdk {
     }
     
     public void trimToSize() {
-        mainForms.forEach((key, value) -> {
+        initialForms.forEach((key, value) -> {
             value.trimToSize();
         });
         

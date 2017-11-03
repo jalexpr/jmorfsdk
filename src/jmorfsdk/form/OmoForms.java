@@ -34,32 +34,25 @@
 package jmorfsdk.form;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class OmoForms extends ArrayList<WordForm> {
     
-    public OmoForms(WordForm wf) {
+    private final int myHashCode;
+    private String strWordform;
+    
+    public OmoForms(WordForm wf, String strWordform) {
+        this(wf, strWordform.hashCode());
+        this.strWordform = strWordform;
+    }
+    
+    public OmoForms(WordForm wf, int myHashCode) {
         super();
+        this.myHashCode = myHashCode;
         add(wf);
     }
 
     public String getStringOmoform() {
-        try {
-            return getForm().getStringForm();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private WordForm getForm() throws Exception{
-        try {
-            return get(0);
-        } catch (IndexOutOfBoundsException e) {
-            Logger.getLogger("jmorfsdk.Omoform").log(Level.WARNING, "Омоформа не имеет значений");
-            throw new Exception();
-        }
+        return strWordform;
     }
 
     public boolean addForm(WordForm wordform) {
@@ -68,12 +61,7 @@ public class OmoForms extends ArrayList<WordForm> {
 
     @Override
     public int hashCode() {
-        try {
-            return getForm().getHashCode();
-        } catch (Exception ex) {
-            Logger.getLogger("jmorfsdk.Omoform").log(Level.WARNING, "", ex);
-            return 0;
-        }
+        return myHashCode;
     }
 
     @Override
@@ -88,11 +76,6 @@ public class OmoForms extends ArrayList<WordForm> {
             return false;
         }
         final OmoForms other = (OmoForms) obj;
-        String stringOmoform = getStringOmoform();
-        if(stringOmoform != null) {
-            return Objects.equals(this.getStringOmoform(), other.getStringOmoform());
-        } else {
-            return Objects.equals(this.hashCode(), other.hashCode());
-        }
+        return this.myHashCode == other.myHashCode;
     }
 }
