@@ -16,22 +16,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConversionFile {
-    
-    private static final byte[] CONTROLVALUE = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
+
+    private static final byte[] CONTROLVALUE = new byte[]{-1, -1, -1, -1, -1, -1, -1, -1};
     private final BufferedReader inReader;
     private final FileOutputStream outHashCodeAndMorfCharacteristics;
     private final BufferedWriter outHashCodeAndInitialFormString;
     private final BufferedWriter outHashCodeAndString;
     private HashSet<String> omoForm;
-    
+
     public ConversionFile(String inPath, String hashCodeAndMorfCharacteristicsPath, String hashCodeAndInitialFormStringPath, String hashCodeAndStringPath){
         inReader = openBufferedReaderStreamFromFile(inPath, "Windows-1251");
         outHashCodeAndMorfCharacteristics = openFileInputStreamFromFile(hashCodeAndMorfCharacteristicsPath);
         outHashCodeAndInitialFormString = openBufferedWriterStreamFromFile(hashCodeAndInitialFormStringPath, "windows-1251");
         outHashCodeAndString = openBufferedWriterStreamFromFile(hashCodeAndStringPath, "windows-1251");
     }
-    
-    public void conversionFile(){     
+
+    public void conversionFile(){
         omoForm = new HashSet<>();
         try {
             //Пропускаем первую строчку в которой хранится информация
@@ -54,7 +54,7 @@ public class ConversionFile {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private static BufferedReader openBufferedReaderStreamFromFile(String pathFile, String encoding ) {
 
         BufferedReader bufferedReader = null;
@@ -71,9 +71,9 @@ public class ConversionFile {
 
         return bufferedReader;
     }
-    
+
     private static FileOutputStream openFileInputStreamFromFile(String pathFile ) {
-        
+
         FileOutputStream fileInputStream = null;
         try {
             fileInputStream = new FileOutputStream(pathFile);
@@ -100,13 +100,13 @@ public class ConversionFile {
 
         return bufferedWriter;
     }
-    
+
     private void saveLemma(String strForms) {
         saveInitialForm(strForms);
         saveWordForms(strForms);
         saveEndLemma();
     }
-    
+
     private void saveInitialForm(String strForms) {
         String strInitialForm;
         if (strForms.contains("\"")) {
@@ -115,20 +115,20 @@ public class ConversionFile {
             strInitialForm = strForms;
         }
         String[] initialFormParameters = strInitialForm.split(" ");
-        
+
         try {
             int hashCodeForm = initialFormParameters[0].hashCode();
             outHashCodeAndMorfCharacteristics.write(getBytes(hashCodeForm));
             outHashCodeAndMorfCharacteristics.write(Byte.decode("0x" + initialFormParameters[1]));
             outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(initialFormParameters[2], 16).longValue()));
-            
-            outHashCodeAndInitialFormString.write(initialFormParameters[0]);            
+
+            outHashCodeAndInitialFormString.write(initialFormParameters[0]);
             outHashCodeAndInitialFormString.newLine();
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private static String hashCodeToStringHer(int hashCode) {
         String hashCodeString = Integer.toHexString(hashCode);
         while(hashCodeString.length() < 8) {
@@ -136,7 +136,7 @@ public class ConversionFile {
         }
         return hashCodeString;
     }
-        
+
     private static byte [] getBytes(int value) {
         byte[] bytes = new byte[]{
             (byte) (value >> 24),
@@ -146,7 +146,7 @@ public class ConversionFile {
         };
         return bytes;
     }
-    
+
     private static byte[] getBytes(long value) {
         byte[] bytes = new byte[]{
             (byte) (value >> 56),
@@ -160,7 +160,7 @@ public class ConversionFile {
         };
         return bytes;
     }
-    
+
     private void saveWordForms(String strLemma) {
 
         String[] arrayWordForms = strLemma.split("\"");
@@ -169,21 +169,21 @@ public class ConversionFile {
             saveWordForm(arrayWordForms[i]);
         }
     }
-    
+
     private void saveWordForm(String strForm) {
-        
+
         String[] wordlFormParameters = strForm.split(" ");
         try {
             int hashCodeForm = wordlFormParameters[0].hashCode();
             outHashCodeAndMorfCharacteristics.write(getBytes(hashCodeForm));
             outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(wordlFormParameters[1], 16).longValue()));
-            
+
             omoForm.add(wordlFormParameters[0]);
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void saveEndLemma(){
         try {
             outHashCodeAndMorfCharacteristics.write(CONTROLVALUE);
@@ -191,27 +191,27 @@ public class ConversionFile {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void saveHashCodeAndString(){
         for(Object obj : omoForm.toArray()) {
             String str = (String) obj;
             try {
-                outHashCodeAndString.write(str); 
+                outHashCodeAndString.write(str);
                 outHashCodeAndString.newLine();
             } catch (IOException ex) {
                 Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-    
+
     public static void main(String[] args) {
         String inPath = "dictionary.format.number.txt";
         String hashCodeAndMorfCharacteristicsPath = "dictionary.format.hash+morfCharacteristic.txt";
         String hashCodeAndInitialFormStringPath = "dictionary.format.hash+initialFormString.txt";
         String hashCodeAndStringPath = "dictionary.format.hash+wordFormString.txt";
-        
+
         ConversionFile converFile = new ConversionFile(inPath, hashCodeAndMorfCharacteristicsPath, hashCodeAndInitialFormStringPath, hashCodeAndStringPath);
         converFile.conversionFile();
     }
-    
+
 }

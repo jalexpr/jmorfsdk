@@ -58,7 +58,7 @@ public class InitialForm extends Form {
     public byte getTypeOfSpeech() {
         return typeOfSpeech;
     }
-    
+
     public long morfCharacteristics() {
         return morfCharacteristics;
     }
@@ -66,11 +66,11 @@ public class InitialForm extends Form {
     public ArrayList<WordForm> getWordFormList() throws Exception {
         throw new Exception("не реализовано!");
     }
-    
+
     public void trimToSize() {
         wordFormList.trimToSize();
     }
-    
+
     @Override
     public int hashCode() {
         return strInitialForm.hashCode();
