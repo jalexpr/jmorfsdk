@@ -35,7 +35,7 @@ package jmorfsdk.form;
 
 import java.util.ArrayList;
 
-public class InitialForm extends Form {
+public final class InitialForm extends Form {
 
     private final ArrayList<WordForm> wordFormList = new ArrayList<>();
     private final byte typeOfSpeech;
@@ -55,25 +55,30 @@ public class InitialForm extends Form {
         wordFormList.add(wordform);
     }
 
+    @Override
     public byte getTypeOfSpeech() {
         return typeOfSpeech;
     }
 
     public long morfCharacteristics() {
-        return morfCharacteristics;
+        return getMorfCharacteristics();
     }
 
     public ArrayList<WordForm> getWordFormList() throws Exception {
-        throw new Exception("не реализовано!");
+        throw new Exception("Не реализовано!");
     }
 
     public void trimToSize() {
         wordFormList.trimToSize();
     }
 
+    public String getStrInitialForm() {
+        return strInitialForm;
+    }
+
     @Override
     public int hashCode() {
-        return strInitialForm.hashCode();
+        return getStrInitialForm().hashCode();
     }
 
     @Override

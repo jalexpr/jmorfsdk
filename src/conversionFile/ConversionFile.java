@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jmorfsdk.load.Property;
 
 public class ConversionFile {
 
@@ -24,11 +25,18 @@ public class ConversionFile {
     private final BufferedWriter outHashCodeAndString;
     private HashSet<String> omoForm;
 
+    public static void main(String[] args) {
+        String inPath = "dictionary.format.number.txt";
+
+        ConversionFile converFile = new ConversionFile(inPath, Property.pathHashAndMorfCharacteristics, Property.pathInitialFormString, Property.pathWordFormString);
+        converFile.conversionFile();
+    }
+
     public ConversionFile(String inPath, String hashCodeAndMorfCharacteristicsPath, String hashCodeAndInitialFormStringPath, String hashCodeAndStringPath){
-        inReader = openBufferedReaderStreamFromFile(inPath, "Windows-1251");
+        inReader = openBufferedReaderStreamFromFile(inPath, Property.encoding);
         outHashCodeAndMorfCharacteristics = openFileInputStreamFromFile(hashCodeAndMorfCharacteristicsPath);
-        outHashCodeAndInitialFormString = openBufferedWriterStreamFromFile(hashCodeAndInitialFormStringPath, "windows-1251");
-        outHashCodeAndString = openBufferedWriterStreamFromFile(hashCodeAndStringPath, "windows-1251");
+        outHashCodeAndInitialFormString = openBufferedWriterStreamFromFile(hashCodeAndInitialFormStringPath, Property.encoding);
+        outHashCodeAndString = openBufferedWriterStreamFromFile(hashCodeAndStringPath, Property.encoding);
     }
 
     public void conversionFile(){
@@ -203,15 +211,4 @@ public class ConversionFile {
             }
         }
     }
-
-    public static void main(String[] args) {
-        String inPath = "dictionary.format.number.txt";
-        String hashCodeAndMorfCharacteristicsPath = "dictionary.format.hash+morfCharacteristic.txt";
-        String hashCodeAndInitialFormStringPath = "dictionary.format.hash+initialFormString.txt";
-        String hashCodeAndStringPath = "dictionary.format.hash+wordFormString.txt";
-
-        ConversionFile converFile = new ConversionFile(inPath, hashCodeAndMorfCharacteristicsPath, hashCodeAndInitialFormStringPath, hashCodeAndStringPath);
-        converFile.conversionFile();
-    }
-
 }

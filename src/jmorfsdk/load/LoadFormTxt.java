@@ -54,16 +54,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 @Deprecated
-public class LoadFormTxt implements LoadFromFile {
+public final class LoadFormTxt implements LoadFromFile {
 
     private BufferedReader buffInput;
     private JMorfSdk jMorfSdk;
-    private static String pathLibrary = "dictionary.format.number.txt";
-    private static String encoding = "Windows-1251";
-
-    static {
-        loadProperty();
-    }
 
     @Override
     public JMorfSdk loadLibraryForSearchInitialForm() throws Exception {
@@ -90,13 +84,13 @@ public class LoadFormTxt implements LoadFromFile {
 
         buffInput = null;
         try {
-            buffInput = new BufferedReader(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
+            buffInput = new BufferedReader(new InputStreamReader(new FileInputStream(Property.pathNumber), Property.encoding));
         } catch (FileNotFoundException ex) {
-            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", pathLibrary, MYREPOSITORY);
+            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", Property.pathNumber, MYREPOSITORY);
             Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
         } catch (UnsupportedEncodingException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\n1)Проверте кодировку %s в соотвевствии с параметрами в property.xml.\r\n2)При отсутствии property.xml кодировка по умолчанию %s\r\n3)В случае отсуствия файлов, скачайте с репозитория %s\r\n",
-                    pathLibrary, encoding, MYREPOSITORY);
+                    Property.pathNumber, Property.encoding, MYREPOSITORY);
             Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
         }
 
@@ -113,7 +107,7 @@ public class LoadFormTxt implements LoadFromFile {
                 addLemma(buffInput.readLine());
             }
         } catch (IOException ex) {
-            String messages = String.format("Проблема чтения с файла: %s\r\nСкачайте файл с репозитория %s", pathLibrary, MYREPOSITORY);
+            String messages = String.format("Проблема чтения с файла: %s\r\nСкачайте файл с репозитория %s", Property.pathNumber, MYREPOSITORY);
             Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
         }
     }
@@ -155,38 +149,6 @@ public class LoadFormTxt implements LoadFromFile {
             buffInput.close();
         } catch (IOException ex) {
             Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private static void loadProperty() {
-        try {
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse("property.xml");
-            Node root = document.getDocumentElement();
-            readProperty(root);
-        } catch (ParserConfigurationException | SAXException | IOException ex) {
-            String messages = "Не удается найти property.xml\r\nПрименены параметры по умолчанию!\r\n";
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.WARNING, messages);
-        }
-    }
-
-    private static void readProperty(Node root) {
-
-        NodeList propertys = root.getChildNodes();
-        for (int i = 0; i < propertys.getLength(); i++) {
-            Node node = propertys.item(i);
-            if (node.getNodeType() != Node.TEXT_NODE) {
-                switch (node.getNodeName()) {
-                    case "pathLibrary":
-                        pathLibrary = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    case "encoding":
-                        encoding = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    default:
-                        readProperty(node);
-                }
-            }
         }
     }
 }

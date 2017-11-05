@@ -33,12 +33,14 @@
  */
 package jmorfsdk;
 
+import java.util.ArrayList;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.OmoForms;
 import jmorfsdk.form.WordForm;
 import java.util.HashMap;
+import jmorfsdk.form.Form;
 
-public final class JMorfSdk {
+public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     //!NB InitialForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
     private HashMap<Integer, OmoForms> omoForms = new HashMap();
@@ -49,14 +51,9 @@ public final class JMorfSdk {
     }
 
     public void addWordForm(String strWordForm, WordForm wordForm) {
-        int hashCode = strWordForm.hashCode();
-        if (isOmoFormExistForForm(hashCode)) {
-            getOmoFormByForm(hashCode).addForm(wordForm);
-        } else {
-            addOmoForm(new OmoForms(wordForm, hashCode));
-        }
+        addWordForm(strWordForm.hashCode(), wordForm);
     }
-    
+
     public void addWordForm(int hashCode, WordForm wordForm) {
         if (isOmoFormExistForForm(hashCode)) {
             getOmoFormByForm(hashCode).addForm(wordForm);
@@ -65,16 +62,16 @@ public final class JMorfSdk {
         }
     }
 
-    private void addOmoForm(OmoForms of) {
-        omoForms.put(of.hashCode(), of);
-    }
-
-    public boolean isOmoFormExistForForm(int hashCode) {
+    private boolean isOmoFormExistForForm(int hashCode) {
         return omoForms.containsKey(hashCode);
     }
 
     private OmoForms getOmoFormByForm(int hashCode) {
         return omoForms.get(hashCode);
+    }
+
+    private void addOmoForm(OmoForms of) {
+        omoForms.put(of.hashCode(), of);
     }
 
     public void finish() {
@@ -84,17 +81,84 @@ public final class JMorfSdk {
         initialForms = null;
     }
 
-    public OmoForms getOmoFormsByString(String stringForm) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
     public void trimToSize() {
         initialForms.forEach((key, value) -> {
             value.trimToSize();
         });
-        
+
         omoForms.forEach((key, value) -> {
             value.trimToSize();
         });
     }
+
+    @Override
+    public boolean isFormExistsInDictionary(String strForm) {
+        boolean isFormExists = omoForms.containsKey(strForm.hashCode());
+        if (!isFormExists) {
+            isFormExists = initialForms.containsKey(strForm.hashCode());
+        }
+        return isFormExists;
+    }
+
+    @Override
+    public boolean isInitialForm(String strForm) {
+        return initialForms.containsKey(strForm.hashCode());
+    }
+
+    @Override
+    public ArrayList<Byte> getTypeOfSpeechs(String strForm) throws Exception {
+        try {
+            ArrayList<Byte> list = new ArrayList<>();
+            for (Form form : getListFormByHachCode(strForm.hashCode())) {
+                list.add(form.getTypeOfSpeech());
+            }
+            return list;
+        } catch (Exception ex) {
+            throw new Exception("Форма не найдена!");
+        }
+    }
+
+    private ArrayList<Form> getListFormByHachCode(int hashCode) throws Exception {
+        if (omoForms.containsKey(hashCode)) {
+            return omoForms.get(hashCode);
+        } else {
+            if (initialForms.containsKey(hashCode)) {
+                ArrayList<Form> list = new ArrayList<>();
+                list.add(initialForms.get(hashCode));
+                return list;
+            } else {
+                throw new Exception("Форма по хэш-коду не найдена");
+            }
+        }
+    }
+
+    @Override
+    public ArrayList<Long> getMorfologyCharacteristics(String strForm) throws Exception {
+        try {
+            ArrayList<Long> list = new ArrayList<>();
+            for (Form form : getListFormByHachCode(strForm.hashCode())) {
+                list.add(form.getMorfCharacteristics());
+            }
+            return list;
+        } catch (Exception ex) {
+            throw new Exception("Форма не найдена!");
+        }
+    }
+
+    @Override
+    public String getStringFormInitialForm(String strForm) throws Exception {
+
+        int hashCode = strForm.hashCode();
+
+        if (omoForms.containsKey(hashCode)) {
+            return omoForms.get(hashCode).getStringOmoform();
+        } else {
+            if (initialForms.containsKey(hashCode)) {
+                return initialForms.get(hashCode).getStrInitialForm();
+            } else {
+                throw new Exception("Форма по хэш-коду не найдена");
+            }
+        }
+    }
+
 }

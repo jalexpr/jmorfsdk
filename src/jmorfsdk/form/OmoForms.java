@@ -35,16 +35,16 @@ package jmorfsdk.form;
 
 import java.util.ArrayList;
 
-public class OmoForms extends ArrayList<WordForm> {
-    
+public final class OmoForms extends ArrayList<Form> {
+
     private final int myHashCode;
     private String strWordform;
-    
+
     public OmoForms(WordForm wf, String strWordform) {
         this(wf, strWordform.hashCode());
         this.strWordform = strWordform;
     }
-    
+
     public OmoForms(WordForm wf, int myHashCode) {
         super();
         this.myHashCode = myHashCode;

@@ -31,20 +31,13 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.load.LoadJMorfSdk;
 public class Running {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         JMorfSdk jMorfSdk = LoadJMorfSdk.loadFullLibrary();
-        try {
-            System.in.read();
-        } catch (IOException ex) {
-            Logger.getLogger(Running.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        System.in.read();
 
         jMorfSdk.finish();
     }

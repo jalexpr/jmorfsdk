@@ -50,7 +50,7 @@ import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
 
-public class LoadBasedOnHashCode implements LoadFromFile {
+public final class LoadBasedOnHashCode implements LoadFromFile {
 
     private int pointer = 0;
     private int sizeFileHashAndMorfCharacteristics = 0;
@@ -147,7 +147,6 @@ public class LoadBasedOnHashCode implements LoadFromFile {
                 InitialForm initialForm = new InitialForm(strWordform, typeOfSpeech, morfCharacteristics);
                 jMorfSdk.addInitialForm(initialForm);
                 strWordform = null;
-                typeOfSpeech = 0;
 
                 nextHashCode = getHashCodeFromBytes(bytesFile);
                 while (nextHashCode != CONTROLVALUE) {
@@ -192,6 +191,7 @@ public class LoadBasedOnHashCode implements LoadFromFile {
     private int getHashCodeFromBytes(byte[] bytesFile) {
         return (int) getValueCodeFromBytes(bytesFile, 4);
     }
+
     private byte getTypeOfSpeechFromBytes(byte[] bytesFile) {
         byte typeOfSpeech = bytesFile[pointer];
         pointer++;

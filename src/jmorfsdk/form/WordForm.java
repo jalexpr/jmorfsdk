@@ -33,7 +33,7 @@
  */
 package jmorfsdk.form;
 
-public class WordForm extends Form {
+public final class WordForm extends Form {
 
     private final InitialForm initialForm;
 
@@ -43,6 +43,7 @@ public class WordForm extends Form {
         initialForm.addWordfFormList(this);
     }
 
+    @Override
     public byte getTypeOfSpeech() {
         return getInitialForm().getTypeOfSpeech();
     }
@@ -51,13 +52,9 @@ public class WordForm extends Form {
         return initialForm;
     }
 
-    public long getMorfCharacteristics() {
-        return morfCharacteristics;
-    }
-
     @Override
     public int hashCode() {
-        return (int) morfCharacteristics & initialForm.hashCode();
+        return (int) getMorfCharacteristics() & initialForm.hashCode();
     }
 
     @Override

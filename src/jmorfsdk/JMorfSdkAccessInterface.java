@@ -31,22 +31,15 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
-package jmorfsdk.form;
+package jmorfsdk;
 
-public abstract class Form {
+import java.util.ArrayList;
 
+public interface JMorfSdkAccessInterface {
 
-    public static int formCount = 0;
-    private final long morfCharacteristics;
-
-    public Form(long morfCharacteristics) {
-        this.morfCharacteristics = morfCharacteristics;
-        formCount++;
-    }
-
-    public long getMorfCharacteristics() {
-        return morfCharacteristics;
-    }
-    
-    public abstract byte getTypeOfSpeech();
+    public boolean isFormExistsInDictionary(String strForm);
+    public boolean isInitialForm(String strForm);
+    public ArrayList<Byte> getTypeOfSpeechs(String strForm) throws Exception ;
+    public ArrayList<Long> getMorfologyCharacteristics(String strForm) throws Exception ;
+    public String getStringFormInitialForm(String strForm) throws Exception ;
 }

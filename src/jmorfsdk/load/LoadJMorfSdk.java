@@ -37,7 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jmorfsdk.JMorfSdk;
 
-public class LoadJMorfSdk {
+public final class LoadJMorfSdk {
 
     private static LoadFromFile loadFromFile = new LoadBasedOnHashCode();
     private static final boolean ISOUTPUTMESSAGESTOCONSOLEDEFAULT = true;

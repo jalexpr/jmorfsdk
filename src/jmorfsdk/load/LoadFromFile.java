@@ -36,9 +36,9 @@ package jmorfsdk.load;
 import jmorfsdk.JMorfSdk;
 
 public interface LoadFromFile {
-    
+
     public final static String MYREPOSITORY = "https://github.com/jalexpr/JMorfSdk/";
-    
+
     public JMorfSdk loadLibraryForSearchInitialForm() throws Exception;
     public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() throws Exception;
     public JMorfSdk loadFullLibrary() throws Exception;

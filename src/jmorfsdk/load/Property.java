@@ -44,12 +44,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class Property {
-    protected static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic.txt";
-    protected static String pathInitialFormString = "dictionary.format.hash+initialFormString.txt";
-    protected static String pathWordFormString = "dictionary.format.hash+wordFormString.txt";
-    protected static String pathZipDictionary = "dictionary.zip";
-    protected static String encoding = "Windows-1251";
+public final class Property {
+
+    public static String pathNumber = "dictionary.format.number.txt";
+    public static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic";
+    public static String pathInitialFormString = "dictionary.format.initialFormString.txt";
+    public static String pathWordFormString = "dictionary.format.wordFormString.txt";
+    public static String pathZipDictionary = "dictionary.zip";
+    public static String encoding = "Windows-1251";
+
+    static {
+        loadProperty();
+    }
 
     public static void loadProperty() {
         try {
@@ -70,8 +76,20 @@ public class Property {
             Node node = propertys.item(i);
             if (node.getNodeType() != Node.TEXT_NODE) {
                 switch (node.getNodeName()) {
-                    case "pathLibrary":
-//                        pathLibrary = node.getChildNodes().item(0).getTextContent();
+                    case "pathNumber":
+                        pathNumber = node.getChildNodes().item(0).getTextContent();
+                        break;
+                    case "pathHashAndMorfCharacteristics":
+                        pathHashAndMorfCharacteristics = node.getChildNodes().item(0).getTextContent();
+                        break;
+                    case "pathInitialFormString":
+                        pathInitialFormString = node.getChildNodes().item(0).getTextContent();
+                        break;
+                    case "pathWordFormString":
+                        pathWordFormString = node.getChildNodes().item(0).getTextContent();
+                        break;
+                    case "pathZipDictionary":
+                        pathZipDictionary = node.getChildNodes().item(0).getTextContent();
                         break;
                     case "encoding":
                         encoding = node.getChildNodes().item(0).getTextContent();
