@@ -35,7 +35,6 @@ package jmorfsdk.form;
 
 public abstract class Form {
 
-
     public static int formCount = 0;
     private final long morfCharacteristics;
 
@@ -47,6 +46,7 @@ public abstract class Form {
     public long getMorfCharacteristics() {
         return morfCharacteristics;
     }
-    
+
     public abstract byte getTypeOfSpeech();
+    public abstract String getStringInitialForm();
 }

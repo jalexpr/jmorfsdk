@@ -93,10 +93,8 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     @Override
     public boolean isFormExistsInDictionary(String strForm) {
-        boolean isFormExists = omoForms.containsKey(strForm.hashCode());
-        if (!isFormExists) {
-            isFormExists = initialForms.containsKey(strForm.hashCode());
-        }
+        boolean isFormExists = omoForms.containsKey(strForm.hashCode())
+                || initialForms.containsKey(strForm.hashCode());
         return isFormExists;
     }
 
@@ -106,59 +104,73 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public ArrayList<Byte> getTypeOfSpeechs(String strForm) throws Exception {
-        try {
-            ArrayList<Byte> list = new ArrayList<>();
-            for (Form form : getListFormByHachCode(strForm.hashCode())) {
-                list.add(form.getTypeOfSpeech());
-            }
-            return list;
-        } catch (Exception ex) {
-            throw new Exception("Форма не найдена!");
+    public ArrayList<Byte> getTypeOfSpeechs(String strForm) {
+
+        ArrayList<Byte> typeOfSpeechsList = new ArrayList<>();
+        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
+
+        for (Form form : formList) {
+            typeOfSpeechsList.add(form.getTypeOfSpeech());
         }
+        return typeOfSpeechsList;
     }
 
-    private ArrayList<Form> getListFormByHachCode(int hashCode) throws Exception {
+    private ArrayList<Form> getListFormByHachCode(int hashCode) {
+
+        ArrayList<Form> formList;
+
         if (omoForms.containsKey(hashCode)) {
-            return omoForms.get(hashCode);
+            formList = omoForms.get(hashCode);
         } else {
-            if (initialForms.containsKey(hashCode)) {
-                ArrayList<Form> list = new ArrayList<>();
-                list.add(initialForms.get(hashCode));
-                return list;
-            } else {
-                throw new Exception("Форма по хэш-коду не найдена");
-            }
+            formList = new ArrayList<>();
         }
+
+        if (initialForms.containsKey(hashCode)) {
+            formList.add(initialForms.get(hashCode));
+        }
+
+        return formList;
     }
 
     @Override
-    public ArrayList<Long> getMorfologyCharacteristics(String strForm) throws Exception {
-        try {
-            ArrayList<Long> list = new ArrayList<>();
-            for (Form form : getListFormByHachCode(strForm.hashCode())) {
-                list.add(form.getMorfCharacteristics());
-            }
-            return list;
-        } catch (Exception ex) {
-            throw new Exception("Форма не найдена!");
+    public ArrayList<Long> getMorfologyCharacteristics(String strForm) {
+
+        ArrayList<Long> morfologyCharacteristics = new ArrayList<>();
+        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
+
+        for (Form form : formList) {
+            morfologyCharacteristics.add(form.getMorfCharacteristics());
         }
+        return morfologyCharacteristics;
     }
 
     @Override
-    public String getStringFormInitialForm(String strForm) throws Exception {
+    public ArrayList<String> getFormInInitialForm(String strForm) {
 
-        int hashCode = strForm.hashCode();
+        ArrayList<String> stringFormList = new ArrayList<>();
+        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
-        if (omoForms.containsKey(hashCode)) {
-            return omoForms.get(hashCode).getStringOmoform();
-        } else {
-            if (initialForms.containsKey(hashCode)) {
-                return initialForms.get(hashCode).getStrInitialForm();
-            } else {
-                throw new Exception("Форма по хэш-коду не найдена");
-            }
+        for (Form form : formList) {
+            stringFormList.add(form.getStringInitialForm());
         }
+
+        return stringFormList;
     }
 
+    @Override
+    public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm) {
+
+        ArrayList<AllCharacteristicsOfForm> list = new ArrayList<>();
+        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
+        AllCharacteristicsOfForm characteristicsOfForm;
+
+        for (Form form : formList) {
+            characteristicsOfForm = new AllCharacteristicsOfForm(form.getStringInitialForm(),
+                                                                    form.getTypeOfSpeech(),
+                                                                    form.getMorfCharacteristics());
+            list.add(characteristicsOfForm);
+        }
+
+        return list;
+    }
 }

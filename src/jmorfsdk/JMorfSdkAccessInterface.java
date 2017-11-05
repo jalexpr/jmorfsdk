@@ -39,7 +39,8 @@ public interface JMorfSdkAccessInterface {
 
     public boolean isFormExistsInDictionary(String strForm);
     public boolean isInitialForm(String strForm);
-    public ArrayList<Byte> getTypeOfSpeechs(String strForm) throws Exception ;
-    public ArrayList<Long> getMorfologyCharacteristics(String strForm) throws Exception ;
-    public String getStringFormInitialForm(String strForm) throws Exception ;
+    public ArrayList<Byte> getTypeOfSpeechs(String strForm);
+    public ArrayList<Long> getMorfologyCharacteristics(String strForm);
+    public ArrayList<String> getFormInInitialForm(String strForm);
+    public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm);
 }

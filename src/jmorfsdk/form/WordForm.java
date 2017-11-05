@@ -42,14 +42,18 @@ public final class WordForm extends Form {
         this.initialForm = initialForm;
         initialForm.addWordfFormList(this);
     }
+    public InitialForm getInitialForm() {
+        return initialForm;
+    }
+
+    @Override
+    public String getStringInitialForm() {
+        return initialForm.getStringForm();
+    }
 
     @Override
     public byte getTypeOfSpeech() {
         return getInitialForm().getTypeOfSpeech();
-    }
-
-    public InitialForm getInitialForm() {
-        return initialForm;
     }
 
     @Override

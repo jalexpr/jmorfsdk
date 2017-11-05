@@ -39,6 +39,10 @@ public class Running {
         JMorfSdk jMorfSdk = LoadJMorfSdk.loadFullLibrary();
 //        System.in.read();
 
+        for(String form : jMorfSdk.getFormInInitialForm("")) {
+            System.out.println(form);
+        }
+
         jMorfSdk.finish();
     }
 }

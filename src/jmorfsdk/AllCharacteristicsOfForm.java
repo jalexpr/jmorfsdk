@@ -31,62 +31,30 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
-package jmorfsdk.form;
+package jmorfsdk;
 
-import java.util.ArrayList;
+public class AllCharacteristicsOfForm {
 
-public final class OmoForms extends ArrayList<Form> {
+    private final String initialFormString;
+    private final byte typeOfSpeech;
+    private final long morfCharacteristics;
 
-    private final int myHashCode;
-    private String strWordform;
-
-    public OmoForms(WordForm wf, String strWordform) {
-        this(wf, strWordform.hashCode());
-        this.strWordform = strWordform;
+    public AllCharacteristicsOfForm(String initialFormString, byte typeOfSpeech, long morfCharacteristics) {
+        this.initialFormString = initialFormString;
+        this.typeOfSpeech = typeOfSpeech;
+        this.morfCharacteristics = morfCharacteristics;
     }
 
-    public OmoForms(WordForm wf, int myHashCode) {
-        super();
-        this.myHashCode = myHashCode;
-        add(wf);
+    public String getInitialFormString() {
+        return initialFormString;
     }
 
-    public String getStringOmoform() {
-        return strWordform;
+    public byte getTypeOfSpeech() {
+        return typeOfSpeech;
     }
 
-    public boolean addForm(WordForm wordform) {
-        return add(wordform);
+    public long getMorfCharacteristics() {
+        return morfCharacteristics;
     }
 
-    public ArrayList<String> getFormInInitialForm() {
-
-        ArrayList<String> stringForms = new ArrayList<>();
-
-        for(Form form : this) {
-            stringForms.add(((WordForm) form).getStringInitialForm());
-        }
-
-        return stringForms;
-    }
-
-    @Override
-    public int hashCode() {
-        return myHashCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final OmoForms other = (OmoForms) obj;
-        return this.myHashCode == other.myHashCode;
-    }
 }

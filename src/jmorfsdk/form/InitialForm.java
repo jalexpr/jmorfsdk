@@ -55,15 +55,6 @@ public final class InitialForm extends Form {
         wordFormList.add(wordform);
     }
 
-    @Override
-    public byte getTypeOfSpeech() {
-        return typeOfSpeech;
-    }
-
-    public long morfCharacteristics() {
-        return getMorfCharacteristics();
-    }
-
     public ArrayList<WordForm> getWordFormList() throws Exception {
         throw new Exception("Не реализовано!");
     }
@@ -72,13 +63,23 @@ public final class InitialForm extends Form {
         wordFormList.trimToSize();
     }
 
-    public String getStrInitialForm() {
+    public String getStringForm() {
         return strInitialForm;
     }
 
     @Override
+    public String getStringInitialForm() {
+        return getStringForm();
+    }
+
+    @Override
+    public byte getTypeOfSpeech() {
+        return typeOfSpeech;
+    }
+
+    @Override
     public int hashCode() {
-        return getStrInitialForm().hashCode();
+        return getStringForm().hashCode();
     }
 
     @Override
