@@ -70,6 +70,10 @@ public final class OmoForms extends ArrayList<Form> {
         return stringForms;
     }
 
+    public void addStringForm(String stringForm) {
+        strWordform = stringForm;
+    }
+
     @Override
     public int hashCode() {
         return myHashCode;

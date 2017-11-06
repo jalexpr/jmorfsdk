@@ -48,6 +48,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
+import jmorfsdk.form.OmoForms;
 import jmorfsdk.form.WordForm;
 
 public final class LoadBasedOnHashCode implements LoadFromFile {
@@ -58,7 +59,10 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
 
     @Override
     public JMorfSdk loadFullLibrary() {
-        return loadLibraryForSearchInitialForm();
+        JMorfSdk jMorfSdk = loadLibraryForSearchInitialForm();
+        loadWordFormsString(jMorfSdk);
+        return jMorfSdk;
+
     }
 
     @Override
@@ -69,18 +73,13 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
         return jMorfSdk;
     }
 
-    @Override
-    public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public void loadLibraryToFindInitialFormAndMorfCharacteristecZip(JMorfSdk jMorfSdk) {
         ZipInputStream streamHashCodeAndMorfCharacteristic = null;
         Scanner scannerInitialFormString = null;
         try {
             streamHashCodeAndMorfCharacteristic = openZipFile(Property.pathHashAndMorfCharacteristics);
             scannerInitialFormString = openScannerFromFile(Property.pathInitialFormString, Property.encoding);
-            loadFromFileHashString(jMorfSdk, streamHashCodeAndMorfCharacteristic, scannerInitialFormString);
+            loadHashAndString(jMorfSdk, streamHashCodeAndMorfCharacteristic, scannerInitialFormString);
         } catch (Exception ex) {
             Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -95,7 +94,7 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
         try {
             streamHashCodeAndMorfCharacteristic = openFileInputStreamFromFile(Property.pathHashAndMorfCharacteristics);
             scannerInitialFormString = openScannerFromFile(Property.pathInitialFormString, Property.encoding);
-            loadFromFileHashString(jMorfSdk, streamHashCodeAndMorfCharacteristic, scannerInitialFormString);
+            loadHashAndString(jMorfSdk, streamHashCodeAndMorfCharacteristic, scannerInitialFormString);
         } catch (Exception ex) {
             Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, "Не удалось загрузить бибилиотек!\n", ex);
         } finally {
@@ -129,9 +128,9 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
         }
     }
 
-    private void loadFromFileHashString(JMorfSdk jMorfSdk, InputStream inputStreamHashCodeAndMorfCharacteristics, Scanner scannerInitialFormString) {
+    private void loadHashAndString(JMorfSdk jMorfSdk, InputStream inputStreamHashCodeAndMorfCharacteristics, Scanner scannerInitialFormString) {
 
-        HashMap<Integer, String> initialFormString = loadFormString(scannerInitialFormString);
+        HashMap<Integer, String> initialFormString = loadInitialFormString(scannerInitialFormString);
 
         byte[] bytesFile;
         try {
@@ -167,7 +166,7 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
         }
     }
 
-    private HashMap<Integer, String> loadFormString(Scanner readerFormHashAndString) {
+    private HashMap<Integer, String> loadInitialFormString(Scanner readerFormHashAndString) {
         HashMap<Integer, String> initialForm = new HashMap<>();
         while(readerFormHashAndString.hasNext()) {
             String formString = readerFormHashAndString.nextLine();
@@ -201,6 +200,7 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
     private long getMorfCharacteristicsFromBytes(byte[] bytesFile) {
         return getValueCodeFromBytes(bytesFile, 8);
     }
+
     private long getValueCodeFromBytes(byte[] bytesFile, int countByte) {
         int hashCode = 0;
         for (int i = 0; i < countByte; i++) {
@@ -225,5 +225,33 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
     private void closeScanner(Scanner scanner) {
         scanner.close();
         scanner = null;
+    }
+
+    @Override
+    public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() {
+        JMorfSdk jMorfSdk = loadLibraryForSearchInitialForm();
+        loadWordFormsString(jMorfSdk);
+        return jMorfSdk;
+    }
+
+    private void loadWordFormsString(JMorfSdk jMorfSdk) {
+
+        Scanner scannerWordFormString = null;
+
+        try {
+            scannerWordFormString = openScannerFromFile(Property.pathWordFormString, Property.encoding);
+            loadWordString(jMorfSdk, scannerWordFormString);
+        } catch (Exception ex) {
+            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeScanner(scannerWordFormString);
+        }
+    }
+
+    private void loadWordString(JMorfSdk jMorfSdk, Scanner scannerWordFormString) {
+        while(scannerWordFormString.hasNext()) {
+            String formString = scannerWordFormString.nextLine();
+            jMorfSdk.addStringForm(formString);
+        }
     }
 }

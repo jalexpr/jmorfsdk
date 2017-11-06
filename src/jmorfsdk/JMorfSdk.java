@@ -173,4 +173,8 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         return list;
     }
+
+    public void addStringForm(String stringForm) {
+        omoForms.get(stringForm.hashCode()).addStringForm(stringForm);
+    }
 }

@@ -42,16 +42,9 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 @Deprecated
 public final class LoadFormTxt implements LoadFromFile {
@@ -60,17 +53,17 @@ public final class LoadFormTxt implements LoadFromFile {
     private JMorfSdk jMorfSdk;
 
     @Override
-    public JMorfSdk loadLibraryForSearchInitialForm() throws Exception {
+    public JMorfSdk loadLibraryForSearchInitialForm() {
         return loadFullLibrary();
     }
 
     @Override
-    public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() throws Exception {
+    public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() {
         return loadFullLibrary();
     }
 
     @Override
-    public JMorfSdk loadFullLibrary() throws Exception {
+    public JMorfSdk loadFullLibrary() {
         jMorfSdk = new JMorfSdk();
         buffInput = openBufferedReaderStreamFromFile();
         loadFromFileStringAndMorfCharacteristic();

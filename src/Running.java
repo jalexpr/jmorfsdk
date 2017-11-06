@@ -35,11 +35,11 @@ import jmorfsdk.JMorfSdk;
 import jmorfsdk.load.LoadJMorfSdk;
 public class Running {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         JMorfSdk jMorfSdk = LoadJMorfSdk.loadFullLibrary();
 //        System.in.read();
 
-        for(String form : jMorfSdk.getFormInInitialForm("")) {
+        for(String form : jMorfSdk.getFormInInitialForm("мыла")) {
             System.out.println(form);
         }
 
