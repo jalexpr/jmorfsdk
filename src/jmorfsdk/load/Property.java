@@ -47,7 +47,7 @@ import org.xml.sax.SAXException;
 public final class Property {
 
     public static String pathNumber = "dictionary.format.number.txt";
-    public static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic";
+    public static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic.txt";
     public static String pathInitialFormString = "dictionary.format.initialFormString.txt";
     public static String pathWordFormString = "dictionary.format.wordFormString.txt";
     public static String pathZipDictionary = "dictionary.zip";

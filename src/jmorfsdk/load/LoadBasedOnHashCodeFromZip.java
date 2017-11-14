@@ -33,6 +33,8 @@
  */
 package jmorfsdk.load;
 
+import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,11 +44,13 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
 
-public final class LoadBasedOnHashCode implements LoadFromFile {
+public final class LoadBasedOnHashCodeFromZip implements LoadFromFile {
 
     private int pointer = 0;
     private int sizeFileHashAndMorfCharacteristics = 0;
@@ -63,31 +67,48 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
     @Override
     public JMorfSdk loadLibraryForSearchInitialForm() {
         JMorfSdk jMorfSdk = new JMorfSdk();
-        loadLibraryToFindInitialFormAndMorfCharacteristec(jMorfSdk);
+        loadLibraryToFindInitialFormAndMorfCharacteristecZip(jMorfSdk);
         return jMorfSdk;
     }
 
-    public void loadLibraryToFindInitialFormAndMorfCharacteristec(JMorfSdk jMorfSdk) {
-        FileInputStream streamHashCodeAndMorfCharacteristic = null;
+    public void loadLibraryToFindInitialFormAndMorfCharacteristecZip(JMorfSdk jMorfSdk) {
+        ZipInputStream streamHashCodeAndMorfCharacteristic = null;
         Scanner scannerInitialFormString = null;
         try {
-            streamHashCodeAndMorfCharacteristic = openFileInputStreamFromFile(Property.pathHashAndMorfCharacteristics);
-            scannerInitialFormString = openScannerFromFile(Property.pathInitialFormString, Property.encoding);
+            streamHashCodeAndMorfCharacteristic = openZipFile(Property.pathHashAndMorfCharacteristics);
+            scannerInitialFormString = openScannerFromZipFile(Property.pathInitialFormString, Property.encoding);
             loadHashAndString(jMorfSdk, streamHashCodeAndMorfCharacteristic, scannerInitialFormString);
         } catch (Exception ex) {
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, "Не удалось загрузить бибилиотек!\n", ex);
+            Logger.getLogger(LoadBasedOnHashCodeFromZip.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             closeStream(streamHashCodeAndMorfCharacteristic);
             closeScanner(scannerInitialFormString);
         }
     }
 
-    private Scanner openScannerFromFile(String pathLibrary, String encoding) throws Exception {
+    private ZipInputStream openZipFile(String nameLibrary) throws Exception {
+        return getInputStreamZipFile(new File(Property.pathZipDictionary), nameLibrary);
+    }
+
+    private ZipInputStream getInputStreamZipFile(File zip, String nameLibrary) throws IOException {
+        ZipInputStream zin = new ZipInputStream(new FileInputStream(zip));
+        for (ZipEntry e; (e = zin.getNextEntry()) != null;) {
+            if (e.getName().equals(nameLibrary)) {
+                if(sizeFileHashAndMorfCharacteristics == 0) {
+                sizeFileHashAndMorfCharacteristics = (int) e.getSize();
+                }
+                return zin;
+            }
+        }
+        throw new EOFException("Cannot find " + nameLibrary);
+    }
+
+    private Scanner openScannerFromZipFile(String pathLibrary, String encoding) throws Exception {
         try {
-            return new Scanner(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
+            return new Scanner(getInputStreamZipFile(new File(Property.pathZipDictionary), pathLibrary), encoding);
         } catch (FileNotFoundException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", pathLibrary, MYREPOSITORY);
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, messages);
+            Logger.getLogger(LoadBasedOnHashCodeFromZip.class.getName()).log(Level.SEVERE, messages);
             throw new Exception();
         }
     }
@@ -122,7 +143,7 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoadBasedOnHashCodeFromZip.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             bytesFile = null;
             initialFormString.clear();
@@ -137,18 +158,6 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
             initialForm.put(formString.hashCode(), formString);
         }
         return initialForm;
-    }
-
-    private FileInputStream openFileInputStreamFromFile(String pathLibrary) throws Exception {
-        try {
-            FileInputStream inputStream = new FileInputStream(pathLibrary);
-            sizeFileHashAndMorfCharacteristics = inputStream.available();
-            return inputStream;
-        } catch (FileNotFoundException ex) {
-            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", pathLibrary, MYREPOSITORY);
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, messages);
-            throw new Exception();
-        }
     }
 
     private int getHashCodeFromBytes(byte[] bytesFile) {
@@ -180,7 +189,7 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
         try {
             inputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoadBasedOnHashCodeFromZip.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             inputStream = null;
         }
@@ -206,9 +215,19 @@ public final class LoadBasedOnHashCode implements LoadFromFile {
             scannerWordFormString = openScannerFromFile(Property.pathWordFormString, Property.encoding);
             loadWordString(jMorfSdk, scannerWordFormString);
         } catch (Exception ex) {
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoadBasedOnHashCodeFromZip.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             closeScanner(scannerWordFormString);
+        }
+    }
+
+    private Scanner openScannerFromFile(String pathLibrary, String encoding) throws Exception {
+        try {
+            return new Scanner(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
+        } catch (FileNotFoundException ex) {
+            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", pathLibrary, MYREPOSITORY);
+            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.SEVERE, messages);
+            throw new Exception();
         }
     }
 

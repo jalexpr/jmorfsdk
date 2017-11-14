@@ -33,10 +33,6 @@
  */
 package jmorfsdk.grammeme;
 
-/**
- *
- * @author Alex Porechny alex.porechny@mail.ru
- */
 public interface MorfologyParameters {
 
     /**
