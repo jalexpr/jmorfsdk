@@ -38,6 +38,7 @@ import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.OmoForms;
 import jmorfsdk.form.WordForm;
 import java.util.HashMap;
+import java.util.LinkedList;
 import jmorfsdk.form.Form;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
@@ -81,16 +82,6 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         initialForms = null;
     }
 
-    public void trimToSize() {
-        initialForms.forEach((key, value) -> {
-            value.trimToSize();
-        });
-
-        omoForms.forEach((key, value) -> {
-            value.trimToSize();
-        });
-    }
-
     @Override
     public boolean isFormExistsInDictionary(String strForm) {
         boolean isFormExists = omoForms.containsKey(strForm.hashCode())
@@ -107,7 +98,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     public ArrayList<Byte> getTypeOfSpeechs(String strForm) {
 
         ArrayList<Byte> typeOfSpeechsList = new ArrayList<>();
-        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
         for (Form form : formList) {
             typeOfSpeechsList.add(form.getTypeOfSpeech());
@@ -115,14 +106,14 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         return typeOfSpeechsList;
     }
 
-    private ArrayList<Form> getListFormByHachCode(int hashCode) {
+    private LinkedList<Form> getListFormByHachCode(int hashCode) {
 
-        ArrayList<Form> formList;
+        LinkedList<Form> formList;
 
         if (omoForms.containsKey(hashCode)) {
             formList = omoForms.get(hashCode);
         } else {
-            formList = new ArrayList<>();
+            formList = new LinkedList<>();
         }
 
         if (initialForms.containsKey(hashCode)) {
@@ -136,7 +127,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     public ArrayList<Long> getMorfologyCharacteristics(String strForm) {
 
         ArrayList<Long> morfologyCharacteristics = new ArrayList<>();
-        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
         for (Form form : formList) {
             morfologyCharacteristics.add(form.getMorfCharacteristics());
@@ -148,7 +139,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     public ArrayList<String> getFormInInitialForm(String strForm) {
 
         ArrayList<String> stringFormList = new ArrayList<>();
-        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
         for (Form form : formList) {
             stringFormList.add(form.getStringInitialForm());
@@ -161,7 +152,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm) {
 
         ArrayList<AllCharacteristicsOfForm> list = new ArrayList<>();
-        ArrayList<Form> formList = getListFormByHachCode(strForm.hashCode());
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
         AllCharacteristicsOfForm characteristicsOfForm;
 
         for (Form form : formList) {

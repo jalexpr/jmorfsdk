@@ -34,8 +34,9 @@
 package jmorfsdk.form;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
-public final class OmoForms extends ArrayList<Form> {
+public final class OmoForms extends LinkedList<Form> {
 
     private final int myHashCode;
     private String strWordform;

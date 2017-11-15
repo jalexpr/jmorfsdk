@@ -59,10 +59,6 @@ public final class InitialForm extends Form {
         throw new Exception("Не реализовано!");
     }
 
-    public void trimToSize() {
-        wordFormList.trimToSize();
-    }
-
     public String getStringForm() {
         return strInitialForm;
     }
