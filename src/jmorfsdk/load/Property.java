@@ -47,7 +47,7 @@ import org.xml.sax.SAXException;
 public final class Property {
 
     public static String pathNumber = "dictionary.format.number.txt";
-    public static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic.txt";
+    public static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic";
     public static String pathInitialFormString = "dictionary.format.initialFormString.txt";
     public static String pathWordFormString = "dictionary.format.wordFormString.txt";
     public static String pathZipDictionary = "dictionary.zip";
@@ -65,39 +65,39 @@ public final class Property {
             readProperty(root);
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             String messages = "Не удается найти property.xml\r\nПрименены параметры по умолчанию!\r\n";
-            Logger.getLogger(LoadBasedOnHashCode.class.getName()).log(Level.WARNING, messages);
+            Logger.getLogger(Property.class.getName()).log(Level.WARNING, messages);
         }
     }
 
     public static void readProperty(Node root) {
 
-        NodeList propertys = root.getChildNodes();
-        for (int i = 0; i < propertys.getLength(); i++) {
-            Node node = propertys.item(i);
-            if (node.getNodeType() != Node.TEXT_NODE) {
-                switch (node.getNodeName()) {
-                    case "pathNumber":
-                        pathNumber = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    case "pathHashAndMorfCharacteristics":
-                        pathHashAndMorfCharacteristics = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    case "pathInitialFormString":
-                        pathInitialFormString = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    case "pathWordFormString":
-                        pathWordFormString = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    case "pathZipDictionary":
-                        pathZipDictionary = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    case "encoding":
-                        encoding = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    default:
-                        readProperty(node);
-                }
-            }
-        }
+//        NodeList propertys = root.getChildNodes();
+//        for (int i = 0; i < propertys.getLength(); i++) {
+//            Node node = propertys.item(i);
+//            if (node.getNodeType() != Node.TEXT_NODE) {
+//                switch (node.getNodeName()) {
+//                    case "pathNumber":
+//                        pathNumber = node.getChildNodes().item(0).getTextContent();
+//                        break;
+//                    case "pathHashAndMorfCharacteristics":
+//                        pathHashAndMorfCharacteristics = node.getChildNodes().item(0).getTextContent();
+//                        break;
+//                    case "pathInitialFormString":
+//                        pathInitialFormString = node.getChildNodes().item(0).getTextContent();
+//                        break;
+//                    case "pathWordFormString":
+//                        pathWordFormString = node.getChildNodes().item(0).getTextContent();
+//                        break;
+//                    case "pathZipDictionary":
+//                        pathZipDictionary = node.getChildNodes().item(0).getTextContent();
+//                        break;
+//                    case "encoding":
+//                        encoding = node.getChildNodes().item(0).getTextContent();
+//                        break;
+//                    default:
+//                        readProperty(node);
+//                }
+//            }
+//        }
     }
 }

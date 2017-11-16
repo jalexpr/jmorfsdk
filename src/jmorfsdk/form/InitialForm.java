@@ -37,9 +37,9 @@ import java.util.ArrayList;
 
 public final class InitialForm extends Form {
 
-    private final ArrayList<WordForm> wordFormList = new ArrayList<>();
     private final byte typeOfSpeech;
-    private String strInitialForm;
+    private final String strInitialForm;
+    private ArrayList<WordForm> wordFormList;
 
     public InitialForm(String strWord){
         this(strWord, Byte.valueOf("0"), 0L);
@@ -51,14 +51,7 @@ public final class InitialForm extends Form {
         this.strInitialForm = strWordform;
     }
 
-    public void addWordfFormList(WordForm wordform) {
-        wordFormList.add(wordform);
-    }
-
-    public ArrayList<WordForm> getWordFormList() throws Exception {
-        throw new Exception("Не реализовано!");
-    }
-
+    @Override
     public String getStringForm() {
         return strInitialForm;
     }
@@ -72,7 +65,24 @@ public final class InitialForm extends Form {
     public byte getTypeOfSpeech() {
         return typeOfSpeech;
     }
+    
+    public void addWordfFormInList(WordForm wordform) {
+        if(wordFormList == null) {
+            wordFormList = new ArrayList<>();
+        }
+        wordFormList.add(wordform);
+    }
 
+    public void trimToSize() {
+        if(wordFormList != null) {
+            wordFormList.trimToSize();
+        }
+    }
+    
+    public ArrayList<WordForm> getWordFormList() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public int hashCode() {
         return getStringForm().hashCode();

@@ -39,7 +39,7 @@ import jmorfsdk.JMorfSdk;
 
 public final class LoadJMorfSdk {
 
-    private static LoadFromFile loadFromFile = new LoadBasedOnHashCodeFromZip();
+    private static LoadFromFile loadFromFile = new LoadBasedOnHashFromZip();
     private static final boolean ISOUTPUTMESSAGESTOCONSOLEDEFAULT = true;
 
     public static JMorfSdk loadFullLibrary() {
@@ -52,8 +52,8 @@ public final class LoadJMorfSdk {
             outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
             jMorfSdk = loadFromFile.loadLibraryForSearchInitialForm();
             outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
-//            System.gc();
-//            Runtime.getRuntime().gc();
+            System.gc();
+            Runtime.getRuntime().gc();
             return jMorfSdk;
         } catch (Exception ex) {
             Logger.getLogger(LoadJMorfSdk.class.getName()).log(Level.WARNING, null, ex);

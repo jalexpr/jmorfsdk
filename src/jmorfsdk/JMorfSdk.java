@@ -35,8 +35,6 @@ package jmorfsdk;
 
 import java.util.ArrayList;
 import jmorfsdk.form.InitialForm;
-import jmorfsdk.form.OmoForms;
-import jmorfsdk.form.WordForm;
 import java.util.HashMap;
 import java.util.LinkedList;
 import jmorfsdk.form.Form;
@@ -44,54 +42,48 @@ import jmorfsdk.form.Form;
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     //!NB InitialForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
-    private HashMap<Integer, OmoForms> omoForms = new HashMap();
-    private HashMap<Integer, InitialForm> initialForms = new HashMap();
+    private HashMap<Integer, LinkedList<Form>> omoForms = new HashMap();
 
     public void addInitialForm(InitialForm mf) {
-        initialForms.put(mf.hashCode(), mf);
+        addForm(mf.hashCode(), mf);
     }
 
-    public void addWordForm(String strWordForm, WordForm wordForm) {
-        addWordForm(strWordForm.hashCode(), wordForm);
-    }
-
-    public void addWordForm(int hashCode, WordForm wordForm) {
+    public void addForm(int hashCode, Form form) {
         if (isOmoFormExistForForm(hashCode)) {
-            getOmoFormByForm(hashCode).addForm(wordForm);
+            getOmoFormByForm(hashCode).add(form);
         } else {
-            addOmoForm(new OmoForms(wordForm, hashCode));
+            addNewOmoForm(hashCode, form);
         }
+    }
+    
+    private void addNewOmoForm(int hashCode,Form form) {
+        LinkedList<Form> omoForm = new LinkedList<>();
+        omoForm.add(form);
+        omoForms.put(hashCode, omoForm);
     }
 
     private boolean isOmoFormExistForForm(int hashCode) {
         return omoForms.containsKey(hashCode);
     }
 
-    private OmoForms getOmoFormByForm(int hashCode) {
+    private LinkedList<Form> getOmoFormByForm(int hashCode) {
         return omoForms.get(hashCode);
-    }
-
-    private void addOmoForm(OmoForms of) {
-        omoForms.put(of.hashCode(), of);
     }
 
     public void finish() {
         omoForms.clear();
-        initialForms.clear();
         omoForms = null;
-        initialForms = null;
     }
 
     @Override
     public boolean isFormExistsInDictionary(String strForm) {
-        boolean isFormExists = omoForms.containsKey(strForm.hashCode())
-                || initialForms.containsKey(strForm.hashCode());
+        boolean isFormExists = omoForms.containsKey(strForm.hashCode());
         return isFormExists;
     }
 
     @Override
     public boolean isInitialForm(String strForm) {
-        return initialForms.containsKey(strForm.hashCode());
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -114,10 +106,6 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
             formList = omoForms.get(hashCode);
         } else {
             formList = new LinkedList<>();
-        }
-
-        if (initialForms.containsKey(hashCode)) {
-            formList.add(initialForms.get(hashCode));
         }
 
         return formList;
@@ -163,9 +151,5 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         }
 
         return list;
-    }
-
-    public void addStringForm(String stringForm) {
-        omoForms.get(stringForm.hashCode()).addStringForm(stringForm);
     }
 }

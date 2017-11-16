@@ -57,4 +57,8 @@ public class AllCharacteristicsOfForm {
         return morfCharacteristics;
     }
 
+    @Override
+    public String toString(){
+        return String.format("initialFormString = %s, typeOfSpeech = %d, morfCharacteristics = %d", initialFormString, typeOfSpeech, morfCharacteristics);
+    }
 }

@@ -31,17 +31,20 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  */
+import java.io.IOException;
+import jmorfsdk.AllCharacteristicsOfForm;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.load.LoadJMorfSdk;
 public class Running {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JMorfSdk jMorfSdk = LoadJMorfSdk.loadFullLibrary();
-//        System.in.read();
 
-        for(String form : jMorfSdk.getFormInInitialForm("мыла")) {
+        for(AllCharacteristicsOfForm form : jMorfSdk.getAllCharacteristicsOfForm("мыла")) {
             System.out.println(form);
         }
+        
+        System.in.read();
 
         jMorfSdk.finish();
     }

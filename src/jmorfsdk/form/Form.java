@@ -49,4 +49,5 @@ public abstract class Form {
 
     public abstract byte getTypeOfSpeech();
     public abstract String getStringInitialForm();
+    public abstract String getStringForm();
 }

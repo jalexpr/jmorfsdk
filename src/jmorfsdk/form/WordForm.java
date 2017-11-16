@@ -36,12 +36,20 @@ package jmorfsdk.form;
 public final class WordForm extends Form {
 
     private final InitialForm initialForm;
+    private int myHashCode;
 
     public WordForm(long morfCharacteristics, InitialForm initialForm) {
         super(morfCharacteristics);
         this.initialForm = initialForm;
-        initialForm.addWordfFormList(this);
     }
+    
+    public WordForm(int hashCode, long morfCharacteristics, InitialForm initialForm) {
+        super(morfCharacteristics);
+        this.initialForm = initialForm;
+        this.myHashCode = hashCode;
+        initialForm.addWordfFormInList(this);
+    }
+    
     public InitialForm getInitialForm() {
         return initialForm;
     }
@@ -57,22 +65,7 @@ public final class WordForm extends Form {
     }
 
     @Override
-    public int hashCode() {
-        return (int) getMorfCharacteristics() & initialForm.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final OmoForms other = (OmoForms) obj;
-        return this.hashCode() == other.hashCode();
+    public String getStringForm() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
