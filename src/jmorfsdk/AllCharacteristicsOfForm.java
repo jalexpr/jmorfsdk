@@ -49,18 +49,35 @@ public class AllCharacteristicsOfForm {
         this.morfCharacteristics = morfCharacteristics;
     }
 
+    /**
+     * Получить String в начальной форме
+     * @return
+     */
     public String getInitialFormString() {
         return initialFormString;
     }
 
+    /**
+     * Получить часть речи
+     * @return
+     */
     public byte getTypeOfSpeech() {
         return typeOfSpeech;
     }
 
+    /**
+     * Получить все морф. характеристики, кроме части речи
+     * @return
+     */
     public long getMorfCharacteristics() {
         return morfCharacteristics;
     }
 
+    /**
+     * Получить морф. характеристики, кроме части речи
+     * @param IDENTIFIER
+     * @return
+     */
     public long getTheMorfCharacteristic(long IDENTIFIER) {
         return morfCharacteristics & IDENTIFIER;
     }

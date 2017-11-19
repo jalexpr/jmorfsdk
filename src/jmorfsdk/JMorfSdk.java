@@ -81,8 +81,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     @Override
     public boolean isFormExistsInDictionary(String strForm) {
-        boolean isFormExists = omoForms.containsKey(strForm.hashCode());
-        return isFormExists;
+        return omoForms.containsKey(strForm.hashCode());
     }
 
     @Override

@@ -43,21 +43,64 @@ import jmorfsdk.JMorfSdk;
 
 public final class LoadJMorfSdk {
 
-    private static LoadFromFile loadFromFile = new LoadBasedOnHashFromZip();
+    private final static LoadFromFile LOADFROMFILE = new LoadBasedOnHashFromZip();
     private static final boolean ISOUTPUTMESSAGESTOCONSOLEDEFAULT = true;
 
+    /**
+     * Загрзука библиотеки в режиме генерации и анализа 
+     * @return
+     */
     public static JMorfSdk loadFullLibrary() {
         return loadFullLibrary(ISOUTPUTMESSAGESTOCONSOLEDEFAULT);
     }
 
+    /**
+     * Загрзука библиотеки в режиме генерации и анализа
+     * @param isOutputMessagesToConsole
+     * @return
+     */
     public static JMorfSdk loadFullLibrary(boolean isOutputMessagesToConsole) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Загрзука библиотеки в режиме генерации
+     * @return
+     */
+    public static JMorfSdk loadInGeterationMode() {
+        return loadInGeterationMode(ISOUTPUTMESSAGESTOCONSOLEDEFAULT);
+    }
+
+    /**
+     * Загрзука библиотеки в режиме генерации
+     * @param isOutputMessagesToConsole
+     * @return
+     */
+    public static JMorfSdk loadInGeterationMode(boolean isOutputMessagesToConsole) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Загрзука библиотеки в режиме анализа
+     * @return
+     */
+    public static JMorfSdk loadInAnalysisMode() {
+        return loadInAnalysisMode(ISOUTPUTMESSAGESTOCONSOLEDEFAULT);
+    }
+
+    /**
+     * Загрзука библиотеки в режиме анализа
+     * @param isOutputMessagesToConsole
+     * @return
+     */
+    public static JMorfSdk loadInAnalysisMode(boolean isOutputMessagesToConsole) {
         JMorfSdk jMorfSdk;
         try {
             outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
-            jMorfSdk = loadFromFile.loadLibraryForSearchInitialForm();
-            outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
+            jMorfSdk = LOADFROMFILE.loadLibraryForSearchInitialForm();
             System.gc();
             Runtime.getRuntime().gc();
+            outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
             return jMorfSdk;
         } catch (Exception ex) {
             Logger.getLogger(LoadJMorfSdk.class.getName()).log(Level.WARNING, null, ex);
@@ -69,9 +112,5 @@ public final class LoadJMorfSdk {
         if (isOutputMessagesToConsole) {
             System.out.println(messages);
         }
-    }
-
-    public static void setLoadFromFile(LoadFromFile loadFromFile) {
-        LoadJMorfSdk.loadFromFile = loadFromFile;
     }
 }
