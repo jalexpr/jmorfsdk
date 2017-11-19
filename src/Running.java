@@ -1,52 +1,49 @@
-/*
- * Copyright (C) 2017  Alexander Porechny alex.porechny@mail.ru
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the Attribution-NonCommercial-ShareAlike 3.0 Unported
- * (CC BY-SA 3.0) as published by the Creative Commons.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-SA 3.0)
- * for more details.
- *
- * You should have received a copy of the Attribution-NonCommercial-ShareAlike
- * 3.0 Unported (CC BY-SA 3.0) along with this program.
- * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
- *
- *
- * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
- *
- * Эта программа свободного ПО: Вы можете распространять и / или изменять ее
- * в соответствии с условиями Attribution-NonCommercial-ShareAlike 3.0 Unported
- * (CC BY-SA 3.0), опубликованными Creative Commons.
- *
- * Эта программа распространяется в надежде, что она будет полезна,
- * но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; без подразумеваемой гарантии
- * КОММЕРЧЕСКАЯ ПРИГОДНОСТЬ ИЛИ ПРИГОДНОСТЬ ДЛЯ ОПРЕДЕЛЕННОЙ ЦЕЛИ.
- * См. Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-SA 3.0)
- * для более подробной информации.
- *
- * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
- * Unported (CC BY-SA 3.0) вместе с этой программой.
- * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
- */
+
 import java.io.IOException;
-import java.util.logging.*;
+import java.util.ArrayList;
+import jmorfsdk.AllCharacteristicsOfForm;
 import jmorfsdk.JMorfSdk;
+import jmorfsdk.grammeme.MorfologyParameters.*;
+import jmorfsdk.load.LoadJMorfSdk;
+
 public class Running {
 
     public static void main(String[] args) throws IOException {
-        try {
-            JMorfSdk jMorfSdk = new JMorfSdk();
-            jMorfSdk.start();
 
-            //System.in.read();
+        //Пример загрузки библиотеки
+        JMorfSdk jMorfSdk = LoadJMorfSdk.loadInAnalysisMode();
 
-            jMorfSdk.finish();
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Running.class.getName()).log(Level.SEVERE, null, ex);
+        //Пример получения характеристик заданой формы
+        ArrayList<AllCharacteristicsOfForm> characteristics = jMorfSdk.getAllCharacteristicsOfForm("гладь");
+        characteristics.forEach((form) -> {
+            System.out.println(form);
+        });
+
+        jMorfSdk.getAllCharacteristicsOfForm("мыла").forEach((form) -> {
+            //Пример поиска формы в родительном падеже
+            if (form.getTheMorfCharacteristic(Case.IDENTIFIER) == Case.GENITIVE) {
+                System.out.println("Форма в родительном падеже " + form);
+            }
+
+            //Пример поиска формы с частью речи глагол
+            if (form.getTypeOfSpeech() == TypeOfSpeech.VERB) {
+                System.out.println("Форма с глаголом найдена " + form);
+            }
+        });
+
+        //Пример проверки слов в словаре
+        if(jMorfSdk.isFormExistsInDictionary("че")) {
+            System.out.println("Слово \"че\" найдено");
+        } else {
+            System.out.println("Слово \"че\" не найдено");
         }
 
+        if(jMorfSdk.isFormExistsInDictionary("чтотакое")) {
+            System.out.println("Слово \"чтотакое\" найдено");
+        } else {
+            System.out.println("Слово \"чтотакое\" не найдено");
+        }
+
+        jMorfSdk.finish();
     }
 }

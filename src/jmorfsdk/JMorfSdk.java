@@ -14,6 +14,8 @@
  * 3.0 Unported (CC BY-SA 3.0) along with this program.
  * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
+ * Thanks to Sergey Politsyn and Katherine Politsyn for their help in the development of the library.
+ *
  *
  * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
  *
@@ -29,188 +31,128 @@
  *
  * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
  * Unported (CC BY-SA 3.0) вместе с этой программой.
- * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk;
 
-import jmorfsdk.form.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+import java.util.ArrayList;
+import jmorfsdk.form.InitialForm;
+import java.util.HashMap;
+import java.util.LinkedList;
+import jmorfsdk.form.Form;
 
-public final class JMorfSdk {
+public final class JMorfSdk implements JMorfSdkAccessInterface {
 
-    private HashMap<Integer, OmoForms> omoForms = new HashMap();
-    private HashMap<Integer, MainForm> mainForms = new HashMap();
-    private boolean isOutputMessagesToConsole = true;
-    private static String pathLibrary = "dictionary.format.number.txt";
-    private static String encoding = "Windows-1251";
-    private static String myRepository  = "https://github.com/jalexpr/JMorfSdk/";
+    //!NB InitialForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
+    private HashMap<Integer, LinkedList<Form>> omoForms = new HashMap();
 
-    static {
-        loadProperty();
+    public void addInitialForm(InitialForm mf) {
+        addForm(mf.hashCode(), mf);
     }
 
-    public JMorfSdk() {
-    }
-
-    public JMorfSdk(boolean isOutputMessagesToConsole) {
-        this.isOutputMessagesToConsole = isOutputMessagesToConsole;
-    }
-
-    private void addOmoForm(OmoForms of) {
-        omoForms.put(of.hashCode(), of);
-    }
-
-    public void addMainForm(MainForm mf) {
-        mainForms.put(mf.hashCode(), mf);
-    }
-
-    public void addFormInOmoForm(Form form) {
-        if (isOmoFormExistForForm(form)) {
-            getOmoFormByForm(form).addForm(form);
+    public void addForm(int hashCode, Form form) {
+        if (isOmoFormExistForForm(hashCode)) {
+            getOmoFormByForm(hashCode).add(form);
         } else {
-            addOmoForm(new OmoForms(form));
+            addNewOmoForm(hashCode, form);
         }
     }
 
-    public boolean isOmoFormExistForForm(Form form) {
-        return omoForms.containsKey(form.hashCode());
+    private void addNewOmoForm(int hashCode,Form form) {
+        LinkedList<Form> omoForm = new LinkedList<>();
+        omoForm.add(form);
+        omoForms.put(hashCode, omoForm);
     }
 
-    public OmoForms getOmoFormByForm(Form form) {
-        return omoForms.get(form.hashCode());
+    private boolean isOmoFormExistForForm(int hashCode) {
+        return omoForms.containsKey(hashCode);
     }
 
-    public void start() {
-        outputMessagesToConsole("Старт загрузки библиотеки");
-        
-        BufferedReader buffInput = openStreamFromFile();
-        loadFromFile(buffInput);
-        closeStream(buffInput);
-        outputMessagesToConsole("Библиотека готова к работе.");
-    }
-    
-    private BufferedReader openStreamFromFile() {
-        
-        BufferedReader buffInput = null;
-        try {
-            buffInput = new BufferedReader(new InputStreamReader(new FileInputStream(pathLibrary), encoding));
-        } catch (FileNotFoundException ex) {
-            String messages = "Ошибка при чтении файла.\r\nПроверте наличие "
-                    + pathLibrary + ", в случае отсуствия скачайте с репозитория " + myRepository + "\r\n";
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
-            System.exit(0);
-        } catch (UnsupportedEncodingException ex) {
-            String messages = "Ошибка при чтении файла.\r\n1)Проверте кодировку " + pathLibrary + " в соотвевствии с параметрами в property.xml."
-                    + "\r\n2)При отсутствии property.xml кодировка по умолчанию " + encoding + "."
-                    + "\r\n3)В случае отсуствия файлов, скачайте с репозитория " + myRepository + "\r\n";
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
-            System.exit(0);
-        }
-
-        return buffInput;
-    }
-
-    private void closeStream(BufferedReader buffInput) {
-        try {
-            buffInput.close();
-        } catch (IOException ex) {
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void loadFromFile(BufferedReader buffInput) {
-        
-        try {
-            buffInput.readLine();
-
-            while (buffInput.ready()) {
-                addLemma(buffInput.readLine());
-            }
-        } catch (IOException ex) {
-            String messages = "Проблема чтения с файла: " + pathLibrary + "\r\nСкачайте файл с репозитория " + myRepository;
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, messages);
-        } 
-    }
-
-    private void addLemma(String strLemma) {
-        MainForm mainForm = createMainForm(strLemma);
-        addMainForm(mainForm);
-        addWordForms(strLemma, mainForm);
-    }
-
-    private MainForm createMainForm(String strForms) {
-        String mainWordForm;
-        if (strForms.matches("\"")) {
-            mainWordForm = strForms.substring(0, strForms.indexOf("\""));
-        } else {
-            mainWordForm = strForms;
-        }
-        String[] mainWordParameters = mainWordForm.split(" ");
-        return new MainForm(mainWordParameters[0], mainWordParameters[1], mainWordParameters[2]);
-    }
-
-    private void addWordForms(String strLemma, MainForm mainForm) {
-
-        String[] arrayWordForms = strLemma.split("\"");
-
-        for (int i = 1; i < arrayWordForms.length; i++) {
-            WordForm wordForm = createWordForm(arrayWordForms[i], mainForm);
-            addFormInOmoForm(wordForm);
-        }
-    }
-
-    private WordForm createWordForm(String strForm, MainForm mainForm) {
-        String[] mainWordParam = strForm.split(" ");
-        return new WordForm(mainWordParam[0], Long.getLong(mainWordParam[1], 0x0), mainForm);
+    private LinkedList<Form> getOmoFormByForm(int hashCode) {
+        return omoForms.get(hashCode);
     }
 
     public void finish() {
         omoForms.clear();
-        mainForms.clear();
         omoForms = null;
-        mainForms = null;
     }
 
-    private static void loadProperty() {
-        try {
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse("property.xml");
-            Node root = document.getDocumentElement();
-            readProperty(root);
-        } catch (ParserConfigurationException | SAXException | IOException ex) {
-            String messages = "Не удается найти property.xml\r\nПрименены параметры по умолчанию!\r\n";
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.WARNING, messages);
-        }
+    @Override
+    public boolean isFormExistsInDictionary(String strForm) {
+        return omoForms.containsKey(strForm.hashCode());
     }
 
-    private static void readProperty(Node root) {
-
-        NodeList propertys = root.getChildNodes();
-        for (int i = 0; i < propertys.getLength(); i++) {
-            Node node = propertys.item(i);
-            if (node.getNodeType() != Node.TEXT_NODE) {
-                switch (node.getNodeName()) {
-                    case "pathLibrary":
-                        pathLibrary = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    case "encoding":
-                        encoding = node.getChildNodes().item(0).getTextContent();
-                        break;
-                    default:
-                        readProperty(node);
-                }
-            }
-        }
+    @Override
+    public boolean isInitialForm(String strForm) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void outputMessagesToConsole(String messages) {
-        if (isOutputMessagesToConsole) {
-            System.out.println(messages);
+    @Override
+    public ArrayList<Byte> getTypeOfSpeechs(String strForm) {
+
+        ArrayList<Byte> typeOfSpeechsList = new ArrayList<>();
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
+
+        for (Form form : formList) {
+            typeOfSpeechsList.add(form.getTypeOfSpeech());
         }
+        return typeOfSpeechsList;
+    }
+
+    private LinkedList<Form> getListFormByHachCode(int hashCode) {
+
+        LinkedList<Form> formList;
+
+        if (omoForms.containsKey(hashCode)) {
+            formList = omoForms.get(hashCode);
+        } else {
+            formList = new LinkedList<>();
+        }
+
+        return formList;
+    }
+
+    @Override
+    public ArrayList<Long> getMorfologyCharacteristics(String strForm) {
+
+        ArrayList<Long> morfologyCharacteristics = new ArrayList<>();
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
+
+        for (Form form : formList) {
+            morfologyCharacteristics.add(form.getMorfCharacteristics());
+        }
+        return morfologyCharacteristics;
+    }
+
+    @Override
+    public ArrayList<String> getStringInitialForm(String strForm) {
+
+        ArrayList<String> stringFormList = new ArrayList<>();
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
+
+        for (Form form : formList) {
+            stringFormList.add(form.getStringInitialForm());
+        }
+
+        return stringFormList;
+    }
+
+    @Override
+    public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm) {
+
+        ArrayList<AllCharacteristicsOfForm> list = new ArrayList<>();
+        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
+        AllCharacteristicsOfForm characteristicsOfForm;
+
+        for (Form form : formList) {
+            characteristicsOfForm = new AllCharacteristicsOfForm(form.getStringInitialForm(),
+                                                                    form.getTypeOfSpeech(),
+                                                                    form.getMorfCharacteristics());
+            list.add(characteristicsOfForm);
+        }
+
+        return list;
     }
 }

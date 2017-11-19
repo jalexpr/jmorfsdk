@@ -14,6 +14,8 @@
  * 3.0 Unported (CC BY-SA 3.0) along with this program.
  * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
+ * Thanks to Sergey Politsyn and Katherine Politsyn for their help in the development of the library.
+ *
  *
  * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
  *
@@ -29,21 +31,45 @@
  *
  * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
  * Unported (CC BY-SA 3.0) вместе с этой программой.
- * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.form;
 
-public class WordForm extends Form {
+public final class WordForm extends Form {
 
-    private final MainForm mainForm;
+    private final InitialForm initialForm;
+    private int myHashCode;
 
-    public WordForm(String strWord, long morfCharacteristics, MainForm mainForm) {
-        super(strWord, morfCharacteristics);
-        this.mainForm = mainForm;
-        mainForm.addWordfFormList(this);
+    public WordForm(long morfCharacteristics, InitialForm initialForm) {
+        super(morfCharacteristics);
+        this.initialForm = initialForm;
     }
 
+    public WordForm(int hashCode, long morfCharacteristics, InitialForm initialForm) {
+        super(morfCharacteristics);
+        this.initialForm = initialForm;
+        this.myHashCode = hashCode;
+        initialForm.addWordfFormInList(this);
+    }
+
+    public InitialForm getInitialForm() {
+        return initialForm;
+    }
+
+    @Override
+    public String getStringInitialForm() {
+        return initialForm.getStringForm();
+    }
+
+    @Override
     public byte getTypeOfSpeech() {
-        return mainForm.getTypeOfSpeech();
+        return getInitialForm().getTypeOfSpeech();
+    }
+
+    @Override
+    public String getStringForm() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

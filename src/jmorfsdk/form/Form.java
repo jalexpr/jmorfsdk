@@ -14,6 +14,8 @@
  * 3.0 Unported (CC BY-SA 3.0) along with this program.
  * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
+ * Thanks to Sergey Politsyn and Katherine Politsyn for their help in the development of the library.
+ *
  *
  * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
  *
@@ -29,57 +31,27 @@
  *
  * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
  * Unported (CC BY-SA 3.0) вместе с этой программой.
- * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.form;
 
-import java.util.Objects;
+public abstract class Form {
 
-public class Form {
-
-    private static long amountForm = 0;
-    private final String strWordform;
+    public static int formCount = 0;
     private final long morfCharacteristics;
 
-    public Form(String strWord) {
-        this(strWord, 0L);
-    }
-
-    public Form(String strWordform, long morfCharacteristics) {
-        Form.amountForm++;
-        this.strWordform = strWordform;
+    public Form(long morfCharacteristics) {
         this.morfCharacteristics = morfCharacteristics;
+        formCount++;
     }
 
-    public String getStringForm() {
-        return strWordform;
+    public long getMorfCharacteristics() {
+        return morfCharacteristics;
     }
 
-    @Override
-    public int hashCode() {
-        return strWordform.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Form other = (Form) obj;
-        return Objects.equals(this.strWordform, other.strWordform);
-    }
-
-    public int hashCodeByMorfCharact() {
-        return Long.toString(morfCharacteristics).hashCode();
-    }
-
-    public long getMorfCharacteristic(long morfIdentifier) {
-        return morfCharacteristics & morfIdentifier;
-    }
+    public abstract byte getTypeOfSpeech();
+    public abstract String getStringInitialForm();
+    public abstract String getStringForm();
 }
