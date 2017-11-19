@@ -14,6 +14,8 @@
  * 3.0 Unported (CC BY-SA 3.0) along with this program.
  * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
+ * Thanks to Sergey Politsyn and Katherine Politsyn for their help in the development of the library.
+ *
  *
  * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
  *
@@ -29,10 +31,13 @@
  *
  * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
  * Unported (CC BY-SA 3.0) вместе с этой программой.
- * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.load;
 
+import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,7 +66,7 @@ public final class LoadBasedOnHashFromZip implements LoadFromFile {
 
     @Override
     public JMorfSdk loadLibraryForSearchInitialForm() {
-        return loadLibraryForSearchInitialForm(true);
+        return loadLibraryForSearchInitialForm(false);
     }
 
     public JMorfSdk loadLibraryForSearchInitialForm(boolean isLoadFormInInitialForm) {
@@ -93,9 +98,9 @@ public final class LoadBasedOnHashFromZip implements LoadFromFile {
         throw new EOFException("Cannot find " + nameLibrary);
     }
 
-    private Scanner openScannerFromZipFile(String zipPath, String pathLibrary, String encoding) throws Exception {
+    private  Scanner openScannerFromZipFile(String pathZip, String pathLibrary, String encoding) throws Exception {
         try {
-            return new Scanner(openZipFile(zipPath, pathLibrary), encoding);
+            return new Scanner(openZipFile(pathZip, pathLibrary), encoding);
         } catch (FileNotFoundException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", pathLibrary, MYREPOSITORY);
             Logger.getLogger(LoadBasedOnHashFromZip.class.getName()).log(Level.SEVERE, messages);
@@ -103,42 +108,43 @@ public final class LoadBasedOnHashFromZip implements LoadFromFile {
         }
     }
 
-    private JMorfSdk loadHashAndString(InputStream inputStreamHashCodeAndMorfCharacteristics, Scanner scannerInitialFormString, boolean isLoadFormInInitialForm) {
+    private JMorfSdk loadHashAndString(InputStream inputStreamHashAndMorfCharacteristics, Scanner scannerInitialFormString, boolean isLoadFormInInitialForm) {
 
         JMorfSdk jMorfSdk = new JMorfSdk();
         HashMap<Integer, String> initialFormString = loadInitialFormString(scannerInitialFormString);
-        MyIterator iterator = new MyIterator();
 
-        byte[] bytesFile;
-        try {
-            bytesFile = sun.misc.IOUtils.readFully(inputStreamHashCodeAndMorfCharacteristics, sizeFileHashAndMorfCharacteristics, true);
+        try (BufferedInputStream inputStream = new BufferedInputStream(inputStreamHashAndMorfCharacteristics)) {
+//            bytesFile = sun.misc.IOUtils.readFully(inputStreamHashCodeAndMorfCharacteristics, sizeFileHashAndMorfCharacteristics, true);
+//            int i;
+//            for(i = 0; i < sizeFileHashAndMorfCharacteristics; i++){
+//                inputStreamHashCodeAndMorfCharacteristics.read();
+//            }
+            int nextHashCode = 0;
+            while (inputStream.available() > 0) {
 
-            while (iterator.iterator < bytesFile.length) {
-
-                int nextHashCode = getHashCodeFromBytes(bytesFile, iterator);
+                nextHashCode = getHashCodeFromBytes(inputStream);
                 InitialForm initialForm = new InitialForm(initialFormString.get(nextHashCode),
-                        getTypeOfSpeechFromBytes(bytesFile, iterator),
-                        getMorfCharacteristicsFromBytes(bytesFile, iterator));
+                        getTypeOfSpeechFromBytes(inputStream),
+                        getMorfCharacteristicsFromBytes(inputStream));
                 jMorfSdk.addInitialForm(initialForm);
 
-                nextHashCode = getHashCodeFromBytes(bytesFile, iterator);
+                nextHashCode = getHashCodeFromBytes(inputStream);
                 while (nextHashCode != CONTROLVALUE) {
                     if (isLoadFormInInitialForm) {
-                        WordForm wordForm = new WordForm(getMorfCharacteristicsFromBytes(bytesFile, iterator), initialForm);
+                        WordForm wordForm = new WordForm(getMorfCharacteristicsFromBytes(inputStream), initialForm);
                         initialForm.addWordfFormInList(wordForm);
                         jMorfSdk.addForm(nextHashCode, wordForm);
                     } else {
-                        jMorfSdk.addForm(nextHashCode, new WordForm(getMorfCharacteristicsFromBytes(bytesFile, iterator), initialForm));
+                        jMorfSdk.addForm(nextHashCode, new WordForm(getMorfCharacteristicsFromBytes(inputStream), initialForm));
                     }
-                    nextHashCode = getHashCodeFromBytes(bytesFile, iterator);
+                    nextHashCode = getHashCodeFromBytes(inputStream);
                 }
                 initialForm.trimToSize();
-                iterator.iterator += 4;
             }
+            inputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(LoadBasedOnHashFromZip.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            bytesFile = null;
             initialFormString.clear();
             initialFormString = null;
         }
@@ -155,28 +161,31 @@ public final class LoadBasedOnHashFromZip implements LoadFromFile {
         return initialForm;
     }
 
-    private int getHashCodeFromBytes(byte[] bytesFile, MyIterator iterator) {
-        return (int) getValueCodeFromBytes(bytesFile, 4, iterator);
+    private int getHashCodeFromBytes(InputStream inputStream) {
+        return (int) getValueCodeFromBytes(inputStream, 4);
     }
 
-    private byte getTypeOfSpeechFromBytes(byte[] bytesFile, MyIterator iterator) {
-        byte typeOfSpeech = bytesFile[iterator.iterator];
-        iterator.iterator++;
+    private byte getTypeOfSpeechFromBytes(InputStream inputStream) throws IOException {
+        byte typeOfSpeech = (byte) inputStream.read();
         return typeOfSpeech;
     }
 
-    private long getMorfCharacteristicsFromBytes(byte[] bytesFile, MyIterator iterator) {
-        return getValueCodeFromBytes(bytesFile, 8, iterator);
+    private long getMorfCharacteristicsFromBytes(InputStream inputStream) {
+        return getValueCodeFromBytes(inputStream, 8);
     }
 
-    private long getValueCodeFromBytes(byte[] bytesFile, int countByte, MyIterator iterator) {
+    private long getValueCodeFromBytes(InputStream inputStream, int countByte) {
         int hashCode = 0;
-        for (int i = 0; i < countByte; i++) {
-            int f = 0xFF & bytesFile[iterator.iterator + countByte - i - 1];
-            int g1 = f << (8 * i);
-            hashCode |= g1;
+        try {
+            for (int i = 0; i < countByte; i++) {
+                int f = 0xFF & inputStream.read();
+                int g1 = f << (8 * (countByte - 1 - i));
+                hashCode |= g1;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LoadBasedOnHashFromZip.class.getName()).log(Level.SEVERE, "Не ожиданное окончание файла, проверте целостность файлов!", ex);
         }
-        iterator.iterator += countByte;
+
         return hashCode;
     }
 
@@ -198,9 +207,5 @@ public final class LoadBasedOnHashFromZip implements LoadFromFile {
     @Override
     public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private class MyIterator {
-        public int iterator = 0;
     }
 }

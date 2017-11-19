@@ -14,6 +14,8 @@
  * 3.0 Unported (CC BY-SA 3.0) along with this program.
  * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
+ * Thanks to Sergey Politsyn and Katherine Politsyn for their help in the development of the library.
+ *
  *
  * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
  *
@@ -29,7 +31,9 @@
  *
  * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
  * Unported (CC BY-SA 3.0) вместе с этой программой.
- * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk;
 
@@ -55,7 +59,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
             addNewOmoForm(hashCode, form);
         }
     }
-    
+
     private void addNewOmoForm(int hashCode,Form form) {
         LinkedList<Form> omoForm = new LinkedList<>();
         omoForm.add(form);
@@ -124,7 +128,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public ArrayList<String> getFormInInitialForm(String strForm) {
+    public ArrayList<String> getStringInitialForm(String strForm) {
 
         ArrayList<String> stringFormList = new ArrayList<>();
         LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());

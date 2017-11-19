@@ -14,6 +14,8 @@
  * 3.0 Unported (CC BY-SA 3.0) along with this program.
  * If not, see <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
+ * Thanks to Sergey Politsyn and Katherine Politsyn for their help in the development of the library.
+ *
  *
  * Copyright (C) 2017 Александр Поречный alex.porechny@mail.ru
  *
@@ -29,7 +31,9 @@
  *
  * Вы должны были получить копию Attribution-NonCommercial-ShareAlike 3.0
  * Unported (CC BY-SA 3.0) вместе с этой программой.
- * Если нет, см. <Https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
+ *
+ * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk;
 
@@ -41,6 +45,6 @@ public interface JMorfSdkAccessInterface {
     public boolean isInitialForm(String strForm);
     public ArrayList<Byte> getTypeOfSpeechs(String strForm);
     public ArrayList<Long> getMorfologyCharacteristics(String strForm);
-    public ArrayList<String> getFormInInitialForm(String strForm);
+    public ArrayList<String> getStringInitialForm(String strForm);
     public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm);
 }
