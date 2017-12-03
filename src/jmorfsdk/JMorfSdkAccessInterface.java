@@ -47,4 +47,5 @@ public interface JMorfSdkAccessInterface {
     public ArrayList<Long> getMorfologyCharacteristics(String strForm);
     public ArrayList<String> getStringInitialForm(String strForm);
     public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm);
+    public String getDerivativeForm(String initialForm, long morfCharacteristics) throws Exception;
 }

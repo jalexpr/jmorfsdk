@@ -55,7 +55,6 @@ public final class InitialForm extends Form {
         this.strInitialForm = strWordform;
     }
 
-    @Override
     public String getStringForm() {
         return strInitialForm;
     }
@@ -84,7 +83,7 @@ public final class InitialForm extends Form {
     }
 
     public ArrayList<WordForm> getWordFormList() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return wordFormList;
     }
 
     @Override

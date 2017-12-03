@@ -37,16 +37,23 @@
  */
 package jmorfsdk;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import jmorfsdk.form.InitialForm;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jmorfsdk.form.Form;
+import jmorfsdk.form.WordForm;
+import jmorfsdk.load.LoadFromFileAndBD;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     //!NB InitialForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
     private HashMap<Integer, LinkedList<Form>> omoForms = new HashMap();
+    private BDSqlite bdWordFormString = null;
 
     public void addInitialForm(InitialForm mf) {
         addForm(mf.hashCode(), mf);
@@ -154,5 +161,52 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         }
 
         return list;
+    }
+    
+    @Override
+    public String getDerivativeForm(String initialFormString, long morfCharacteristics) throws Exception {
+        
+        InitialForm initialForm = null;
+        List<Form> listForm = omoForms.get(initialFormString.hashCode());
+        if(listForm == null) {
+            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не найден в словаре!", initialFormString));
+            throw new Exception();
+        }
+        
+        for(Form form : listForm) {
+            if(form instanceof InitialForm) {
+                initialForm = (InitialForm) form;
+                break;
+            }
+        }
+        listForm = null;
+        
+        if(initialForm == null) {
+            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не является начальной формой слова!", initialFormString));
+            throw new Exception();
+        }
+        
+        for(WordForm wordForm : initialForm.getWordFormList()) {
+            if (((wordForm.getMorfCharacteristics() ^ morfCharacteristics) & morfCharacteristics) == 0) {
+                System.out.println("Подходящая форма String = " + getStringById(wordForm.getMyId()));
+            }
+        }
+        
+        return null;
+    }
+    
+    public Object getStringById(int id) {
+        try {
+            return bdWordFormString.executeQuery(String.format("SELECT * FROM  'WordForm' where id = %d", id)).getObject("StringForm");
+        } catch (NullPointerException ex) {
+            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, "Загрузите бибилиотеку в режиме генерации");
+        } catch (SQLException ex) {
+            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, "БД для генерации не загружена", ex);
+        }
+        return null;
+    }
+    
+    public void addBD(BDSqlite bd) {
+        this.bdWordFormString = bd;
     }
 }

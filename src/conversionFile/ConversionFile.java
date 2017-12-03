@@ -37,112 +37,82 @@
  */
 package conversionFile;
 
+import jmorfsdk.BDSqlite;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jmorfsdk.load.FileOpen;
 import jmorfsdk.load.Property;
 
 public class ConversionFile {
 
-    private static final byte[] CONTROLVALUE = new byte[]{-1, -1, -1, -1, -1, -1, -1, -1};
-    private final BufferedReader inReader;
-    private final FileOutputStream outHashCodeAndMorfCharacteristics;
-    private final BufferedWriter outHashCodeAndInitialFormString;
-    private final BufferedWriter outHashCodeAndString;
-    private HashSet<String> omoForm;
+    private static final byte[] CONTROLVALUE = new byte[]{-1, -1, -1, -1};
+    private BufferedReader inReader;
+    private FileOutputStream outHashCodeAndMorfCharacteristics;
+    private BufferedWriter outInitialFormString;
+    private HashMap<Integer, IdAndString> stringWordFormAndId;
 
-    public static void main(String[] args) {
-        String inPath = "dictionary.format.number.txt";
-
-        ConversionFile converFile = new ConversionFile(inPath, Property.pathHashAndMorfCharacteristics, Property.pathInitialFormString, Property.pathWordFormString);
-        converFile.conversionFile();
+    public ConversionFile(String inPath, String hashCodeAndMorfCharacteristicsPath, String pathStringInitialForm, String pathStringWordForm) {
+        init(inPath, hashCodeAndMorfCharacteristicsPath, pathStringInitialForm, pathStringWordForm);
     }
 
-    public ConversionFile(String inPath, String hashCodeAndMorfCharacteristicsPath, String hashCodeAndInitialFormStringPath, String hashCodeAndStringPath){
-        inReader = openBufferedReaderStreamFromFile(inPath, Property.encoding);
-        outHashCodeAndMorfCharacteristics = openFileInputStreamFromFile(hashCodeAndMorfCharacteristicsPath);
-        outHashCodeAndInitialFormString = openBufferedWriterStreamFromFile(hashCodeAndInitialFormStringPath, Property.encoding);
-        outHashCodeAndString = openBufferedWriterStreamFromFile(hashCodeAndStringPath, Property.encoding);
+    private void init(String inPath, String hashCodeAndMorfCharacteristicsPath, String pathStringInitialForm, String pathStringWordForm) {
+        inReader = FileOpen.openBufferedReaderStream(inPath, Property.encoding);
+        outHashCodeAndMorfCharacteristics = FileOpen.openFileInputStream(hashCodeAndMorfCharacteristicsPath);
+        outInitialFormString = FileOpen.openBufferedWriterStream(pathStringInitialForm, Property.encoding);
+        stringWordFormAndId = generateMapIdAndString(FileOpen.openBufferedReaderStream(pathStringWordForm, Property.encoding));
     }
-
-    public void conversionFile(){
-        omoForm = new HashSet<>();
+    
+    private HashMap<Integer, IdAndString> generateMapIdAndString(BufferedReader outReader) {
+        HashMap<Integer, IdAndString> mapStringAndId = new HashMap<>();
         try {
-            //Пропускаем первую строчку в которой хранится информация
-            inReader.readLine();
-            int count = 0;
-            while(inReader.ready() && count < 25000) {
-                saveLemma(inReader.readLine());
-//                count++;
+            int id = 0;
+            while (outReader.ready()) {
+                id++;
+                IdAndString stringAndID = new IdAndString(outReader.readLine(), id);
+                mapStringAndId.put(stringAndID.hashCode(), stringAndID);
             }
-            saveHashCodeAndString();
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        return mapStringAndId;
+    }
+    
+    private void saveInBD(String nameBD) {
+        nameBD = nameBD + ".bd";
+        BDSqlite outBD = new BDSqlite(nameBD);
+        outBD.execute("CREATE TABLE if not exists 'WordForm' ('id' INTEGER NOT NULL, 'StringForm' TEXT NOT NULL, PRIMARY KEY('id'))");
+        saveStringAndIdInBD(stringWordFormAndId, outBD);
+        outBD.closeDB();
+    }
+
+    private void saveStringAndIdInBD(HashMap<Integer, IdAndString> stringWordFormAndId, BDSqlite outDBWordFormString) {
+        
+        outDBWordFormString.execute("BEGIN TRANSACTION");
+        for (Object obj : stringWordFormAndId.values()) {
+            IdAndString idAndString = (IdAndString) obj;
+            outDBWordFormString.execute(String.format("INSERT INTO 'WordForm' ('id','StringForm') VALUES (%d, '%s'); ", idAndString.myId, idAndString.myString));
+        }
+        outDBWordFormString.execute("END TRANSACTION");
+    }
+
+    public void conversionFile() {
         try {
-            inReader.close();
-            outHashCodeAndMorfCharacteristics.flush();
-            outHashCodeAndInitialFormString.flush();
-            outHashCodeAndString.flush();
+            //Пропускаем первую строчку, в которой хранится системная информация
+            inReader.readLine();
+            while (inReader.ready()) {
+                saveLemma(inReader.readLine());
+            }
+            
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private static BufferedReader openBufferedReaderStreamFromFile(String pathFile, String encoding ) {
-
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(pathFile), encoding));
-        } catch (FileNotFoundException ex) {
-            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s\r\n", pathFile);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
-        } catch (UnsupportedEncodingException ex) {
-            String messages = String.format("Ошибка при чтении файла.\r\n1)Проверте кодировку %s в соотвевствии с параметрами в property.xml.\r\n2)При отсутствии property.xml кодировка по умолчанию %s\r\n\r\n",
-                pathFile, encoding);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
-        }
-
-        return bufferedReader;
-    }
-
-    private static FileOutputStream openFileInputStreamFromFile(String pathFile ) {
-
-        FileOutputStream fileInputStream = null;
-        try {
-            fileInputStream = new FileOutputStream(pathFile);
-        } catch (FileNotFoundException ex) {
-            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s\r\n", pathFile);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
-        }
-
-        return fileInputStream;
-    }
-    private static BufferedWriter openBufferedWriterStreamFromFile(String pathFile, String encoding ) {
-
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathFile), encoding));
-        } catch (FileNotFoundException ex) {
-            String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s\r\n", pathFile);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
-        } catch (UnsupportedEncodingException ex) {
-            String messages = String.format("Ошибка при чтении файла.\r\n1)Проверте кодировку %s в соотвевствии с параметрами в property.xml.\r\n2)При отсутствии property.xml кодировка по умолчанию %s\r\n\r\n",
-                pathFile, encoding);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
-        }
-
-        return bufferedWriter;
     }
 
     private void saveLemma(String strForms) {
@@ -166,22 +136,14 @@ public class ConversionFile {
             outHashCodeAndMorfCharacteristics.write(Byte.decode("0x" + initialFormParameters[1]));
             outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(initialFormParameters[2], 16).longValue()));
 
-            outHashCodeAndInitialFormString.write(initialFormParameters[0]);
-            outHashCodeAndInitialFormString.newLine();
+            outInitialFormString.write(initialFormParameters[0]);
+            outInitialFormString.newLine();
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private static String hashCodeToStringHer(int hashCode) {
-        String hashCodeString = Integer.toHexString(hashCode);
-        while(hashCodeString.length() < 8) {
-            hashCodeString = "0" + hashCodeString;
-        }
-        return hashCodeString;
-    }
-
-    private static byte [] getBytes(int value) {
+    private static byte[] getBytes(int value) {
         byte[] bytes = new byte[]{
             (byte) (value >> 24),
             (byte) (value >> 16),
@@ -210,41 +172,81 @@ public class ConversionFile {
         String[] arrayWordForms = strLemma.split("\"");
 
         for (int i = 1; i < arrayWordForms.length; i++) {
-            saveWordForm(arrayWordForms[i]);
+            saveForm(arrayWordForms[i]);
         }
     }
 
-    private void saveWordForm(String strForm) {
+    private void saveForm(String strForm) {
 
         String[] wordlFormParameters = strForm.split(" ");
+        int hashCodeForm = 0;
         try {
-            int hashCodeForm = wordlFormParameters[0].hashCode();
+            hashCodeForm = wordlFormParameters[0].hashCode();
             outHashCodeAndMorfCharacteristics.write(getBytes(hashCodeForm));
             outHashCodeAndMorfCharacteristics.write(getBytes(new BigInteger(wordlFormParameters[1], 16).longValue()));
-
-            omoForm.add(wordlFormParameters[0]);
+            outHashCodeAndMorfCharacteristics.write(getBytes(stringWordFormAndId.get(hashCodeForm).myId));
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, strForm, ex);
+            System.err.println(stringWordFormAndId.get(hashCodeForm));
         }
     }
 
-    private void saveEndLemma(){
+    private void saveEndLemma() {
         try {
             outHashCodeAndMorfCharacteristics.write(CONTROLVALUE);
         } catch (IOException ex) {
             Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void closeFiles() {
+        FileOpen.closeFile(inReader);
+        FileOpen.closeFile(outHashCodeAndMorfCharacteristics);
+        FileOpen.closeFile(outInitialFormString);
+    }
+    
+    private class IdAndString {
 
-    private void saveHashCodeAndString(){
-        for(Object obj : omoForm.toArray()) {
-            String str = (String) obj;
-            try {
-                outHashCodeAndString.write(str);
-                outHashCodeAndString.newLine();
-            } catch (IOException ex) {
-                Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        public final String myString;
+        public final int myId;
+
+        public IdAndString(String string, int id) {
+            myString = string;
+            myId = id;
         }
+
+        @Override
+        public int hashCode() {
+            return myString.hashCode(); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final IdAndString other = (IdAndString) obj;
+            if (!this.myString.equals(other.myString)) {
+                return false;
+            }
+            return true;
+        }
+    }
+    
+    public static void main(String[] args) {
+        String inPath = "dictionary.format.number.txt";
+
+        ConversionFile converFile = new ConversionFile(inPath, Property.pathHashAndMorfCharacteristics, Property.pathInitialFormString, Property.pathWordFormString);
+        converFile.saveInBD(Property.pathWordFormString);
+        converFile.conversionFile();
+        converFile.closeFiles();
     }
 }

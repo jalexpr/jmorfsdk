@@ -51,6 +51,7 @@ public class AllCharacteristicsOfForm {
 
     /**
      * Получить String в начальной форме
+     *
      * @return
      */
     public String getInitialFormString() {
@@ -59,6 +60,7 @@ public class AllCharacteristicsOfForm {
 
     /**
      * Получить часть речи
+     *
      * @return
      */
     public byte getTypeOfSpeech() {
@@ -67,6 +69,7 @@ public class AllCharacteristicsOfForm {
 
     /**
      * Получить все морф. характеристики, кроме части речи
+     *
      * @return
      */
     public long getMorfCharacteristics() {
@@ -75,6 +78,7 @@ public class AllCharacteristicsOfForm {
 
     /**
      * Получить морф. характеристики, кроме части речи
+     *
      * @param IDENTIFIER
      * @return
      */
@@ -83,7 +87,7 @@ public class AllCharacteristicsOfForm {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return String.format("initialFormString = %s, typeOfSpeech = %d, morfCharacteristics = %d", initialFormString, typeOfSpeech, morfCharacteristics);
     }
 }

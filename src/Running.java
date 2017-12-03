@@ -8,11 +8,12 @@ import jmorfsdk.load.LoadJMorfSdk;
 
 public class Running {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, Exception {
 
         //Пример загрузки библиотеки
         JMorfSdk jMorfSdk = LoadJMorfSdk.loadInAnalysisMode();
 
+        System.err.println("");
         //Пример получения характеристик заданой формы
         ArrayList<AllCharacteristicsOfForm> characteristics = jMorfSdk.getAllCharacteristicsOfForm("гладь");
         characteristics.forEach((form) -> {
@@ -31,6 +32,16 @@ public class Running {
             }
         });
 
+        ArrayList<AllCharacteristicsOfForm> characteristics1 = jMorfSdk.getAllCharacteristicsOfForm("замок");
+        characteristics1.forEach((form) -> {
+            System.out.println(form);
+        });
+
+        ArrayList<AllCharacteristicsOfForm> characteristics2 = jMorfSdk.getAllCharacteristicsOfForm("по");
+        characteristics2.forEach((form) -> {
+            System.out.println(form);
+        });
+
         //Пример проверки слов в словаре
         if(jMorfSdk.isFormExistsInDictionary("че")) {
             System.out.println("Слово \"че\" найдено");
@@ -43,6 +54,8 @@ public class Running {
         } else {
             System.out.println("Слово \"чтотакое\" не найдено");
         }
+
+//        jMorfSdk.getDerivativeForm("мыло", Animacy.INANIMATE | Gender.MANS);
 
         jMorfSdk.finish();
     }

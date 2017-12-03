@@ -53,6 +53,7 @@ public final class Property {
     public static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic";
     public static String pathInitialFormString = "dictionary.format.initialFormString.txt";
     public static String pathWordFormString = "dictionary.format.wordFormString.txt";
+    public static String pathBD = "dictionary.format.wordFormString.bd";
     public static String pathZipDictionary = "dictionary.zip";
     public static String encoding = "Windows-1251";
 

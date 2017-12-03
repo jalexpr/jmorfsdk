@@ -43,7 +43,7 @@ import jmorfsdk.JMorfSdk;
 
 public final class LoadJMorfSdk {
 
-    private final static LoadFromFile LOADFROMFILE = new LoadBasedOnHashFromZip();
+    private final static Load LOADFROMFILE = new LoadFromFileAndBD();
     private static final boolean ISOUTPUTMESSAGESTOCONSOLEDEFAULT = true;
 
     /**
@@ -60,7 +60,18 @@ public final class LoadJMorfSdk {
      * @return
      */
     public static JMorfSdk loadFullLibrary(boolean isOutputMessagesToConsole) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JMorfSdk jMorfSdk;
+        try {
+            outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
+            jMorfSdk = LOADFROMFILE.loadFullLibrary();
+            System.gc();
+            Runtime.getRuntime().gc();
+            outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
+            return jMorfSdk;
+        } catch (Exception ex) {
+            Logger.getLogger(LoadJMorfSdk.class.getName()).log(Level.WARNING, null, ex);
+            return new JMorfSdk();
+        }
     }
 
     /**

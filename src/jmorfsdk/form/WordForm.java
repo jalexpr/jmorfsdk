@@ -40,17 +40,17 @@ package jmorfsdk.form;
 public final class WordForm extends Form {
 
     private final InitialForm initialForm;
-    private int myHashCode;
+    private int myId;
 
     public WordForm(long morfCharacteristics, InitialForm initialForm) {
         super(morfCharacteristics);
         this.initialForm = initialForm;
     }
 
-    public WordForm(int hashCode, long morfCharacteristics, InitialForm initialForm) {
+    public WordForm(long morfCharacteristics, int idInFile, InitialForm initialForm) {
         super(morfCharacteristics);
         this.initialForm = initialForm;
-        this.myHashCode = hashCode;
+        this.myId = idInFile;
         initialForm.addWordfFormInList(this);
     }
 
@@ -68,8 +68,7 @@ public final class WordForm extends Form {
         return getInitialForm().getTypeOfSpeech();
     }
 
-    @Override
-    public String getStringForm() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int getMyId() {
+        return myId;
     }
 }
