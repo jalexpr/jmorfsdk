@@ -73,7 +73,7 @@ public class ConversionFile {
         HashMap<Integer, IdAndString> mapStringAndId = new HashMap<>();
         try {
             int id = 0;
-            stringWordFormAndId.put(0, new IdAndString("Слово_не_найдено", 0));
+            mapStringAndId.put(0, new IdAndString("Слово_не_найдено", 0));
             while (outReader.ready()) {
                 id++;
                 IdAndString stringAndID = new IdAndString(outReader.readLine(), id);
@@ -290,7 +290,7 @@ public class ConversionFile {
 
         ConversionFile.createdInitianAndWordFormString();
         ConversionFile converFile = new ConversionFile();
-//        converFile.saveInBD(Property.pathWordFormString, false);
+        converFile.saveInBD(Property.pathWordFormString, false);
         converFile.conversionFile();
         converFile.saveInBD(Property.pathInitialFormString, true);
         converFile.closeFiles();
