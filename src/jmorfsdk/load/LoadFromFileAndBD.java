@@ -33,19 +33,16 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.load;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
-import jmorfsdk.BDSqlite;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
@@ -66,60 +63,45 @@ public final class LoadFromFileAndBD implements Load {
 
     public JMorfSdk loadLibraryForSearchInitialForm(boolean isLoadGenerationdMode) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
-        Scanner scannerInitialFormString = null;
         try {
             streamHashAndMorfCharacteristic = FileOpen.openZipFile(Property.pathZipDictionary, Property.pathHashAndMorfCharacteristics);
-            scannerInitialFormString = FileOpen.openScannerFromZipFile(Property.pathZipDictionary, Property.pathInitialFormString, Property.encoding);
-            return loadJMorfSdk(streamHashAndMorfCharacteristic, scannerInitialFormString, Property.pathBD, isLoadGenerationdMode);
-        } catch (Exception ex) {
+            return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationdMode);
+        } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
             return new JMorfSdk();
         } finally {
             FileOpen.closeFile(streamHashAndMorfCharacteristic);
-            FileOpen.closeFile(scannerInitialFormString);
         }
     }
 
-    private JMorfSdk loadJMorfSdk(InputStream inputStreamHashAndMorfCharacteristics, Scanner scannerInitialFormString, String nameBD, boolean isLoadFormInInitialForm) {
+    private JMorfSdk loadJMorfSdk(InputStream inputStreamHashAndMorfCharacteristics, boolean isLoadFormInInitialForm) {
 
         JMorfSdk jMorfSdk = new JMorfSdk();
-        HashMap<Integer, String> initialFormString = loadInitialFormString(scannerInitialFormString);
         try (BufferedInputStream inputStream = new BufferedInputStream(inputStreamHashAndMorfCharacteristics)) {
             while (inputStream.available() > 0) {
-                InitialForm initialForm = createInitialForm(inputStream, initialFormString);
-                jMorfSdk.addInitialForm(initialForm);
+                int hashCode = getHashCodeFromBytes(inputStream);
+//                if(hashCode == -1) {
+//                    //конец файла
+//                    break;
+//                }
+                InitialForm initialForm = createInitialForm(inputStream);
+                jMorfSdk.addForm(hashCode, initialForm);
                 addWordForm(jMorfSdk, initialForm, inputStream, isLoadFormInInitialForm);
             }
             inputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            //Конец Файл, ничего не делаем
-        } finally {
-            initialFormString.clear();
-            initialFormString = null;
-        }
-
-        if (isLoadFormInInitialForm) {
-            jMorfSdk.addBD(new BDSqlite(nameBD));
         }
 
         return jMorfSdk;
     }
 
-    private InitialForm createInitialForm(BufferedInputStream inputStream, HashMap<Integer, String> initialFormString) throws IOException, Exception {
-        int nextHashCode = getHashCodeFromBytes(inputStream);
-        if(nextHashCode == -1) {
-            throw new Exception("Конец файла");
-        }
-        String formString = initialFormString.get(nextHashCode);
-        if(formString == null) {
-            throw new IOException(String.format("nextHashCode = %d;",nextHashCode));
-        }
-        InitialForm initialForm = new InitialForm(initialFormString.get(nextHashCode),
+    private InitialForm createInitialForm(BufferedInputStream inputStream) throws IOException {
+
+        return new InitialForm(
                 getTypeOfSpeechFromBytes(inputStream),
-                getMorfCharacteristicsFromBytes(inputStream));
-        return initialForm;
+                getMorfCharacteristicsFromBytes(inputStream),
+                getHashCodeFromBytes(inputStream));
     }
 
     private void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream, boolean isLoadFormInInitialForm) {
@@ -133,16 +115,6 @@ public final class LoadFromFileAndBD implements Load {
             nextHashCode = getHashCodeFromBytes(inputStream);
         }
         initialForm.trimToSize();
-    }
-
-    private HashMap<Integer, String> loadInitialFormString(Scanner readerFormHashAndString) {
-        HashMap<Integer, String> initialForm = new HashMap<>();
-        while (readerFormHashAndString.hasNext()) {
-            String formString = readerFormHashAndString.nextLine();
-            initialForm.put(formString.hashCode(), formString);
-        }
-
-        return initialForm;
     }
 
     private int getIdForm(InputStream inputStream) {

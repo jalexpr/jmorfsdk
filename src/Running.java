@@ -1,21 +1,23 @@
 
 import java.io.IOException;
-import java.util.ArrayList;
-import jmorfsdk.AllCharacteristicsOfForm;
+import java.util.List;
+import morphologicalstructures.OmoForm;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.grammeme.MorfologyParameters.*;
-import jmorfsdk.load.LoadJMorfSdk;
-
+import jmorfsdk.load.JMorfSdkLoad;
+//import load.BDInitialFormString;
 public class Running {
 
     public static void main(String[] args) throws IOException, Exception {
 
         //Пример загрузки библиотеки
-        JMorfSdk jMorfSdk = LoadJMorfSdk.loadInAnalysisMode();
+        JMorfSdk jMorfSdk = JMorfSdkLoad.loadInAnalysisMode();
 
+//        BDInitialFormString.printAll(true);
+        
         System.err.println("");
         //Пример получения характеристик заданой формы
-        ArrayList<AllCharacteristicsOfForm> characteristics = jMorfSdk.getAllCharacteristicsOfForm("гладь");
+        List<OmoForm> characteristics = jMorfSdk.getAllCharacteristicsOfForm("гладь");
         characteristics.forEach((form) -> {
             System.out.println(form);
         });
@@ -32,12 +34,12 @@ public class Running {
             }
         });
 
-        ArrayList<AllCharacteristicsOfForm> characteristics1 = jMorfSdk.getAllCharacteristicsOfForm("замок");
+        List<OmoForm> characteristics1 = jMorfSdk.getAllCharacteristicsOfForm("замок");
         characteristics1.forEach((form) -> {
             System.out.println(form);
         });
 
-        ArrayList<AllCharacteristicsOfForm> characteristics2 = jMorfSdk.getAllCharacteristicsOfForm("по");
+        List<OmoForm> characteristics2 = jMorfSdk.getAllCharacteristicsOfForm("по");
         characteristics2.forEach((form) -> {
             System.out.println(form);
         });

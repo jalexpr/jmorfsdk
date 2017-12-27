@@ -33,12 +33,11 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
+import load.BDInitialFormString;
 import jmorfsdk.form.InitialForm;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -48,16 +47,13 @@ import java.util.logging.Logger;
 import jmorfsdk.form.Form;
 import jmorfsdk.form.WordForm;
 import jmorfsdk.load.LoadFromFileAndBD;
+import morphologicalstructures.OmoForm;
+import storagestructures.OmoFormList;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     //!NB InitialForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
     private HashMap<Integer, LinkedList<Form>> omoForms = new HashMap();
-    private BDSqlite bdWordFormString = null;
-
-    public void addInitialForm(InitialForm mf) {
-        addForm(mf.hashCode(), mf);
-    }
 
     public void addForm(int hashCode, Form form) {
         if (isOmoFormExistForForm(hashCode)) {
@@ -97,9 +93,9 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public ArrayList<Byte> getTypeOfSpeechs(String strForm) {
+    public LinkedList<Byte> getTypeOfSpeechs(String strForm) {
 
-        ArrayList<Byte> typeOfSpeechsList = new ArrayList<>();
+        LinkedList<Byte> typeOfSpeechsList = new LinkedList<>();
         LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
         for (Form form : formList) {
@@ -122,9 +118,9 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public ArrayList<Long> getMorfologyCharacteristics(String strForm) {
+    public LinkedList<Long> getMorfologyCharacteristics(String strForm) {
 
-        ArrayList<Long> morfologyCharacteristics = new ArrayList<>();
+        LinkedList<Long> morfologyCharacteristics = new LinkedList<>();
         LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
         for (Form form : formList) {
@@ -134,27 +130,27 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public ArrayList<String> getStringInitialForm(String strForm) {
+    public LinkedList<String> getStringInitialForm(String strForm) {
 
-        ArrayList<String> stringFormList = new ArrayList<>();
+        LinkedList<String> stringFormList = new LinkedList<>();
         LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
         for (Form form : formList) {
-            stringFormList.add(form.getStringInitialForm());
+            stringFormList.add(form.getInitialFormString());
         }
 
         return stringFormList;
     }
 
     @Override
-    public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm) {
+    public OmoFormList getAllCharacteristicsOfForm(String strForm) {
 
-        ArrayList<AllCharacteristicsOfForm> list = new ArrayList<>();
-        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
-        AllCharacteristicsOfForm characteristicsOfForm;
+        OmoFormList list = new OmoFormList();
+        List<Form> formList = getListFormByHachCode(strForm.hashCode());
+        OmoForm characteristicsOfForm;
 
         for (Form form : formList) {
-            characteristicsOfForm = new AllCharacteristicsOfForm(form.getStringInitialForm(),
+            characteristicsOfForm = new OmoForm(form.getInitialFormKey(),
                                                                     form.getTypeOfSpeech(),
                                                                     form.getMorfCharacteristics());
             list.add(characteristicsOfForm);
@@ -162,17 +158,17 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         return list;
     }
-    
+
     @Override
     public String getDerivativeForm(String initialFormString, long morfCharacteristics) throws Exception {
-        
+
         InitialForm initialForm = null;
         List<Form> listForm = omoForms.get(initialFormString.hashCode());
         if(listForm == null) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не найден в словаре!", initialFormString));
             throw new Exception();
         }
-        
+
         for(Form form : listForm) {
             if(form instanceof InitialForm) {
                 initialForm = (InitialForm) form;
@@ -180,33 +176,18 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
             }
         }
         listForm = null;
-        
+
         if(initialForm == null) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не является начальной формой слова!", initialFormString));
             throw new Exception();
         }
-        
+
         for(WordForm wordForm : initialForm.getWordFormList()) {
             if (((wordForm.getMorfCharacteristics() ^ morfCharacteristics) & morfCharacteristics) == 0) {
-                System.out.println("Подходящая форма String = " + getStringById(wordForm.getMyId()));
+                System.out.println("Подходящая форма String = " + BDInitialFormString.getStringById(wordForm.getMyId(), false));
             }
         }
-        
+
         return null;
-    }
-    
-    public Object getStringById(int id) {
-        try {
-            return bdWordFormString.executeQuery(String.format("SELECT * FROM  'WordForm' where id = %d", id)).getObject("StringForm");
-        } catch (NullPointerException ex) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, "Загрузите бибилиотеку в режиме генерации");
-        } catch (SQLException ex) {
-            Logger.getLogger(JMorfSdk.class.getName()).log(Level.SEVERE, "БД для генерации не загружена", ex);
-        }
-        return null;
-    }
-    
-    public void addBD(BDSqlite bd) {
-        this.bdWordFormString = bd;
     }
 }

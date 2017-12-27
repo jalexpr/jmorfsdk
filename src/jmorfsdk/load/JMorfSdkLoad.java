@@ -33,7 +33,7 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.load;
 
@@ -41,13 +41,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jmorfsdk.JMorfSdk;
 
-public final class LoadJMorfSdk {
+public final class JMorfSdkLoad {
 
     private final static Load LOADFROMFILE = new LoadFromFileAndBD();
     private static final boolean ISOUTPUTMESSAGESTOCONSOLEDEFAULT = true;
 
     /**
-     * Загрзука библиотеки в режиме генерации и анализа 
+     * Загрзука библиотеки в режиме генерации и анализа
      * @return
      */
     public static JMorfSdk loadFullLibrary() {
@@ -69,7 +69,7 @@ public final class LoadJMorfSdk {
             outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
             return jMorfSdk;
         } catch (Exception ex) {
-            Logger.getLogger(LoadJMorfSdk.class.getName()).log(Level.WARNING, null, ex);
+            Logger.getLogger(JMorfSdkLoad.class.getName()).log(Level.WARNING, null, ex);
             return new JMorfSdk();
         }
     }
@@ -114,7 +114,7 @@ public final class LoadJMorfSdk {
             outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
             return jMorfSdk;
         } catch (Exception ex) {
-            Logger.getLogger(LoadJMorfSdk.class.getName()).log(Level.WARNING, null, ex);
+            Logger.getLogger(JMorfSdkLoad.class.getName()).log(Level.WARNING, null, ex);
             return new JMorfSdk();
         }
     }

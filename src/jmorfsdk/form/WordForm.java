@@ -33,7 +33,7 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.form;
 
@@ -54,21 +54,45 @@ public final class WordForm extends Form {
         initialForm.addWordfFormInList(this);
     }
 
-    public InitialForm getInitialForm() {
-        return initialForm;
+    @Override
+    public String getInitialFormString() {
+        return initialForm.getInitialFormString();
     }
 
     @Override
-    public String getStringInitialForm() {
-        return initialForm.getStringForm();
+    public int getInitialFormKey() {
+        return initialForm.getInitialFormKey();
     }
 
     @Override
     public byte getTypeOfSpeech() {
-        return getInitialForm().getTypeOfSpeech();
+        return initialForm.getTypeOfSpeech();
     }
 
     public int getMyId() {
+        return myId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WordForm other = (WordForm) obj;
+        if (this.myId != other.myId) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
         return myId;
     }
 }

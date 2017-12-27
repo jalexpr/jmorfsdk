@@ -33,19 +33,20 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk;
 
-import java.util.ArrayList;
+import morphologicalstructures.OmoForm;
+import java.util.List;
 
 public interface JMorfSdkAccessInterface {
 
     public boolean isFormExistsInDictionary(String strForm);
     public boolean isInitialForm(String strForm);
-    public ArrayList<Byte> getTypeOfSpeechs(String strForm);
-    public ArrayList<Long> getMorfologyCharacteristics(String strForm);
-    public ArrayList<String> getStringInitialForm(String strForm);
-    public ArrayList<AllCharacteristicsOfForm> getAllCharacteristicsOfForm(String strForm);
+    public List<Byte> getTypeOfSpeechs(String strForm);
+    public List<Long> getMorfologyCharacteristics(String strForm);
+    public List<String> getStringInitialForm(String strForm);
+    public List<OmoForm> getAllCharacteristicsOfForm(String strForm);
     public String getDerivativeForm(String initialForm, long morfCharacteristics) throws Exception;
 }

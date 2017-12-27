@@ -33,7 +33,7 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.load;
 
@@ -61,7 +61,7 @@ import java.util.zip.ZipInputStream;
 import static jmorfsdk.load.Load.MYREPOSITORY;
 
 public class FileOpen {
-        
+
     public static Scanner openScannerFromZipFile(String pathZipFile, String pathFile, String encoding) throws Exception {
         try {
             return new Scanner(openZipFile(pathZipFile, pathFile), encoding);
@@ -71,7 +71,7 @@ public class FileOpen {
             throw new Exception();
         }
     }
-    
+
     public static ZipInputStream openZipFile(String zipPath, String nameLibrary) throws IOException {
         ZipInputStream zin = new ZipInputStream(new FileInputStream(new File(zipPath)));
         for (ZipEntry e; (e = zin.getNextEntry()) != null;) {
@@ -81,7 +81,7 @@ public class FileOpen {
         }
         throw new EOFException("Cannot find " + nameLibrary);
     }
-    
+
     public static BufferedReader openBufferedReaderStream(String pathFile, String encoding) {
 
         BufferedReader bufferedReader = null;
@@ -98,7 +98,7 @@ public class FileOpen {
 
         return bufferedReader;
     }
-    
+
     public static FileOutputStream openFileInputStream(String pathFile) {
 
         FileOutputStream fileInputStream = null;
@@ -128,27 +128,27 @@ public class FileOpen {
 
         return bufferedWriter;
     }
-    
+
     public static void closeFile(InputStream inputStream) {
         try {
             inputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
-    
+
     public static void closeFile(OutputStream inputStream) {
         try {
             inputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
 
     public static void closeFile(Scanner scanner) {
         scanner.close();
     }
-    
+
     public static void closeFile(Reader reader) {
         try {
             reader.close();
@@ -156,7 +156,7 @@ public class FileOpen {
             Logger.getLogger(FileOpen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void closeFile(Writer writer) {
         try {
             writer.close();

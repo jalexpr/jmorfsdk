@@ -33,7 +33,7 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.load;
 
@@ -53,7 +53,6 @@ public final class Property {
     public static String pathHashAndMorfCharacteristics = "dictionary.format.hash+morfCharacteristic";
     public static String pathInitialFormString = "dictionary.format.initialFormString.txt";
     public static String pathWordFormString = "dictionary.format.wordFormString.txt";
-    public static String pathBD = "dictionary.format.wordFormString.bd";
     public static String pathZipDictionary = "dictionary.zip";
     public static String encoding = "Windows-1251";
 

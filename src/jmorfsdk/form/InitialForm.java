@@ -33,35 +33,33 @@
  * Unported (CC BY-SA 3.0) вместе с этой программой.
  * Если нет, см. <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>
  *
- * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
+ * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
 package jmorfsdk.form;
 
 import java.util.ArrayList;
+import load.BDInitialFormString;
 
 public final class InitialForm extends Form {
 
     private final byte typeOfSpeech;
-    private final String strInitialForm;
+    private final int initialFormKey;
     private ArrayList<WordForm> wordFormList;
 
-    public InitialForm(String strWord){
-        this(strWord, Byte.valueOf("0"), 0L);
-    }
-
-    public InitialForm(String strWordform, byte typeOfSpeech, long morfCharacteristics) {
+    public InitialForm(byte typeOfSpeech, long morfCharacteristics, int initialFormKey) {
         super(morfCharacteristics);
         this.typeOfSpeech = typeOfSpeech;
-        this.strInitialForm = strWordform;
-    }
-
-    public String getStringForm() {
-        return strInitialForm;
+        this.initialFormKey = initialFormKey;
     }
 
     @Override
-    public String getStringInitialForm() {
-        return getStringForm();
+    public String getInitialFormString() {
+        return BDInitialFormString.getStringById(initialFormKey, true);
+    }
+
+    @Override
+    public int getInitialFormKey() {
+        return initialFormKey;
     }
 
     @Override
@@ -88,7 +86,7 @@ public final class InitialForm extends Form {
 
     @Override
     public int hashCode() {
-        return getStringForm().hashCode();
+        return initialFormKey;
     }
 
     @Override
