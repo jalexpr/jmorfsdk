@@ -68,14 +68,14 @@ public final class InitialForm extends Form {
     }
 
     public void addWordfFormInList(WordForm wordform) {
-        if(wordFormList == null) {
+        if (wordFormList == null) {
             wordFormList = new ArrayList<>();
         }
         wordFormList.add(wordform);
     }
 
     public void trimToSize() {
-        if(wordFormList != null) {
+        if (wordFormList != null) {
             wordFormList.trimToSize();
         }
     }

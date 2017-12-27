@@ -68,6 +68,7 @@ public class ConversionFile {
         stringWordFormAndId = generateMapIdAndString(FileOpen.openBufferedReaderStream(Property.pathWordFormString, Property.encoding));
         stringInitialFormAndId = new HashMap<>();
     }
+
     private HashMap<Integer, IdAndString> generateMapIdAndString(BufferedReader outReader) {
         HashMap<Integer, IdAndString> mapStringAndId = new HashMap<>();
         try {
@@ -86,7 +87,7 @@ public class ConversionFile {
     }
 
     private void saveInBD(String nameBD, boolean isInitialForm) {
-        if(isInitialForm) {
+        if (isInitialForm) {
             saveInBD(nameBD, stringInitialFormAndId);
         } else {
             saveInBD(nameBD, stringWordFormAndId);
@@ -138,7 +139,6 @@ public class ConversionFile {
             strInitialForm = strForms;
         }
         String[] initialFormParameters = strInitialForm.split(" ");
-
 
         stringInitialFormAndId.put(0, new IdAndString("Слово_не_найдено", 0));
         try {
@@ -268,7 +268,7 @@ public class ConversionFile {
                 outInitianString.append(lemms[0]);
                 outInitianString.newLine();
 
-                for(int i = 1; i < str.length; i++) {
+                for (int i = 1; i < str.length; i++) {
                     outWordString.append(str[i].split(" ")[0]);
                     outWordString.newLine();
                 }

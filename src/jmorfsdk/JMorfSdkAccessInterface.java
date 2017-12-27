@@ -43,10 +43,16 @@ import java.util.List;
 public interface JMorfSdkAccessInterface {
 
     public boolean isFormExistsInDictionary(String strForm);
+
     public boolean isInitialForm(String strForm);
+
     public List<Byte> getTypeOfSpeechs(String strForm);
+
     public List<Long> getMorfologyCharacteristics(String strForm);
+
     public List<String> getStringInitialForm(String strForm);
+
     public List<OmoForm> getAllCharacteristicsOfForm(String strForm);
+
     public String getDerivativeForm(String initialForm, long morfCharacteristics) throws Exception;
 }

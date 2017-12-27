@@ -63,7 +63,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         }
     }
 
-    private void addNewOmoForm(int hashCode,Form form) {
+    private void addNewOmoForm(int hashCode, Form form) {
         LinkedList<Form> omoForm = new LinkedList<>();
         omoForm.add(form);
         omoForms.put(hashCode, omoForm);
@@ -151,8 +151,8 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         for (Form form : formList) {
             characteristicsOfForm = new OmoForm(form.getInitialFormKey(),
-                                                                    form.getTypeOfSpeech(),
-                                                                    form.getMorfCharacteristics());
+                    form.getTypeOfSpeech(),
+                    form.getMorfCharacteristics());
             list.add(characteristicsOfForm);
         }
 
@@ -164,25 +164,25 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         InitialForm initialForm = null;
         List<Form> listForm = omoForms.get(initialFormString.hashCode());
-        if(listForm == null) {
+        if (listForm == null) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не найден в словаре!", initialFormString));
             throw new Exception();
         }
 
-        for(Form form : listForm) {
-            if(form instanceof InitialForm) {
+        for (Form form : listForm) {
+            if (form instanceof InitialForm) {
                 initialForm = (InitialForm) form;
                 break;
             }
         }
         listForm = null;
 
-        if(initialForm == null) {
+        if (initialForm == null) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не является начальной формой слова!", initialFormString));
             throw new Exception();
         }
 
-        for(WordForm wordForm : initialForm.getWordFormList()) {
+        for (WordForm wordForm : initialForm.getWordFormList()) {
             if (((wordForm.getMorfCharacteristics() ^ morfCharacteristics) & morfCharacteristics) == 0) {
                 System.out.println("Подходящая форма String = " + BDInitialFormString.getStringById(wordForm.getMyId(), false));
             }

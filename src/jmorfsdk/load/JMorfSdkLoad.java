@@ -48,6 +48,7 @@ public final class JMorfSdkLoad {
 
     /**
      * Загрзука библиотеки в режиме генерации и анализа
+     *
      * @return
      */
     public static JMorfSdk loadFullLibrary() {
@@ -56,6 +57,7 @@ public final class JMorfSdkLoad {
 
     /**
      * Загрзука библиотеки в режиме генерации и анализа
+     *
      * @param isOutputMessagesToConsole
      * @return
      */
@@ -76,6 +78,7 @@ public final class JMorfSdkLoad {
 
     /**
      * Загрзука библиотеки в режиме генерации
+     *
      * @return
      */
     public static JMorfSdk loadInGeterationMode() {
@@ -84,6 +87,7 @@ public final class JMorfSdkLoad {
 
     /**
      * Загрзука библиотеки в режиме генерации
+     *
      * @param isOutputMessagesToConsole
      * @return
      */
@@ -93,6 +97,7 @@ public final class JMorfSdkLoad {
 
     /**
      * Загрзука библиотеки в режиме анализа
+     *
      * @return
      */
     public static JMorfSdk loadInAnalysisMode() {
@@ -101,6 +106,7 @@ public final class JMorfSdkLoad {
 
     /**
      * Загрзука библиотеки в режиме анализа
+     *
      * @param isOutputMessagesToConsole
      * @return
      */

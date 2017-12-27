@@ -52,6 +52,8 @@ public abstract class Form {
     }
 
     public abstract byte getTypeOfSpeech();
+
     public abstract String getInitialFormString();
+
     public abstract int getInitialFormKey();
 }
