@@ -39,26 +39,31 @@ package jmorfsdk;
 
 import load.BDInitialFormString;
 import jmorfsdk.form.InitialForm;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentHashMap;
 import jmorfsdk.form.Form;
-import jmorfsdk.form.WordForm;
-import jmorfsdk.load.LoadFromFileAndBD;
+import jmorfsdk.form.NumberForm;
+import grammeme.MorfologyParameters.IdentifierMorfParameters;
+import morphologicalstructures.NumberOmoForm;
 import morphologicalstructures.OmoForm;
 import storagestructures.OmoFormList;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
-    //!NB InitialForm в omoForms НЕ ДУБЛИРУЮТСЯ!!!!
-    private HashMap<Integer, LinkedList<Form>> omoForms = new HashMap();
+    private ConcurrentHashMap<Integer, LinkedList<Form>> omoForms = new ConcurrentHashMap();
+
+    private JMorfSdk() {
+    }
+
+    public static JMorfSdk getEmptyJMorfSdk() {
+        return new JMorfSdk();
+    }
 
     public void addForm(int hashCode, Form form) {
-        if (isOmoFormExistForForm(hashCode)) {
-            getOmoFormByForm(hashCode).add(form);
-        } else {
+        try {
+            getListFormByHachCode(hashCode).add(form);
+        } catch (Exception ex) {
             addNewOmoForm(hashCode, form);
         }
     }
@@ -67,14 +72,6 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         LinkedList<Form> omoForm = new LinkedList<>();
         omoForm.add(form);
         omoForms.put(hashCode, omoForm);
-    }
-
-    private boolean isOmoFormExistForForm(int hashCode) {
-        return omoForms.containsKey(hashCode);
-    }
-
-    private LinkedList<Form> getOmoFormByForm(int hashCode) {
-        return omoForms.get(hashCode);
     }
 
     public void finish() {
@@ -88,54 +85,82 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public boolean isInitialForm(String strForm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public byte isInitialForm(String strForm) throws Exception {
+        boolean isContainsInitialForm = false;
+        boolean isContainsNotInitialForm = false;
+        for (Form form : getListFormByString(strForm)) {
+            if (form.isInitialForm()) {
+                isContainsInitialForm = true;
+            } else {
+                isContainsNotInitialForm = true;
+            }
+        }
+
+        if (isContainsInitialForm && isContainsNotInitialForm) {
+            return 0;
+        } else if (isContainsInitialForm) {
+            return 1;
+        } else if (isContainsNotInitialForm) {
+            return -1;
+        } else {
+            return -2;
+        }
     }
 
     @Override
-    public LinkedList<Byte> getTypeOfSpeechs(String strForm) {
+    public LinkedList<Byte> getTypeOfSpeechs(String strForm) throws Exception {
 
         LinkedList<Byte> typeOfSpeechsList = new LinkedList<>();
-        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
-        for (Form form : formList) {
+        for (Form form : getListFormByString(strForm)) {
             typeOfSpeechsList.add(form.getTypeOfSpeech());
         }
         return typeOfSpeechsList;
     }
 
-    private LinkedList<Form> getListFormByHachCode(int hashCode) {
+    private LinkedList<Form> getListFormByString(String strForm) throws Exception {
+        try {
+            return getListFormByHachCode(strForm.hashCode());
+        } catch (Exception ex) {
+            if(strForm.matches("[0-9]+")) {
+                LinkedList listNumber = new LinkedList<>();
+                listNumber.add(new NumberForm(strForm));
+                return listNumber;
+            }
+            throw new Exception(String.format("%s Слово: %s", ex.getMessage(), strForm));
+        }
+    }
+
+    private LinkedList<Form> getListFormByHachCode(int hashCode) throws Exception {
 
         LinkedList<Form> formList;
 
         if (omoForms.containsKey(hashCode)) {
             formList = omoForms.get(hashCode);
         } else {
-            formList = new LinkedList<>();
+            throw new Exception("Подходящие слово не было найдено в словаре библиотеки!");
         }
 
         return formList;
     }
 
     @Override
-    public LinkedList<Long> getMorfologyCharacteristics(String strForm) {
+    public LinkedList<Long> getMorfologyCharacteristics(String strForm) throws Exception {
 
         LinkedList<Long> morfologyCharacteristics = new LinkedList<>();
-        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
-        for (Form form : formList) {
+        for (Form form : getListFormByString(strForm)) {
             morfologyCharacteristics.add(form.getMorfCharacteristics());
         }
         return morfologyCharacteristics;
     }
 
     @Override
-    public LinkedList<String> getStringInitialForm(String strForm) {
+    public LinkedList<String> getStringInitialForm(String strForm) throws Exception {
 
         LinkedList<String> stringFormList = new LinkedList<>();
-        LinkedList<Form> formList = getListFormByHachCode(strForm.hashCode());
 
-        for (Form form : formList) {
+        for (Form form : getListFormByString(strForm)) {
             stringFormList.add(form.getInitialFormString());
         }
 
@@ -143,16 +168,19 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public OmoFormList getAllCharacteristicsOfForm(String strForm) {
+    public OmoFormList getAllCharacteristicsOfForm(String strForm) throws Exception {
 
         OmoFormList list = new OmoFormList();
-        List<Form> formList = getListFormByHachCode(strForm.hashCode());
-        OmoForm characteristicsOfForm;
 
-        for (Form form : formList) {
-            characteristicsOfForm = new OmoForm(form.getInitialFormKey(),
+        for (Form form : getListFormByString(strForm)) {
+            OmoForm characteristicsOfForm;
+            try {
+                characteristicsOfForm = new OmoForm(form.getInitialFormKey(),
                     form.getTypeOfSpeech(),
                     form.getMorfCharacteristics());
+            } catch (UnsupportedOperationException ex) {
+                characteristicsOfForm = new NumberOmoForm(form.getInitialFormString());                
+            }
             list.add(characteristicsOfForm);
         }
 
@@ -160,34 +188,105 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public String getDerivativeForm(String initialFormString, long morfCharacteristics) throws Exception {
+    public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception {
+        try {
+            return selectByMorfCharacteristics(getInitialFormList(stringInitialForm), morfCharacteristics);
+        } catch (Exception ex) {
+            throw new Exception(String.format("В словаре отсутствует производное слов, слова: %s с характеристиками: %s", stringInitialForm, morfCharacteristics));
+        }
+    }
 
-        InitialForm initialForm = null;
-        List<Form> listForm = omoForms.get(initialFormString.hashCode());
-        if (listForm == null) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не найден в словаре!", initialFormString));
-            throw new Exception();
+    private List<String> selectByMorfCharacteristics(List<InitialForm> initialFormList, long morfCharacteristics) throws Exception {
+
+        long mask = getMask(morfCharacteristics);
+
+        List<String> listWordString = new LinkedList<>();
+
+        initialFormList.forEach((initialForm) -> {
+            initialForm.getWordFormList().forEach((wordForm) -> {
+                if ((wordForm.getMorfCharacteristics() & mask) == morfCharacteristics) {
+                    listWordString.add(BDInitialFormString.getStringById(wordForm.getMyId(), false));
+                }
+            });
+        });
+
+        if (listWordString.isEmpty()) {
+            throw new Exception(String.format("В словаре отсутствует производное слов с характеристиками: %s", morfCharacteristics));
         }
 
-        for (Form form : listForm) {
+        return listWordString;
+    }
+
+    private long getMask(long morfCharacteristics) {
+        
+        long mask = 0;
+        
+        for (long identifier : IdentifierMorfParameters.IDENTIFIERLIST) {
+            if ((morfCharacteristics & identifier) != 0) {
+                mask |= identifier;
+            }
+        }
+        
+        return mask;
+    }
+
+    @Override
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception {
+
+        List<InitialForm> initialFormList = selectInitialFormByTypeOfSpeech(getInitialFormList(stringInitialForm), typeOfSpeech);
+
+        try {
+            return selectByMorfCharacteristics(initialFormList, morfCharacteristics);
+        } catch (Exception ex) {
+            throw new Exception(String.format("В словаре отсутствует производные слова, слова: %s с характеристиками: %s", stringInitialForm, morfCharacteristics));
+        }
+    }
+
+    private List<InitialForm> selectInitialFormByTypeOfSpeech(List<InitialForm> initialFormList, byte typeOfSpeech) {
+
+        for (InitialForm form : initialFormList) {
+            if (form.getTypeOfSpeech() != typeOfSpeech) {
+                initialFormList.remove(form);
+            }
+        }
+
+        return initialFormList;
+    }
+
+    private List<InitialForm> getInitialFormList(String stringInitialForm) throws Exception {
+
+        List<InitialForm> initialForms = new LinkedList<>();
+
+        for (Form form : getListFormByString(stringInitialForm)) {
             if (form instanceof InitialForm) {
-                initialForm = (InitialForm) form;
-                break;
-            }
-        }
-        listForm = null;
-
-        if (initialForm == null) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, String.format("String = %s Данный текст не является начальной формой слова!", initialFormString));
-            throw new Exception();
-        }
-
-        for (WordForm wordForm : initialForm.getWordFormList()) {
-            if (((wordForm.getMorfCharacteristics() ^ morfCharacteristics) & morfCharacteristics) == 0) {
-                System.out.println("Подходящая форма String = " + BDInitialFormString.getStringById(wordForm.getMyId(), false));
+                initialForms.add((InitialForm) form);
             }
         }
 
-        return null;
+        if (initialForms == null) {
+            throw new Exception(String.format("String = %s Данный текст не является начальной формой слова!", stringInitialForm));
+        }
+
+        return initialForms;
+    }
+
+    @Override
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception {
+
+        List<String> wordStringList = new LinkedList<>();
+
+        getInitialFormList(stringInitialForm).forEach((initialForm) -> {
+            initialForm.getWordFormList().forEach((wordForm) -> {
+                if (wordForm.getTypeOfSpeech() == typeOfSpeech) {
+                    wordStringList.add(BDInitialFormString.getStringById(wordForm.getMyId(), false));
+                }
+            });
+        });
+
+        if (wordStringList.isEmpty()) {
+            throw new Exception(String.format("В словаре отсутствует производное слов, слова: %s с частью речи: %s", stringInitialForm, typeOfSpeech));
+        }
+
+        return wordStringList;
     }
 }

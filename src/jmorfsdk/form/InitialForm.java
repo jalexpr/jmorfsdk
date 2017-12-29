@@ -38,13 +38,14 @@
 package jmorfsdk.form;
 
 import java.util.ArrayList;
+import java.util.List;
 import load.BDInitialFormString;
 
 public final class InitialForm extends Form {
 
     private final byte typeOfSpeech;
     private final int initialFormKey;
-    private ArrayList<WordForm> wordFormList;
+    private final ArrayList<WordForm> wordFormList = new ArrayList<>();
 
     public InitialForm(byte typeOfSpeech, long morfCharacteristics, int initialFormKey) {
         super(morfCharacteristics);
@@ -66,11 +67,13 @@ public final class InitialForm extends Form {
     public byte getTypeOfSpeech() {
         return typeOfSpeech;
     }
+    
+    @Override
+    public boolean isInitialForm(){
+        return true;
+    }
 
     public void addWordfFormInList(WordForm wordform) {
-        if (wordFormList == null) {
-            wordFormList = new ArrayList<>();
-        }
         wordFormList.add(wordform);
     }
 
@@ -80,7 +83,7 @@ public final class InitialForm extends Form {
         }
     }
 
-    public ArrayList<WordForm> getWordFormList() throws Exception {
+    public List<WordForm> getWordFormList() {
         return wordFormList;
     }
 

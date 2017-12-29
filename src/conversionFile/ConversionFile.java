@@ -95,7 +95,6 @@ public class ConversionFile {
     }
 
     private void saveInBD(String nameBD, HashMap<Integer, IdAndString> stringFormAndId) {
-        nameBD = nameBD + ".bd";
         BDSqlite outBD = new BDSqlite(nameBD);
         outBD.execute("CREATE TABLE if not exists 'Form' ('id' INTEGER NOT NULL, 'StringForm' TEXT NOT NULL, PRIMARY KEY('id'))");
         saveStringAndIdInBD(stringFormAndId, outBD);
@@ -290,9 +289,9 @@ public class ConversionFile {
 
         ConversionFile.createdInitianAndWordFormString();
         ConversionFile converFile = new ConversionFile();
-        converFile.saveInBD(Property.pathWordFormString, false);
+        converFile.saveInBD(Property.pathBDWordForm, false);
         converFile.conversionFile();
-        converFile.saveInBD(Property.pathInitialFormString, true);
+        converFile.saveInBD(Property.pathBDInitialForm, true);
         converFile.closeFiles();
     }
 }

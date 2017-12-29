@@ -72,7 +72,7 @@ public final class JMorfSdkLoad {
             return jMorfSdk;
         } catch (Exception ex) {
             Logger.getLogger(JMorfSdkLoad.class.getName()).log(Level.WARNING, null, ex);
-            return new JMorfSdk();
+            return JMorfSdk.getEmptyJMorfSdk();
         }
     }
 
@@ -121,7 +121,7 @@ public final class JMorfSdkLoad {
             return jMorfSdk;
         } catch (Exception ex) {
             Logger.getLogger(JMorfSdkLoad.class.getName()).log(Level.WARNING, null, ex);
-            return new JMorfSdk();
+            return JMorfSdk.getEmptyJMorfSdk();
         }
     }
 

@@ -1,14 +1,13 @@
 
-import java.io.IOException;
 import java.util.List;
 import morphologicalstructures.OmoForm;
 import jmorfsdk.JMorfSdk;
-import jmorfsdk.grammeme.MorfologyParameters.*;
+import grammeme.MorfologyParameters.*;
 import jmorfsdk.load.JMorfSdkLoad;
-//import load.BDInitialFormString;
+
 public class Running {
 
-    public static void main(String[] args) throws IOException, Exception {
+    public static void main(String[] args) throws Exception {
 
         //Пример загрузки библиотеки
         JMorfSdk jMorfSdk = JMorfSdkLoad.loadInAnalysisMode();
@@ -17,7 +16,9 @@ public class Running {
         
         System.err.println("");
         //Пример получения характеристик заданой формы
-        List<OmoForm> characteristics = jMorfSdk.getAllCharacteristicsOfForm("гладь");
+        List<OmoForm> characteristics;
+        
+        characteristics = jMorfSdk.getAllCharacteristicsOfForm("гладь");
         characteristics.forEach((form) -> {
             System.out.println(form);
         });
@@ -56,9 +57,46 @@ public class Running {
         } else {
             System.out.println("Слово \"чтотакое\" не найдено");
         }
+        
+//        try{
+//            List<OmoForm> characteristics3 = jMorfSdk.getAllCharacteristicsOfForm("чтотакое");
+//                characteristics3.forEach((form) -> {
+//                System.out.println(form);
+//            });
+//        } catch (Exception ex) {
+//            Logger.getLogger(Running.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
-//        jMorfSdk.getDerivativeForm("мыло", Animacy.INANIMATE | Gender.MANS);
-
+        List<OmoForm> characteristics5 = jMorfSdk.getAllCharacteristicsOfForm("мыл");
+        characteristics5.forEach((form) -> {
+            System.out.println(form);
+        });
+        
+        jMorfSdk.getDerivativeForm("мыло", TypeOfSpeech.NOUN).forEach((wordString) -> {
+            System.out.println(wordString);
+        });     
+        
+        System.out.println("_____");
+        
+        jMorfSdk.getDerivativeForm("мыло", Numbers.SINGULAR | Case.GENITIVE).forEach((wordString) -> {
+            System.out.println(wordString);
+        });  
+        
+        List<OmoForm> characteristics7 = jMorfSdk.getAllCharacteristicsOfForm("что-то");
+        characteristics7.forEach((form) -> {
+            System.out.println(form);
+        });
+        
+        List<OmoForm> characteristics8 = jMorfSdk.getAllCharacteristicsOfForm("123");
+        characteristics8.forEach((form) -> {
+            System.out.println(form);
+        });
+        
+        List<OmoForm> characteristics6 = jMorfSdk.getAllCharacteristicsOfForm("подает");
+        characteristics6.forEach((form) -> {
+            System.out.println(form);
+        });
+        
         jMorfSdk.finish();
     }
 }

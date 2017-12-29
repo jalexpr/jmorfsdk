@@ -55,6 +55,8 @@ public final class Property {
     public static String pathWordFormString = "dictionary.format.wordFormString.txt";
     public static String pathZipDictionary = "dictionary.zip";
     public static String encoding = "Windows-1251";
+    public static String pathBDWordForm = morphologicalstructures.Property.pathBDWordForm;
+    public static String pathBDInitialForm = morphologicalstructures.Property.pathBDInitialForm;
 
     static {
         loadProperty();

@@ -42,11 +42,6 @@ public final class WordForm extends Form {
     private final InitialForm initialForm;
     private int myId;
 
-    public WordForm(long morfCharacteristics, InitialForm initialForm) {
-        super(morfCharacteristics);
-        this.initialForm = initialForm;
-    }
-
     public WordForm(long morfCharacteristics, int idInFile, InitialForm initialForm) {
         super(morfCharacteristics);
         this.initialForm = initialForm;
@@ -67,6 +62,11 @@ public final class WordForm extends Form {
     @Override
     public byte getTypeOfSpeech() {
         return initialForm.getTypeOfSpeech();
+    }
+    
+    @Override
+    public boolean isInitialForm(){
+        return false;
     }
 
     public int getMyId() {

@@ -44,15 +44,26 @@ public interface JMorfSdkAccessInterface {
 
     public boolean isFormExistsInDictionary(String strForm);
 
-    public boolean isInitialForm(String strForm);
+    /**
+     * @param strForm - String формы
+     * @return 0 - если форма может быть и в начальной, и в неначальной формой,
+     * 1 - форма является начальной, -1 - форма является неначальной, -2 -
+     * такого слова нет
+     * @throws java.lang.Exception - на слуай, если слово не найдено в словаре
+     */
+    public byte isInitialForm(String strForm) throws Exception;
 
-    public List<Byte> getTypeOfSpeechs(String strForm);
+    public List<Byte> getTypeOfSpeechs(String strForm) throws Exception;
 
-    public List<Long> getMorfologyCharacteristics(String strForm);
+    public List<Long> getMorfologyCharacteristics(String strForm) throws Exception;
 
-    public List<String> getStringInitialForm(String strForm);
+    public List<String> getStringInitialForm(String strForm) throws Exception;
 
-    public List<OmoForm> getAllCharacteristicsOfForm(String strForm);
+    public List<OmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
 
-    public String getDerivativeForm(String initialForm, long morfCharacteristics) throws Exception;
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception;
+    
+    public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception;
+    
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception;
 }

@@ -68,7 +68,7 @@ public final class LoadFromFileAndBD implements Load {
             return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationdMode);
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
-            return new JMorfSdk();
+            return JMorfSdk.getEmptyJMorfSdk();
         } finally {
             FileOpen.closeFile(streamHashAndMorfCharacteristic);
         }
@@ -76,7 +76,7 @@ public final class LoadFromFileAndBD implements Load {
 
     private JMorfSdk loadJMorfSdk(InputStream inputStreamHashAndMorfCharacteristics, boolean isLoadFormInInitialForm) {
 
-        JMorfSdk jMorfSdk = new JMorfSdk();
+        JMorfSdk jMorfSdk = JMorfSdk.getEmptyJMorfSdk();
         try (BufferedInputStream inputStream = new BufferedInputStream(inputStreamHashAndMorfCharacteristics)) {
             while (inputStream.available() > 0) {
                 int hashCode = getHashCodeFromBytes(inputStream);
@@ -151,6 +151,6 @@ public final class LoadFromFileAndBD implements Load {
 
     @Override
     public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return loadFullLibrary();
     }
 }

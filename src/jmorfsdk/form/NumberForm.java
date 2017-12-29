@@ -37,25 +37,35 @@
  */
 package jmorfsdk.form;
 
-public abstract class Form {
+import grammeme.MorfologyParameters.*;
 
-    public static int formCount = 0;
-    private final long morfCharacteristics;
+public class NumberForm extends Form {
 
-    public Form(long morfCharacteristics) {
-        this.morfCharacteristics = morfCharacteristics;
-        formCount++;
-    }
-
-    public long getMorfCharacteristics() {
-        return morfCharacteristics;
-    }
-
-    public abstract byte getTypeOfSpeech();
-
-    public abstract String getInitialFormString();
-
-    public abstract int getInitialFormKey();
+    private final String strNumber;
     
-    public abstract boolean isInitialForm();
+    public NumberForm(String strNumber) {
+        super(0);
+        this.strNumber = strNumber;
+    }
+
+    @Override
+    public byte getTypeOfSpeech() {
+        return TypeOfSpeech.NUMERAL;
+    }
+
+    @Override
+    public String getInitialFormString() {
+        return strNumber;
+    }
+
+    @Override
+    public int getInitialFormKey() {
+        throw new UnsupportedOperationException("Вывод_числовой_последовательности_примените_метод_getInitialFormString"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isInitialForm() {
+        return true;
+    }
+
 }

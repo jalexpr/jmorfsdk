@@ -67,7 +67,7 @@ public class FileOpen {
             return new Scanner(openZipFile(pathZipFile, pathFile), encoding);
         } catch (FileNotFoundException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s, в случае отсуствия скачайте с репозитория %s\r\n", pathFile, MYREPOSITORY);
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, messages);
+            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, messages, ex);
             throw new Exception();
         }
     }
@@ -82,6 +82,10 @@ public class FileOpen {
         throw new EOFException("Cannot find " + nameLibrary);
     }
 
+    public static BufferedReader openBufferedReaderStream(String pathFile) {
+        return openBufferedReaderStream(pathFile, "UTF-8");
+    }
+    
     public static BufferedReader openBufferedReaderStream(String pathFile, String encoding) {
 
         BufferedReader bufferedReader = null;
@@ -89,11 +93,11 @@ public class FileOpen {
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(pathFile), encoding));
         } catch (FileNotFoundException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s\r\n", pathFile);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
+            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages, ex);
         } catch (UnsupportedEncodingException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\n1)Проверте кодировку %s в соотвевствии с параметрами в property.xml.\r\n2)При отсутствии property.xml кодировка по умолчанию %s\r\n\r\n",
                     pathFile, encoding);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
+            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages, ex);
         }
 
         return bufferedReader;
@@ -106,7 +110,7 @@ public class FileOpen {
             fileInputStream = new FileOutputStream(pathFile);
         } catch (FileNotFoundException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s\r\n", pathFile);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
+            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages, ex);
         }
 
         return fileInputStream;
@@ -119,16 +123,25 @@ public class FileOpen {
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathFile), encoding));
         } catch (FileNotFoundException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\nПроверте наличие %s\r\n", pathFile);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
+            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages, ex);
         } catch (UnsupportedEncodingException ex) {
             String messages = String.format("Ошибка при чтении файла.\r\n1)Проверте кодировку %s в соотвевствии с параметрами в property.xml.\r\n2)При отсутствии property.xml кодировка по умолчанию %s\r\n\r\n",
                     pathFile, encoding);
-            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages);
+            Logger.getLogger(ConversionFile.class.getName()).log(Level.SEVERE, messages, ex);
         }
 
         return bufferedWriter;
     }
 
+    public static String readLine(BufferedReader bufferedReader) {
+        try {
+            return bufferedReader.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(FileOpen.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
+    }
+    
     public static void closeFile(InputStream inputStream) {
         try {
             inputStream.close();
