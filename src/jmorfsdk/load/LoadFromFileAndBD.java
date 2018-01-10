@@ -53,15 +53,15 @@ public final class LoadFromFileAndBD implements Load {
 
     @Override
     public JMorfSdk loadFullLibrary() {
-        return loadLibraryForSearchInitialForm(true);
+        return loadInAnalysisMode(true);
     }
 
     @Override
-    public JMorfSdk loadLibraryForSearchInitialForm() {
-        return loadLibraryForSearchInitialForm(false);
+    public JMorfSdk loadInAnalysisMode() {
+        return loadInAnalysisMode(false);
     }
 
-    public JMorfSdk loadLibraryForSearchInitialForm(boolean isLoadGenerationdMode) {
+    public JMorfSdk loadInAnalysisMode(boolean isLoadGenerationdMode) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
         try {
             streamHashAndMorfCharacteristic = FileOpen.openZipFile(Property.pathZipDictionary, Property.pathHashAndMorfCharacteristics);
@@ -150,7 +150,7 @@ public final class LoadFromFileAndBD implements Load {
     }
 
     @Override
-    public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics() {
+    public JMorfSdk loadInGeterationMode() {
         return loadFullLibrary();
     }
 }

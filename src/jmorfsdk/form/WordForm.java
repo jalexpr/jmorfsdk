@@ -40,12 +40,10 @@ package jmorfsdk.form;
 public final class WordForm extends Form {
 
     private final InitialForm initialForm;
-    private int myId;
 
-    public WordForm(long morfCharacteristics, int idInFile, InitialForm initialForm) {
-        super(morfCharacteristics);
+    public WordForm(long morfCharacteristics, int formKey, InitialForm initialForm) {
+        super(morfCharacteristics, formKey);
         this.initialForm = initialForm;
-        this.myId = idInFile;
         initialForm.addWordfFormInList(this);
     }
 
@@ -63,14 +61,10 @@ public final class WordForm extends Form {
     public byte getTypeOfSpeech() {
         return initialForm.getTypeOfSpeech();
     }
-    
+
     @Override
     public boolean isInitialForm(){
         return false;
-    }
-
-    public int getMyId() {
-        return myId;
     }
 
     @Override
@@ -85,7 +79,7 @@ public final class WordForm extends Form {
             return false;
         }
         final WordForm other = (WordForm) obj;
-        if (this.myId != other.myId) {
+        if (this.getFormKeyInBD() != other.getFormKeyInBD()) {
             return false;
         }
         return true;
@@ -93,6 +87,6 @@ public final class WordForm extends Form {
 
     @Override
     public int hashCode() {
-        return myId;
+        return getFormKeyInBD();
     }
 }

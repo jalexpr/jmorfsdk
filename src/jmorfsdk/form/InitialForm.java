@@ -44,30 +44,28 @@ import load.BDInitialFormString;
 public final class InitialForm extends Form {
 
     private final byte typeOfSpeech;
-    private final int initialFormKey;
-    private final ArrayList<WordForm> wordFormList = new ArrayList<>();
+    private final ArrayList<Form> wordFormList = new ArrayList<>();
 
-    public InitialForm(byte typeOfSpeech, long morfCharacteristics, int initialFormKey) {
-        super(morfCharacteristics);
+    public InitialForm(byte typeOfSpeech, long morfCharacteristics, int formKey) {
+        super(morfCharacteristics, formKey);
         this.typeOfSpeech = typeOfSpeech;
-        this.initialFormKey = initialFormKey;
     }
 
     @Override
     public String getInitialFormString() {
-        return BDInitialFormString.getStringById(initialFormKey, true);
+        return BDInitialFormString.getStringById(getFormKeyInBD(), true);
     }
 
     @Override
     public int getInitialFormKey() {
-        return initialFormKey;
+        return getFormKeyInBD();
     }
 
     @Override
     public byte getTypeOfSpeech() {
         return typeOfSpeech;
     }
-    
+
     @Override
     public boolean isInitialForm(){
         return true;
@@ -83,13 +81,13 @@ public final class InitialForm extends Form {
         }
     }
 
-    public List<WordForm> getWordFormList() {
+    public List<Form> getWordFormList() {
         return wordFormList;
     }
 
     @Override
     public int hashCode() {
-        return initialFormKey;
+        return getFormKeyInBD();
     }
 
     @Override
@@ -104,6 +102,6 @@ public final class InitialForm extends Form {
             return false;
         }
         final InitialForm other = (InitialForm) obj;
-        return this.hashCode() == other.hashCode();
+        return this.getFormKeyInBD() == other.getFormKeyInBD();
     }
 }

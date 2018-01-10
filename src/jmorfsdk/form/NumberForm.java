@@ -42,9 +42,9 @@ import grammeme.MorfologyParameters.*;
 public class NumberForm extends Form {
 
     private final String strNumber;
-    
+
     public NumberForm(String strNumber) {
-        super(0);
+        super(0, 0);
         this.strNumber = strNumber;
     }
 
@@ -67,5 +67,4 @@ public class NumberForm extends Form {
     public boolean isInitialForm() {
         return true;
     }
-
 }

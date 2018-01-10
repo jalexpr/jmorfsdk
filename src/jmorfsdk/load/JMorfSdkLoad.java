@@ -66,8 +66,8 @@ public final class JMorfSdkLoad {
         try {
             outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
             jMorfSdk = LOADFROMFILE.loadFullLibrary();
-            System.gc();
-            Runtime.getRuntime().gc();
+//            System.gc();
+//            Runtime.getRuntime().gc();
             outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
             return jMorfSdk;
         } catch (Exception ex) {
@@ -92,7 +92,7 @@ public final class JMorfSdkLoad {
      * @return
      */
     public static JMorfSdk loadInGeterationMode(boolean isOutputMessagesToConsole) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return loadFullLibrary();
     }
 
     /**
@@ -114,7 +114,7 @@ public final class JMorfSdkLoad {
         JMorfSdk jMorfSdk;
         try {
             outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
-            jMorfSdk = LOADFROMFILE.loadLibraryForSearchInitialForm();
+            jMorfSdk = LOADFROMFILE.loadInAnalysisMode();
             System.gc();
             Runtime.getRuntime().gc();
             outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);

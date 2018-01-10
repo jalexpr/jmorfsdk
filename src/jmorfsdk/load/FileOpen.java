@@ -85,7 +85,7 @@ public class FileOpen {
     public static BufferedReader openBufferedReaderStream(String pathFile) {
         return openBufferedReaderStream(pathFile, "UTF-8");
     }
-    
+
     public static BufferedReader openBufferedReaderStream(String pathFile, String encoding) {
 
         BufferedReader bufferedReader = null;
@@ -141,12 +141,12 @@ public class FileOpen {
             return "";
         }
     }
-    
+
     public static void closeFile(InputStream inputStream) {
         try {
             inputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, "Не удалось закрыть файл!", ex);
         }
     }
 

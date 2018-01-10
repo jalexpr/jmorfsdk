@@ -43,9 +43,9 @@ public interface Load {
 
     public final static String MYREPOSITORY = "https://github.com/jalexpr/JMorfSdk/";
 
-    public JMorfSdk loadLibraryForSearchInitialForm();
+    public JMorfSdk loadInAnalysisMode();
 
-    public JMorfSdk loadLibraryForSearchForFormByMorphologicalCharacteristics();
+    public JMorfSdk loadInGeterationMode();
 
     public JMorfSdk loadFullLibrary();
 }

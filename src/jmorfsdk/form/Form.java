@@ -41,9 +41,11 @@ public abstract class Form {
 
     public static int formCount = 0;
     private final long morfCharacteristics;
+    private final int formKeyInBD;
 
-    public Form(long morfCharacteristics) {
+    public Form(long morfCharacteristics, int formKey) {
         this.morfCharacteristics = morfCharacteristics;
+        this.formKeyInBD = formKey;
         formCount++;
     }
 
@@ -51,11 +53,16 @@ public abstract class Form {
         return morfCharacteristics;
     }
 
+    public int getFormKeyInBD() {
+        return formKeyInBD;
+    }
+
     public abstract byte getTypeOfSpeech();
 
     public abstract String getInitialFormString();
 
     public abstract int getInitialFormKey();
-    
+
     public abstract boolean isInitialForm();
+
 }

@@ -45,13 +45,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import jmorfsdk.form.Form;
 import jmorfsdk.form.NumberForm;
 import grammeme.MorfologyParameters.IdentifierMorfParameters;
+import java.util.Map;
 import morphologicalstructures.NumberOmoForm;
 import morphologicalstructures.OmoForm;
 import storagestructures.OmoFormList;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
-    private ConcurrentHashMap<Integer, LinkedList<Form>> omoForms = new ConcurrentHashMap();
+    private Map<Integer, List<Form>> omoForms = new ConcurrentHashMap();
 
     private JMorfSdk() {
     }
@@ -136,7 +137,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         LinkedList<Form> formList;
 
         if (omoForms.containsKey(hashCode)) {
-            formList = omoForms.get(hashCode);
+            formList = (LinkedList<Form>) omoForms.get(hashCode);
         } else {
             throw new Exception("Подходящие слово не было найдено в словаре библиотеки!");
         }
@@ -179,7 +180,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
                     form.getTypeOfSpeech(),
                     form.getMorfCharacteristics());
             } catch (UnsupportedOperationException ex) {
-                characteristicsOfForm = new NumberOmoForm(form.getInitialFormString());                
+                characteristicsOfForm = new NumberOmoForm(form.getInitialFormString());
             }
             list.add(characteristicsOfForm);
         }
@@ -205,7 +206,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         initialFormList.forEach((initialForm) -> {
             initialForm.getWordFormList().forEach((wordForm) -> {
                 if ((wordForm.getMorfCharacteristics() & mask) == morfCharacteristics) {
-                    listWordString.add(BDInitialFormString.getStringById(wordForm.getMyId(), false));
+                    listWordString.add(BDInitialFormString.getStringById(wordForm.getFormKeyInBD(), false));
                 }
             });
         });
@@ -218,15 +219,15 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     private long getMask(long morfCharacteristics) {
-        
+
         long mask = 0;
-        
+
         for (long identifier : IdentifierMorfParameters.IDENTIFIERLIST) {
             if ((morfCharacteristics & identifier) != 0) {
                 mask |= identifier;
             }
         }
-        
+
         return mask;
     }
 
@@ -278,7 +279,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         getInitialFormList(stringInitialForm).forEach((initialForm) -> {
             initialForm.getWordFormList().forEach((wordForm) -> {
                 if (wordForm.getTypeOfSpeech() == typeOfSpeech) {
-                    wordStringList.add(BDInitialFormString.getStringById(wordForm.getMyId(), false));
+                    wordStringList.add(BDInitialFormString.getStringById(wordForm.getFormKeyInBD(), false));
                 }
             });
         });
