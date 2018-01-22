@@ -49,9 +49,11 @@ import org.xml.sax.SAXException;
 
 public final class Property {
 
-    public static String pathZipDictionary = morphologicalstructures.Property.PATH_ZIP_DICTIONARY;
-    public static String pathHashAndMorfCharacteristics = morphologicalstructures.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
-    public static final int controlValue = morphologicalstructures.Property.CONTROL_VALUE;
+    public static final String PATH_ZIP_DICTIONARY = morphologicalstructures.Property.PATH_ZIP_DICTIONARY;
+    public static final String PATH_HASH_AND_MORF_CHARACTERISTICS = morphologicalstructures.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
+    public static final int CONTROL_VALUE = morphologicalstructures.Property.CONTROL_VALUE;
+    public static final String PROPERTY_FILE = "property_JMorfSdk.xml";
+    public static final String MOVE_TO_NEW_LINE = System.lineSeparator();
 
     static {
         loadProperty();
@@ -60,7 +62,7 @@ public final class Property {
     public static void loadProperty() {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse("property.xml");
+            Document document = documentBuilder.parse(PROPERTY_FILE);
             Node root = document.getDocumentElement();
             readProperty(root);
         } catch (ParserConfigurationException | SAXException | IOException ex) {
