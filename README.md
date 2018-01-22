@@ -19,8 +19,8 @@ v 2.10.1 от 30.12.2017 <br>
 8) LoadJMorfSdk переименован в JMorfSdkLoad. <br>
 9) Если не нужна генерация слова, то можно удалить базу <b>dictionary.wordFormString.bd</b>, но тогда загружать библиотеку следует с помощью <b>JMorfSdkLoad.loadInAnalysisMode</b> <br>
 
-v 2.10.2 от 30.12.2017 <br>
+v 2.10.2 от 22.01.2018 <br>
 1. Перенес морф. параметров (MorphologyParameters) из JMorfSdk в проект MorphologicalStructures.<br>
 2. БД dictionary.initialFormString и dictionary.wordFormString, которые хранят стринговое представление начальной и производных формы слова, соответственно, перенесены в проект  MorphologicalStructures. Теперь сохранив ключ, полученный входе работы JMorfSdk, можно не хранить стринговое представление в ОП и получить его из БД (через проект MorphologicalStructures), когда она понадобится.<br>
-
+3. Добавление Gradle для сборки библиотеки. <b>Появился связанный проект MorphologicalStructures. Для корректной сборки разместить связанные проекты в "C:/TFWWT/*"
 
