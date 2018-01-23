@@ -21,6 +21,6 @@ v 2.10.1 от 30.12.2017 <br>
 
 v 2.10.2 от 30.12.2017 <br>
 1. Перенес морф. параметров (MorphologyParameters) из JMorfSdk в проект MorphologicalStructures.<br>
-2. БД dictionary.initialFormString и dictionary.wordFormString, которые хранят стринговое представление начальной и производных формы слова, соответственно, перенесены в проект  MorphologicalStructures. Теперь сохранив ключ, полученный входе работы JMorfSdk, можно не хранить стринговое представление в ОП и получить его из БД (через проект MorphologicalStructures), когда она понадобится.<br>
+2. БД dictionary.initialFormString и dictionary.wordFormString, которые хранят стринговое представление начальной и производных формы слова, соответственно, перенесены в проект  MorphologicalStructures. Теперь сохранив ключ, полученный входе работы JMorfSdk, можно не хранить стринговое представление в ОП и, когда оно понадобится, получить представление из БД (через проект MorphologicalStructures) при помощи ключа.<br>
 
 
