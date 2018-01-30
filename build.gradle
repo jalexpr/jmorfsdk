@@ -1,0 +1,52 @@
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+version '2.10.3'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+mainClassName = 'Running'
+
+repositories {
+    jcenter()
+}
+
+configurations {
+    morphologicalStructures
+    compile.extendsFrom morphologicalStructures
+}
+
+dependencies {
+    morphologicalStructures project(':MorphologicalStructures')
+}
+
+task copyDictionaryOfMorphologicalStructures(type: Copy) {
+        from 'C:/TFWWT/MorphologicalStructures/dictionary/'
+        into 'dictionary'
+        include 'dictionary.*'
+}
+
+task copyDictionaryInJar(type: Copy) {
+
+    dependsOn copyDictionaryOfMorphologicalStructures
+
+    from 'dictionary'
+    into "${buildDir}/jars/dictionary"
+    include 'dictionary.*'
+}
+
+jar {
+
+    dependsOn copyDictionaryInJar
+
+    manifest.attributes("Main-Class": mainClassName);
+    destinationDir = file("${buildDir}/jars")
+
+    from {
+        configurations.morphologicalStructures.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+
