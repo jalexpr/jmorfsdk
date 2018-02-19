@@ -79,7 +79,7 @@ public final class WordForm extends Form {
             return false;
         }
         final WordForm other = (WordForm) obj;
-        if (this.getFormKeyInBD() != other.getFormKeyInBD()) {
+        if (this.getMyFormKey() != other.getMyFormKey()) {
             return false;
         }
         return true;
@@ -87,6 +87,6 @@ public final class WordForm extends Form {
 
     @Override
     public int hashCode() {
-        return getFormKeyInBD();
+        return getMyFormKey();
     }
 }

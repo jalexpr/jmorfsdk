@@ -1,9 +1,15 @@
 
 import java.util.List;
+
+import jmorfsdk.form.Form;
+import load.BDFormString;
 import morphologicalstructures.OmoForm;
 import jmorfsdk.JMorfSdk;
 import grammeme.MorfologyParameters.*;
 import jmorfsdk.load.JMorfSdkLoad;
+import storagestructures.OmoFormList;
+
+import static grammeme.MorfologyParameters.View.PERFECT;
 
 public class Running {
 
@@ -71,6 +77,40 @@ public class Running {
         characteristics5.forEach((form) -> {
             System.out.println(form);
         });
+
+        OmoFormList omoFormMama = jMorfSdk.getAllCharacteristicsOfForm("мыла");
+        System.out.println("печать из встроенной структуры");
+        System.out.println(omoFormMama.get(0).getMyFormString());
+        System.out.println(omoFormMama.get(0).getInitialFormString());
+
+
+        int formKey = omoFormMama.get(0).getMyFormKey();
+        int formInitialFormKey = omoFormMama.get(0).getInitialFormKey();
+
+        System.out.println("печать из встроенного класса для работы с БД");
+        System.out.println(BDFormString.getStringById(formKey));
+        System.out.println(BDFormString.getStringById(formInitialFormKey));
+
+        System.out.println("_____");
+
+        OmoForm omoForm;
+
+        omoForm = jMorfSdk.getAllCharacteristicsOfForm("выпит").get(0);
+        System.out.println("получение конкретной характеристики по идентификатору");
+        System.out.println(omoForm.getTheMorfCharacteristic(Voice.IDENTIFIER));
+
+        System.out.println("получение конкретной характеристики по классу");
+        System.out.println(omoForm.getTheMorfCharacteristic(Voice.class));
+
+        System.out.println("_____");
+
+        jMorfSdk.getAllCharacteristicsOfForm("село").forEach((form) -> {
+            if(form.getTheMorfCharacteristic(Time.class) == Time.PAST) {
+                System.out.println(form);
+            }
+        });
+
+        System.out.println(Time.PAST);
 
         System.out.println("_____");
 
