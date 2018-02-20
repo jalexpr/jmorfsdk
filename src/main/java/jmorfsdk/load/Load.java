@@ -41,8 +41,6 @@ import jmorfsdk.JMorfSdk;
 
 public interface Load {
 
-    public final static String MYREPOSITORY = "https://github.com/jalexpr/JMorfSdk/";
-
     public JMorfSdk loadInAnalysisMode();
 
     public JMorfSdk loadInGeterationMode();
