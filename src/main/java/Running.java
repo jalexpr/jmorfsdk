@@ -1,15 +1,14 @@
 
 import java.util.List;
 
-import jmorfsdk.form.Form;
 import load.BDFormString;
 import morphologicalstructures.OmoForm;
 import jmorfsdk.JMorfSdk;
 import grammeme.MorfologyParameters.*;
+import grammeme.MorfologyParametersHelper;
 import jmorfsdk.load.JMorfSdkLoad;
 import storagestructures.OmoFormList;
 
-import static grammeme.MorfologyParameters.View.PERFECT;
 
 public class Running {
 
@@ -94,13 +93,16 @@ public class Running {
         System.out.println("_____");
 
         OmoForm omoForm;
-
+        Long morfCharacteristic;
+        
         omoForm = jMorfSdk.getAllCharacteristicsOfForm("выпит").get(0);
         System.out.println("получение конкретной характеристики по идентификатору");
-        System.out.println(omoForm.getTheMorfCharacteristic(Voice.IDENTIFIER));
+        morfCharacteristic = omoForm.getTheMorfCharacteristic(Voice.IDENTIFIER);
+        System.out.println(MorfologyParametersHelper.getParametersName(morfCharacteristic));
 
         System.out.println("получение конкретной характеристики по классу");
-        System.out.println(omoForm.getTheMorfCharacteristic(Voice.class));
+        morfCharacteristic = omoForm.getTheMorfCharacteristic(Voice.class);
+        System.out.println(MorfologyParametersHelper.getParametersName(morfCharacteristic));
 
         System.out.println("_____");
 
