@@ -39,7 +39,8 @@ package jmorfsdk.form;
 
 import java.util.ArrayList;
 import java.util.List;
-import load.BDInitialFormString;
+
+import load.BDFormString;
 
 public final class InitialForm extends Form {
 
@@ -53,12 +54,12 @@ public final class InitialForm extends Form {
 
     @Override
     public String getInitialFormString() {
-        return BDInitialFormString.getStringById(getFormKeyInBD(), true);
+        return BDFormString.getStringById(getMyFormKey(), true);
     }
 
     @Override
     public int getInitialFormKey() {
-        return getFormKeyInBD();
+        return getMyFormKey();
     }
 
     @Override
@@ -87,7 +88,7 @@ public final class InitialForm extends Form {
 
     @Override
     public int hashCode() {
-        return getFormKeyInBD();
+        return getMyFormKey();
     }
 
     @Override
@@ -102,6 +103,6 @@ public final class InitialForm extends Form {
             return false;
         }
         final InitialForm other = (InitialForm) obj;
-        return this.getFormKeyInBD() == other.getFormKeyInBD();
+        return this.getMyFormKey() == other.getMyFormKey();
     }
 }

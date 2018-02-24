@@ -37,15 +37,16 @@
  */
 package jmorfsdk;
 
-import load.BDInitialFormString;
 import jmorfsdk.form.InitialForm;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import jmorfsdk.form.Form;
 import jmorfsdk.form.NumberForm;
-import grammeme.MorfologyParameters.IdentifierMorfParameters;
+import grammeme.MorfologyParametersHelper;
 import java.util.Map;
+
+import load.BDFormString;
 import morphologicalstructures.NumberOmoForm;
 import morphologicalstructures.OmoForm;
 import storagestructures.OmoFormList;
@@ -175,7 +176,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         for (Form form : getListFormByString(strForm)) {
             OmoForm characteristicsOfForm;
             try {
-                characteristicsOfForm = new OmoForm(form.getInitialFormKey(),
+                characteristicsOfForm = new OmoForm(form.getInitialFormKey(), form.getMyFormKey(),
                     form.getTypeOfSpeech(),
                     form.getMorfCharacteristics());
             } catch (UnsupportedOperationException ex) {
@@ -205,7 +206,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         initialFormList.forEach((initialForm) -> {
             initialForm.getWordFormList().forEach((wordForm) -> {
                 if ((wordForm.getMorfCharacteristics() & mask) == morfCharacteristics) {
-                    listWordString.add(BDInitialFormString.getStringById(wordForm.getFormKeyInBD(), false));
+                    listWordString.add(BDFormString.getStringById(wordForm.getMyFormKey(), false));
                 }
             });
         });
@@ -221,7 +222,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         long mask = 0;
 
-        for (long identifier : IdentifierMorfParameters.IDENTIFIERLIST) {
+        for (long identifier : MorfologyParametersHelper.getIdentifiers()) {
             if ((morfCharacteristics & identifier) != 0) {
                 mask |= identifier;
             }
@@ -278,7 +279,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         getInitialFormList(stringInitialForm).forEach((initialForm) -> {
             initialForm.getWordFormList().forEach((wordForm) -> {
                 if (wordForm.getTypeOfSpeech() == typeOfSpeech) {
-                    wordStringList.add(BDInitialFormString.getStringById(wordForm.getFormKeyInBD(), false));
+                    wordStringList.add(BDFormString.getStringById(wordForm.getMyFormKey(), false));
                 }
             });
         });

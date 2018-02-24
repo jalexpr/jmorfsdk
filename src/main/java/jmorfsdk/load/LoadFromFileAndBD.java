@@ -62,7 +62,7 @@ public final class LoadFromFileAndBD implements Load {
     public JMorfSdk loadInAnalysisMode(boolean isLoadGenerationdMode) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
         try {
-            streamHashAndMorfCharacteristic = FileOpen.openZipFile(Property.pathZipDictionary, Property.pathHashAndMorfCharacteristics);
+            streamHashAndMorfCharacteristic = FileOpen.openZipFile(Property.PATH_ZIP_DICTIONARY, Property.PATH_HASH_AND_MORF_CHARACTERISTICS);
             return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationdMode);
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
@@ -104,7 +104,7 @@ public final class LoadFromFileAndBD implements Load {
 
     private void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream, boolean isLoadFormInInitialForm) {
         int nextHashCode = getHashCodeFromBytes(inputStream);
-        while (nextHashCode != Property.controlValue) {
+        while (nextHashCode != Property.CONTROL_VALUE) {
             WordForm wordForm = new WordForm(getMorfCharacteristicsFromBytes(inputStream), getIdForm(inputStream), initialForm);
             jMorfSdk.addForm(nextHashCode, wordForm);
             if (isLoadFormInInitialForm) {
@@ -141,7 +141,9 @@ public final class LoadFromFileAndBD implements Load {
                 hashCode |= g1;
             }
         } catch (IOException ex) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, "Не ожиданное окончание файла, проверте целостность файлов!", ex);
+            Logger.getLogger(LoadFromFileAndBD.class.getName())
+                .log(Level.SEVERE, String.format("Не ожиданное окончание файла, проверте целостность файлов!%s",
+                        Property.MOVE_TO_NEW_LINE), ex);
         }
 
         return hashCode;

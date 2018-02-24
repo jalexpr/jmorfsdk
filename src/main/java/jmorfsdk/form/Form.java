@@ -37,6 +37,8 @@
  */
 package jmorfsdk.form;
 
+import load.BDFormString;
+
 public abstract class Form {
 
     public static int formCount = 0;
@@ -53,7 +55,7 @@ public abstract class Form {
         return morfCharacteristics;
     }
 
-    public int getFormKeyInBD() {
+    public int getMyFormKey() {
         return formKeyInBD;
     }
 
@@ -64,5 +66,9 @@ public abstract class Form {
     public abstract int getInitialFormKey();
 
     public abstract boolean isInitialForm();
+
+    public String getMyString() {
+        return BDFormString.getStringById(getMyFormKey(), false);
+    }
 
 }
