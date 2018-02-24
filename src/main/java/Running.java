@@ -19,7 +19,6 @@ public class Running {
 
 //        BDInitialFormString.printAll(true);
 
-        System.err.println("");
         //Пример получения характеристик заданой формы
         List<OmoForm> characteristics;
 
@@ -30,7 +29,7 @@ public class Running {
 
         jMorfSdk.getAllCharacteristicsOfForm("мыла").forEach((form) -> {
             //Пример поиска формы в родительном падеже
-            if (form.getTheMorfCharacteristic(Case.IDENTIFIER) == Case.GENITIVE) {
+            if (form.getTheMorfCharacteristics(Case.IDENTIFIER) == Case.GENITIVE) {
                 System.out.println("Форма в родительном падеже " + form);
             }
 
@@ -94,25 +93,25 @@ public class Running {
 
         OmoForm omoForm;
         Long morfCharacteristic;
-        
+
         omoForm = jMorfSdk.getAllCharacteristicsOfForm("выпит").get(0);
         System.out.println("получение конкретной характеристики по идентификатору");
-        morfCharacteristic = omoForm.getTheMorfCharacteristic(Voice.IDENTIFIER);
+        morfCharacteristic = omoForm.getTheMorfCharacteristics(Voice.IDENTIFIER);
         System.out.println(MorfologyParametersHelper.getParametersName(morfCharacteristic));
 
         System.out.println("получение конкретной характеристики по классу");
-        morfCharacteristic = omoForm.getTheMorfCharacteristic(Voice.class);
+        morfCharacteristic = omoForm.getTheMorfCharacteristics(Voice.class);
         System.out.println(MorfologyParametersHelper.getParametersName(morfCharacteristic));
 
         System.out.println("_____");
 
         jMorfSdk.getAllCharacteristicsOfForm("село").forEach((form) -> {
-            if(form.getTheMorfCharacteristic(Time.class) == Time.PAST) {
+            if(form.getTheMorfCharacteristics(Time.class) == Time.PAST) {
                 System.out.println(form);
             }
         });
 
-        System.out.println(Time.PAST);
+        System.out.println(MorfologyParametersHelper.getParametersName(Time.PAST));
 
         System.out.println("_____");
 

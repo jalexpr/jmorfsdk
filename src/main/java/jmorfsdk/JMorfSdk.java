@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import jmorfsdk.form.Form;
 import jmorfsdk.form.NumberForm;
-import grammeme.MorfologyParameters.IdentifierMorfParameters;
+import grammeme.MorfologyParametersHelper;
 import java.util.Map;
 
 import load.BDFormString;
@@ -222,7 +222,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         long mask = 0;
 
-        for (long identifier : IdentifierMorfParameters.IDENTIFIERLIST) {
+        for (long identifier : MorfologyParametersHelper.getIdentifiers()) {
             if ((morfCharacteristics & identifier) != 0) {
                 mask |= identifier;
             }
