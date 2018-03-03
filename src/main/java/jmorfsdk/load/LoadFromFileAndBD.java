@@ -47,7 +47,13 @@ import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
 
+import static load.BDFormString.deCompressDd;
+
 public final class LoadFromFileAndBD implements Load {
+
+    static {
+        deCompressDd();
+    }
 
     @Override
     public JMorfSdk loadFullLibrary() {
@@ -97,15 +103,15 @@ public final class LoadFromFileAndBD implements Load {
     private InitialForm createInitialForm(BufferedInputStream inputStream) throws IOException {
 
         return new InitialForm(
+                getHashCodeFromBytes(inputStream),
                 getTypeOfSpeechFromBytes(inputStream),
-                getMorfCharacteristicsFromBytes(inputStream),
-                getHashCodeFromBytes(inputStream));
+                getMorfCharacteristicsFromBytes(inputStream));
     }
 
     private void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream, boolean isLoadFormInInitialForm) {
         int nextHashCode = getHashCodeFromBytes(inputStream);
         while (nextHashCode != Property.CONTROL_VALUE) {
-            WordForm wordForm = new WordForm(getMorfCharacteristicsFromBytes(inputStream), getIdForm(inputStream), initialForm);
+            WordForm wordForm = new WordForm(getIdForm(inputStream), getMorfCharacteristicsFromBytes(inputStream), initialForm);
             jMorfSdk.addForm(nextHashCode, wordForm);
             if (isLoadFormInInitialForm) {
                 initialForm.addWordfFormInList(wordForm);

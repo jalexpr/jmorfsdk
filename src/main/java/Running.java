@@ -15,10 +15,11 @@ public class Running {
     public static void main(String[] args) throws Exception {
 
         //Пример загрузки библиотеки
-            JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
+        JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
 
 //        BDInitialFormString.printAll(true);
 
+        System.err.println("");
         //Пример получения характеристик заданой формы
         List<OmoForm> characteristics;
 
@@ -111,7 +112,7 @@ public class Running {
             }
         });
 
-        System.out.println(MorfologyParametersHelper.getParametersName(Time.PAST));
+        System.out.println(Time.PAST);
 
         System.out.println("_____");
 

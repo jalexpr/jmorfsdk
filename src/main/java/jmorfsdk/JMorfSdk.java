@@ -109,9 +109,9 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public LinkedList<Byte> getTypeOfSpeechs(String strForm) throws Exception {
+    public List<Byte> getTypeOfSpeechs(String strForm) throws Exception {
 
-        LinkedList<Byte> typeOfSpeechsList = new LinkedList<>();
+        List<Byte> typeOfSpeechsList = new LinkedList<>();
 
         for (Form form : getListFormByString(strForm)) {
             typeOfSpeechsList.add(form.getTypeOfSpeech());
@@ -119,7 +119,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         return typeOfSpeechsList;
     }
 
-    private LinkedList<Form> getListFormByString(String strForm) throws Exception {
+    private List<Form> getListFormByString(String strForm) throws Exception {
         try {
             return getListFormByHachCode(strForm.hashCode());
         } catch (Exception ex) {
@@ -128,13 +128,14 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
                 listNumber.add(new NumberForm(strForm));
                 return listNumber;
             }
-            throw new Exception(String.format("%s Слово: %s", ex.getMessage(), strForm));
+            return new LinkedList<>();
+//            throw new Exception(String.format("%s Слово: %s", ex.getMessage(), strForm));
         }
     }
 
-    private LinkedList<Form> getListFormByHachCode(int hashCode) throws Exception {
+    private List<Form> getListFormByHachCode(int hashCode) throws Exception {
 
-        LinkedList<Form> formList;
+        List<Form> formList;
 
         if (omoForms.containsKey(hashCode)) {
             formList = (LinkedList<Form>) omoForms.get(hashCode);
@@ -146,9 +147,9 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public LinkedList<Long> getMorfologyCharacteristics(String strForm) throws Exception {
+    public List<Long> getMorfologyCharacteristics(String strForm) throws Exception {
 
-        LinkedList<Long> morfologyCharacteristics = new LinkedList<>();
+        List<Long> morfologyCharacteristics = new LinkedList<>();
 
         for (Form form : getListFormByString(strForm)) {
             morfologyCharacteristics.add(form.getMorfCharacteristics());
@@ -157,9 +158,9 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public LinkedList<String> getStringInitialForm(String strForm) throws Exception {
+    public List<String> getStringInitialForm(String strForm) throws Exception {
 
-        LinkedList<String> stringFormList = new LinkedList<>();
+        List<String> stringFormList = new LinkedList<>();
 
         for (Form form : getListFormByString(strForm)) {
             stringFormList.add(form.getInitialFormString());

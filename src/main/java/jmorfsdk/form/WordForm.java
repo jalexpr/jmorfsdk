@@ -41,7 +41,7 @@ public final class WordForm extends Form {
 
     private final InitialForm initialForm;
 
-    public WordForm(long morfCharacteristics, int formKey, InitialForm initialForm) {
+    public WordForm(int formKey, long morfCharacteristics, InitialForm initialForm) {
         super(morfCharacteristics, formKey);
         this.initialForm = initialForm;
         initialForm.addWordfFormInList(this);

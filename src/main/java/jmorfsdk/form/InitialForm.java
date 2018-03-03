@@ -47,7 +47,7 @@ public final class InitialForm extends Form {
     private final byte typeOfSpeech;
     private final ArrayList<Form> wordFormList = new ArrayList<>();
 
-    public InitialForm(byte typeOfSpeech, long morfCharacteristics, int formKey) {
+    public InitialForm(int formKey, byte typeOfSpeech, long morfCharacteristics) {
         super(morfCharacteristics, formKey);
         this.typeOfSpeech = typeOfSpeech;
     }
