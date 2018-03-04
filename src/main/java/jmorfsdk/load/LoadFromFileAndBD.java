@@ -83,7 +83,7 @@ public final class LoadFromFileAndBD implements Load {
         JMorfSdk jMorfSdk = JMorfSdk.getEmptyJMorfSdk();
         try (BufferedInputStream inputStream = new BufferedInputStream(inputStreamHashAndMorfCharacteristics)) {
             while (inputStream.available() > 0) {
-                int hashCode = getHashCodeFromBytes(inputStream);
+                int hashCode = getIntFromBytes(inputStream);
 //                if(hashCode == -1) {
 //                    //конец файла
 //                    break;
@@ -101,22 +101,21 @@ public final class LoadFromFileAndBD implements Load {
     }
 
     private InitialForm createInitialForm(BufferedInputStream inputStream) throws IOException {
-
         return new InitialForm(
-                getHashCodeFromBytes(inputStream),
+                getIntFromBytes(inputStream),
                 getTypeOfSpeechFromBytes(inputStream),
                 getMorfCharacteristicsFromBytes(inputStream));
     }
 
     private void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream, boolean isLoadFormInInitialForm) {
-        int nextHashCode = getHashCodeFromBytes(inputStream);
+        int nextHashCode = getIntFromBytes(inputStream);
         while (nextHashCode != Property.CONTROL_VALUE) {
             WordForm wordForm = new WordForm(getIdForm(inputStream), getMorfCharacteristicsFromBytes(inputStream), initialForm);
             jMorfSdk.addForm(nextHashCode, wordForm);
             if (isLoadFormInInitialForm) {
                 initialForm.addWordfFormInList(wordForm);
             }
-            nextHashCode = getHashCodeFromBytes(inputStream);
+            nextHashCode = getIntFromBytes(inputStream);
         }
         initialForm.trimToSize();
     }
@@ -125,7 +124,7 @@ public final class LoadFromFileAndBD implements Load {
         return (int) getValueCodeFromBytes(inputStream, 4);
     }
 
-    private int getHashCodeFromBytes(InputStream inputStream) {
+    private int getIntFromBytes(InputStream inputStream) {
         return (int) getValueCodeFromBytes(inputStream, 4);
     }
 

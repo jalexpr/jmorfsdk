@@ -151,6 +151,11 @@ public class Running {
             System.out.println(ex);
         }
 
+        System.out.print("________________________________________");
+        List<OmoForm> characteristics10 = jMorfSdk.getAllCharacteristicsOfForm("мыла");
+        characteristics10.forEach((form) -> {
+            System.out.println(form.getInitialFormString());
+        });
         jMorfSdk.finish();
     }
 }
