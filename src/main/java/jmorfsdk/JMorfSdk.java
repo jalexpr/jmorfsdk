@@ -43,13 +43,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import jmorfsdk.form.Form;
 import jmorfsdk.form.NumberForm;
-import grammeme.MorfologyParametersHelper;
 import java.util.Map;
 
-import load.BDFormString;
-import morphologicalstructures.NumberOmoForm;
-import morphologicalstructures.OmoForm;
-import storagestructures.OmoFormList;
+import morphological.structures.grammeme.MorfologyParametersHelper;
+import morphological.structures.internal.NumberOmoForm;
+import morphological.structures.internal.OmoForm;
+import morphological.structures.load.BDFormString;
+import morphological.structures.storage.OmoFormList;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
@@ -70,7 +70,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     private void addNewOmoForm(int hashCode, Form form) {
-        LinkedList<Form> omoForm = new LinkedList<>();
+        List<Form> omoForm = new LinkedList<>();
         omoForm.add(form);
         omoForms.put(hashCode, omoForm);
     }
@@ -134,16 +134,11 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     private List<Form> getListFormByHachCode(int hashCode) throws Exception {
-
-        List<Form> formList;
-
         if (omoForms.containsKey(hashCode)) {
-            formList = (LinkedList<Form>) omoForms.get(hashCode);
+            return omoForms.get(hashCode);
         } else {
             throw new Exception("Подходящие слово не было найдено в словаре библиотеки!");
         }
-
-        return formList;
     }
 
     @Override

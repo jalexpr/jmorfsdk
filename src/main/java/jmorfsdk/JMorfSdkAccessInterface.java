@@ -37,7 +37,8 @@
  */
 package jmorfsdk;
 
-import morphologicalstructures.OmoForm;
+import morphological.structures.internal.OmoForm;
+
 import java.util.List;
 
 public interface JMorfSdkAccessInterface {

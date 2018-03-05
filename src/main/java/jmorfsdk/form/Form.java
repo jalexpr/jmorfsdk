@@ -37,7 +37,7 @@
  */
 package jmorfsdk.form;
 
-import load.BDFormString;
+import morphological.structures.load.BDFormString;
 
 public abstract class Form {
 

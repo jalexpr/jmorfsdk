@@ -1,13 +1,13 @@
 
 import java.util.List;
 
-import load.BDFormString;
-import morphologicalstructures.OmoForm;
+import morphological.structures.grammeme.MorfologyParameters.*;
+import morphological.structures.grammeme.MorfologyParametersHelper;
+import morphological.structures.internal.OmoForm;
+import morphological.structures.load.BDFormString;
 import jmorfsdk.JMorfSdk;
-import grammeme.MorfologyParameters.*;
-import grammeme.MorfologyParametersHelper;
 import jmorfsdk.load.JMorfSdkLoad;
-import storagestructures.OmoFormList;
+import morphological.structures.storage.OmoFormList;
 
 
 public class Running {
@@ -16,7 +16,6 @@ public class Running {
 
         //Пример загрузки библиотеки
         JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
-
 //        BDInitialFormString.printAll(true);
 
         System.err.println("");
@@ -151,6 +150,11 @@ public class Running {
             System.out.println(ex);
         }
 
+        System.out.print("________________________________________");
+        List<OmoForm> characteristics10 = jMorfSdk.getAllCharacteristicsOfForm("мыла");
+        characteristics10.forEach((form) -> {
+            System.out.println(form.getInitialFormString());
+        });
         jMorfSdk.finish();
     }
 }

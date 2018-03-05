@@ -37,7 +37,7 @@
  */
 package jmorfsdk.form;
 
-import grammeme.MorfologyParameters.*;
+import morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
 
 public class NumberForm extends Form {
 

@@ -49,9 +49,6 @@ import org.xml.sax.SAXException;
 
 public final class Property {
 
-    public static final String PATH_ZIP_DICTIONARY = morphologicalstructures.Property.PATH_ZIP_DICTIONARY;
-    public static final String PATH_HASH_AND_MORF_CHARACTERISTICS = morphologicalstructures.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
-    public static final int CONTROL_VALUE = morphologicalstructures.Property.CONTROL_VALUE;
     public static final String PROPERTY_FILE = "property_JMorfSdk.xml";
     public static final String MOVE_TO_NEW_LINE = System.lineSeparator();
     public static final String MY_REPOSITORY = "https://github.com/jalexpr/JMorfSdk/";
