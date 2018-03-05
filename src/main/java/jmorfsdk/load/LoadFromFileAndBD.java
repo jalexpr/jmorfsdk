@@ -46,9 +46,12 @@ import java.util.zip.ZipInputStream;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
+import morphological.structures.internal.Property;
 import template.wrapper.classes.FileHelper;
 
-import static load.BDFormString.deCompressDd;
+import static jmorfsdk.load.Property.MOVE_TO_NEW_LINE;
+import static morphological.structures.internal.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
+import static morphological.structures.load.BDFormString.deCompressDd;
 
 public final class LoadFromFileAndBD {
 
@@ -61,7 +64,7 @@ public final class LoadFromFileAndBD {
     protected static JMorfSdk loadInAnalysisMode(String pathZipFiel, boolean isLoadGenerationMode) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
         try {
-            streamHashAndMorfCharacteristic = FileHelper.openZipFile(pathZipFiel, Property.PATH_HASH_AND_MORF_CHARACTERISTICS);
+            streamHashAndMorfCharacteristic = FileHelper.openZipFile(pathZipFiel, PATH_HASH_AND_MORF_CHARACTERISTICS);
             return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationMode);
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
@@ -137,7 +140,7 @@ public final class LoadFromFileAndBD {
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName())
                 .log(Level.SEVERE, String.format("Не ожиданное окончание файла, проверте целостность файлов!%s",
-                        Property.MOVE_TO_NEW_LINE), ex);
+                        MOVE_TO_NEW_LINE), ex);
         }
 
         return hashCode;

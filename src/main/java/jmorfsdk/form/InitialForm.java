@@ -40,7 +40,7 @@ package jmorfsdk.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import load.BDFormString;
+import morphological.structures.load.BDFormString;
 
 public final class InitialForm extends Form {
 

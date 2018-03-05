@@ -43,13 +43,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import jmorfsdk.form.Form;
 import jmorfsdk.form.NumberForm;
-import grammeme.MorfologyParametersHelper;
 import java.util.Map;
 
-import load.BDFormString;
-import morphologicalstructures.NumberOmoForm;
-import morphologicalstructures.OmoForm;
-import storagestructures.OmoFormList;
+import morphological.structures.grammeme.MorfologyParametersHelper;
+import morphological.structures.internal.NumberOmoForm;
+import morphological.structures.internal.OmoForm;
+import morphological.structures.load.BDFormString;
+import morphological.structures.storage.OmoFormList;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 

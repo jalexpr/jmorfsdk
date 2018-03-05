@@ -41,8 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jmorfsdk.JMorfSdk;
 
-import static jmorfsdk.load.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
-import static jmorfsdk.load.Property.PATH_ZIP_DICTIONARY;
+import static morphological.structures.internal.Property.PATH_ZIP_DICTIONARY;
 
 public abstract class JMorfSdkLoad {
 
