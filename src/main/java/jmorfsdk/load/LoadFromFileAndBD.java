@@ -46,48 +46,37 @@ import java.util.zip.ZipInputStream;
 import jmorfsdk.JMorfSdk;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.WordForm;
+import template.wrapper.classes.FileHelper;
 
 import static load.BDFormString.deCompressDd;
 
-public final class LoadFromFileAndBD implements Load {
+public final class LoadFromFileAndBD {
 
     static {
         deCompressDd();
     }
 
-    @Override
-    public JMorfSdk loadFullLibrary() {
-        return loadInAnalysisMode(true);
-    }
+    private LoadFromFileAndBD() {}
 
-    @Override
-    public JMorfSdk loadInAnalysisMode() {
-        return loadInAnalysisMode(false);
-    }
-
-    public JMorfSdk loadInAnalysisMode(boolean isLoadGenerationdMode) {
+    protected static JMorfSdk loadInAnalysisMode(String pathZipFiel, boolean isLoadGenerationMode) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
         try {
-            streamHashAndMorfCharacteristic = FileOpen.openZipFile(Property.PATH_ZIP_DICTIONARY, Property.PATH_HASH_AND_MORF_CHARACTERISTICS);
-            return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationdMode);
+            streamHashAndMorfCharacteristic = FileHelper.openZipFile(pathZipFiel, Property.PATH_HASH_AND_MORF_CHARACTERISTICS);
+            return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationMode);
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
             return JMorfSdk.getEmptyJMorfSdk();
         } finally {
-            FileOpen.closeFile(streamHashAndMorfCharacteristic);
+            FileHelper.closeFile(streamHashAndMorfCharacteristic);
         }
     }
 
-    private JMorfSdk loadJMorfSdk(InputStream inputStreamHashAndMorfCharacteristics, boolean isLoadFormInInitialForm) {
+    private static JMorfSdk loadJMorfSdk(InputStream inputStreamHashAndMorfCharacteristics, boolean isLoadFormInInitialForm) {
 
         JMorfSdk jMorfSdk = JMorfSdk.getEmptyJMorfSdk();
         try (BufferedInputStream inputStream = new BufferedInputStream(inputStreamHashAndMorfCharacteristics)) {
             while (inputStream.available() > 0) {
                 int hashCode = getIntFromBytes(inputStream);
-//                if(hashCode == -1) {
-//                    //конец файла
-//                    break;
-//                }
                 InitialForm initialForm = createInitialForm(inputStream);
                 jMorfSdk.addForm(hashCode, initialForm);
                 addWordForm(jMorfSdk, initialForm, inputStream, isLoadFormInInitialForm);
@@ -100,14 +89,14 @@ public final class LoadFromFileAndBD implements Load {
         return jMorfSdk;
     }
 
-    private InitialForm createInitialForm(BufferedInputStream inputStream) throws IOException {
+    private static InitialForm createInitialForm(BufferedInputStream inputStream) throws IOException {
         return new InitialForm(
                 getIntFromBytes(inputStream),
                 getTypeOfSpeechFromBytes(inputStream),
                 getMorfCharacteristicsFromBytes(inputStream));
     }
 
-    private void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream, boolean isLoadFormInInitialForm) {
+    private static void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream, boolean isLoadFormInInitialForm) {
         int nextHashCode = getIntFromBytes(inputStream);
         while (nextHashCode != Property.CONTROL_VALUE) {
             WordForm wordForm = new WordForm(getIdForm(inputStream), getMorfCharacteristicsFromBytes(inputStream), initialForm);
@@ -120,24 +109,24 @@ public final class LoadFromFileAndBD implements Load {
         initialForm.trimToSize();
     }
 
-    private int getIdForm(InputStream inputStream) {
+    private static int getIdForm(InputStream inputStream) {
         return (int) getValueCodeFromBytes(inputStream, 4);
     }
 
-    private int getIntFromBytes(InputStream inputStream) {
+    private static int getIntFromBytes(InputStream inputStream) {
         return (int) getValueCodeFromBytes(inputStream, 4);
     }
 
-    private byte getTypeOfSpeechFromBytes(InputStream inputStream) throws IOException {
+    private static byte getTypeOfSpeechFromBytes(InputStream inputStream) throws IOException {
         byte typeOfSpeech = (byte) inputStream.read();
         return typeOfSpeech;
     }
 
-    private long getMorfCharacteristicsFromBytes(InputStream inputStream) {
+    private static long getMorfCharacteristicsFromBytes(InputStream inputStream) {
         return getValueCodeFromBytes(inputStream, 8);
     }
 
-    private long getValueCodeFromBytes(InputStream inputStream, int countByte) {
+    private static long getValueCodeFromBytes(InputStream inputStream, int countByte) {
         int hashCode = 0;
         try {
             for (int i = 0; i < countByte; i++) {
@@ -154,8 +143,4 @@ public final class LoadFromFileAndBD implements Load {
         return hashCode;
     }
 
-    @Override
-    public JMorfSdk loadInGeterationMode() {
-        return loadFullLibrary();
-    }
 }
