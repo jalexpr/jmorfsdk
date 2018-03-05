@@ -19,3 +19,6 @@ rootProject.name = 'JMorfSdk'
 
 include 'MorphologicalStructures'
 project(':MorphologicalStructures').projectDir = new File('C:/TFWWT/MorphologicalStructures')
+
+include 'TemplateWrapperClasses'
+project(':TemplateWrapperClasses').projectDir = new File('C:/TFWWT/TemplateWrapperClasses')
