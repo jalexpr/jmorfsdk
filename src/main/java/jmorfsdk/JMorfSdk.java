@@ -37,19 +37,21 @@
  */
 package jmorfsdk;
 
-import jmorfsdk.form.InitialForm;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import jmorfsdk.form.Form;
+import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.NumberForm;
-import java.util.Map;
-
 import morphological.structures.grammeme.MorfologyParametersHelper;
 import morphological.structures.internal.NumberOmoForm;
 import morphological.structures.internal.OmoForm;
 import morphological.structures.load.BDFormString;
 import morphological.structures.storage.OmoFormList;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static morphological.structures.load.LoadHelper.getHashCode;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
@@ -63,7 +65,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     public void addForm(int hashCode, Form form) {
         try {
-            getListFormByHachCode(hashCode).add(form);
+            omoForms.get(hashCode).add(form);
         } catch (Exception ex) {
             addNewOmoForm(hashCode, form);
         }
@@ -86,7 +88,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public byte isInitialForm(String strForm) throws Exception {
+    public byte isInitialForm(String strForm) {
         boolean isContainsInitialForm = false;
         boolean isContainsNotInitialForm = false;
         for (Form form : getListFormByString(strForm)) {
@@ -109,7 +111,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public List<Byte> getTypeOfSpeechs(String strForm) throws Exception {
+    public List<Byte> getTypeOfSpeechs(String strForm) {
 
         List<Byte> typeOfSpeechsList = new LinkedList<>();
 
@@ -119,30 +121,49 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         return typeOfSpeechsList;
     }
 
-    private List<Form> getListFormByString(String strForm) throws Exception {
+    private List<Form> getListFormByString(String strForm) {
         try {
-            return getListFormByHachCode(strForm.hashCode());
-        } catch (Exception ex) {
-            if(strForm.matches("[0-9]+")) {
-                LinkedList listNumber = new LinkedList<>();
-                listNumber.add(new NumberForm(strForm));
-                return listNumber;
+            if(isNumber(strForm)) {
+                return getListNumber(strForm);
+            } else {
+                return createListFormByString(strForm);
             }
+        } catch (Exception ex) {
             return new LinkedList<>();
-//            throw new Exception(String.format("%s Слово: %s", ex.getMessage(), strForm));
         }
     }
 
-    private List<Form> getListFormByHachCode(int hashCode) throws Exception {
+    private boolean isNumber(String strForm) {
+        return strForm.matches("[0-9]+");
+    }
+
+    private List<Form> getListNumber(String strForm) throws Exception {
+        if(strForm.matches("[0-9]+")) {
+            LinkedList listNumber = new LinkedList<>();
+            listNumber.add(new NumberForm(strForm));
+            return listNumber;
+        } else {
+            throw new Exception();
+        }
+    }
+
+    private List<Form> createListFormByString(String strForm) throws Exception {
+        int hashCode = getHashCode(strForm);
+        List<Form> listForm = new LinkedList<>();
         if (omoForms.containsKey(hashCode)) {
-            return omoForms.get(hashCode);
+            omoForms.get(hashCode).forEach((form) -> {
+                if(form.isFormSameByControlHash(strForm)) {
+                    listForm.add(form);
+                }
+            });
         } else {
             throw new Exception("Подходящие слово не было найдено в словаре библиотеки!");
         }
+        return listForm;
     }
 
     @Override
-    public List<Long> getMorfologyCharacteristics(String strForm) throws Exception {
+    public List<Long> getMorfologyCharacteristics(String strForm) {
 
         List<Long> morfologyCharacteristics = new LinkedList<>();
 
@@ -153,7 +174,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public List<String> getStringInitialForm(String strForm) throws Exception {
+    public List<String> getStringInitialForm(String strForm) {
 
         List<String> stringFormList = new LinkedList<>();
 
@@ -165,7 +186,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public OmoFormList getAllCharacteristicsOfForm(String strForm) throws Exception {
+    public OmoFormList getAllCharacteristicsOfForm(String strForm) {
 
         OmoFormList list = new OmoFormList();
 

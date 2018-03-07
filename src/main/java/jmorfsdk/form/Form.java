@@ -39,6 +39,8 @@ package jmorfsdk.form;
 
 import morphological.structures.load.BDFormString;
 
+import static morphological.structures.load.LoadHelper.getControlHashCode;
+
 public abstract class Form {
 
     public static int formCount = 0;
@@ -69,6 +71,14 @@ public abstract class Form {
 
     public String getMyString() {
         return BDFormString.getStringById(getMyFormKey(), false);
+    }
+
+    public boolean isFormSameByControlHash(String string) {
+        return getMyControlValue() == getControlHashCode(string);
+    }
+
+    private byte getMyControlValue() {
+        return (byte)formKeyInBD;
     }
 
 }
