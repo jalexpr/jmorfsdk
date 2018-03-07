@@ -51,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static morphological.structures.load.LoadHelper.getHashCode;
-
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     private Map<Integer, List<Form>> omoForms = new ConcurrentHashMap();
@@ -148,8 +146,8 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     private List<Form> createListFormByString(String strForm) throws Exception {
-        int hashCode = getHashCode(strForm);
-//        int hashCode = strForm.hashCode();
+//        int hashCode = getHashCode(strForm);
+        int hashCode = strForm.hashCode();
         List<Form> listForm = new LinkedList<>();
         if (omoForms.containsKey(hashCode)) {
             omoForms.get(hashCode).forEach((form) -> {
