@@ -40,6 +40,7 @@ package jmorfsdk.form;
 import morphological.structures.load.BDFormString;
 
 import static morphological.structures.load.LoadHelper.getControlHashCode;
+import static morphological.structures.load.LoadHelper.getControlValue;
 
 public abstract class Form {
 
@@ -78,7 +79,7 @@ public abstract class Form {
     }
 
     private byte getMyControlValue() {
-        return (byte)formKeyInBD;
+        return getControlValue(getMyFormKey());
     }
 
 }

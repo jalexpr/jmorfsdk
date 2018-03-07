@@ -149,6 +149,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     private List<Form> createListFormByString(String strForm) throws Exception {
         int hashCode = getHashCode(strForm);
+//        int hashCode = strForm.hashCode();
         List<Form> listForm = new LinkedList<>();
         if (omoForms.containsKey(hashCode)) {
             omoForms.get(hashCode).forEach((form) -> {
