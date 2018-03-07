@@ -78,7 +78,7 @@ public abstract class Form {
         return getMyControlValue() == getControlHashCode(string);
     }
 
-    private byte getMyControlValue() {
+    private int getMyControlValue() {
         return getControlValue(getMyFormKey());
     }
 

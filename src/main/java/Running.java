@@ -1,13 +1,12 @@
-
-import java.util.List;
-
+import jmorfsdk.JMorfSdk;
+import jmorfsdk.load.JMorfSdkLoad;
 import morphological.structures.grammeme.MorfologyParameters.*;
 import morphological.structures.grammeme.MorfologyParametersHelper;
 import morphological.structures.internal.OmoForm;
 import morphological.structures.load.BDFormString;
-import jmorfsdk.JMorfSdk;
-import jmorfsdk.load.JMorfSdkLoad;
 import morphological.structures.storage.OmoFormList;
+
+import java.util.List;
 
 
 public class Running {
@@ -22,7 +21,7 @@ public class Running {
         //Пример получения характеристик заданой формы
         List<OmoForm> characteristics;
 
-        characteristics = jMorfSdk.getAllCharacteristicsOfForm("гладь");
+        characteristics = jMorfSdk.getAllCharacteristicsOfForm("мама");
         characteristics.forEach((form) -> {
             System.out.println(form);
         });
@@ -150,8 +149,8 @@ public class Running {
             System.out.println(ex);
         }
 
-        System.out.print("________________________________________");
-        List<OmoForm> characteristics10 = jMorfSdk.getAllCharacteristicsOfForm("мыла");
+        System.out.println("________________________________________");
+        List<OmoForm> characteristics10 = jMorfSdk.getAllCharacteristicsOfForm("мама");
         characteristics10.forEach((form) -> {
             System.out.println(form.getInitialFormString());
         });
