@@ -1,5 +1,5 @@
+import template.wrapper.classes.BDSqlite;
 
-import morphological.structures.load.BDSqlite;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
