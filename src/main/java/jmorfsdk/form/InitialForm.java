@@ -37,10 +37,10 @@
  */
 package jmorfsdk.form;
 
+import morphological.structures.load.BDFormString;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import morphological.structures.load.BDFormString;
 
 public final class InitialForm extends Form {
 
@@ -105,4 +105,10 @@ public final class InitialForm extends Form {
         final InitialForm other = (InitialForm) obj;
         return this.getMyFormKey() == other.getMyFormKey();
     }
+
+    @Override
+    public Form getInitialForm() {
+        return this;
+    }
+
 }

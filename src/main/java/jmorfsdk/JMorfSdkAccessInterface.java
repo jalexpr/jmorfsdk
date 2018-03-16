@@ -67,4 +67,5 @@ public interface JMorfSdkAccessInterface {
     public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception;
     
     public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception;
+
 }

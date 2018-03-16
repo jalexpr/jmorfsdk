@@ -89,4 +89,10 @@ public final class WordForm extends Form {
     public int hashCode() {
         return getMyFormKey();
     }
+
+    @Override
+    public Form getInitialForm() {
+        return initialForm;
+    }
+
 }

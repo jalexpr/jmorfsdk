@@ -40,12 +40,14 @@ package jmorfsdk;
 import jmorfsdk.form.Form;
 import jmorfsdk.form.InitialForm;
 import jmorfsdk.form.NumberForm;
+import jmorfsdk.load.JMorfSdkLoad;
 import morphological.structures.grammeme.MorfologyParametersHelper;
 import morphological.structures.internal.NumberOmoForm;
 import morphological.structures.internal.OmoForm;
 import morphological.structures.load.BDFormString;
 import morphological.structures.storage.OmoFormList;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -208,7 +210,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     @Override
     public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception {
         try {
-            return selectByMorfCharacteristics(getInitialFormList(stringInitialForm), morfCharacteristics);
+            return selectByMorfCharacteristics(selectOnlyInitialFormListByString(stringInitialForm), morfCharacteristics);
         } catch (Exception ex) {
             throw new Exception(String.format("В словаре отсутствует производное слов, слова: %s с характеристиками: %s", stringInitialForm, morfCharacteristics));
         }
@@ -251,7 +253,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     @Override
     public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception {
 
-        List<InitialForm> initialFormList = selectInitialFormByTypeOfSpeech(getInitialFormList(stringInitialForm), typeOfSpeech);
+        List<InitialForm> initialFormList = selectInitialFormByTypeOfSpeech(selectOnlyInitialFormListByString(stringInitialForm), typeOfSpeech);
 
         try {
             return selectByMorfCharacteristics(initialFormList, morfCharacteristics);
@@ -271,7 +273,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         return initialFormList;
     }
 
-    private List<InitialForm> getInitialFormList(String stringInitialForm) throws Exception {
+    private List<InitialForm> selectOnlyInitialFormListByString(String stringInitialForm) throws Exception {
 
         List<InitialForm> initialForms = new LinkedList<>();
 
@@ -293,7 +295,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         List<String> wordStringList = new LinkedList<>();
 
-        getInitialFormList(stringInitialForm).forEach((initialForm) -> {
+        selectOnlyInitialFormListByString(stringInitialForm).forEach((initialForm) -> {
             initialForm.getWordFormList().forEach((wordForm) -> {
                 if (wordForm.getTypeOfSpeech() == typeOfSpeech) {
                     wordStringList.add(BDFormString.getStringById(wordForm.getMyFormKey(), false));
@@ -307,4 +309,26 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
         return wordStringList;
     }
+
+    public static void createSmallDictionary(String nameDictionary, String[] words) {
+        JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
+        List<Form> initialForm = getListInitialFormForListForm(getFormsByWords(jMorfSdk, words));
+    }
+
+    private static List<Form> getListInitialFormForListForm(List<Form> forms) {
+        List<Form> inirialForms = new ArrayList<>();
+        forms.forEach((form) -> {
+            inirialForms.add(form.getInitialForm());
+        });
+        return inirialForms;
+    }
+
+    private static List<Form> getFormsByWords(JMorfSdk jMorfSdk, String[] words) {
+        List<Form> forms = new ArrayList<>();
+        for(String word : words) {
+            forms.addAll(jMorfSdk.getListFormByString(word));
+        }
+        return forms;
+    }
+
 }

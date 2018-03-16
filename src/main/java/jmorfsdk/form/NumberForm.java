@@ -67,4 +67,10 @@ public class NumberForm extends Form {
     public boolean isInitialForm() {
         return true;
     }
+
+    @Override
+    public Form getInitialForm() {
+        return this;
+    }
+
 }

@@ -82,4 +82,6 @@ public abstract class Form {
         return getControlValue(getMyFormKey());
     }
 
+    public abstract Form getInitialForm();
+
 }
