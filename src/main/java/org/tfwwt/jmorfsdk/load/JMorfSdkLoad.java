@@ -35,13 +35,14 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package jmorfsdk.load;
+package org.tfwwt.jmorfsdk.load;
+
+import org.tfwwt.jmorfsdk.JMorfSdk;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jmorfsdk.JMorfSdk;
 
-import static morphological.structures.internal.Property.PATH_ZIP_DICTIONARY;
+import static org.tfwwt.morphological.structures.internal.Property.PATH_ZIP_DICTIONARY;
 
 public abstract class JMorfSdkLoad {
 

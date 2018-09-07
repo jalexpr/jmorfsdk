@@ -1,5 +1,5 @@
-import jmorfsdk.JMorfSdk;
-import jmorfsdk.load.JMorfSdkLoad;
+import org.tfwwt.jmorfsdk.JMorfSdk;
+import org.tfwwt.jmorfsdk.load.JMorfSdkLoad;
 
 import java.util.Date;
 import java.util.List;

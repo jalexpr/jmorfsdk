@@ -1,10 +1,10 @@
-import jmorfsdk.JMorfSdk;
-import jmorfsdk.load.JMorfSdkLoad;
-import morphological.structures.grammeme.MorfologyParameters.*;
-import morphological.structures.grammeme.MorfologyParametersHelper;
-import morphological.structures.internal.OmoForm;
-import morphological.structures.load.BDFormString;
-import morphological.structures.storage.OmoFormList;
+import org.tfwwt.jmorfsdk.JMorfSdk;
+import org.tfwwt.jmorfsdk.load.JMorfSdkLoad;
+import org.tfwwt.morphological.structures.grammeme.MorfologyParameters.*;
+import org.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
+import org.tfwwt.morphological.structures.internal.OmoForm;
+import org.tfwwt.morphological.structures.load.BDFormString;
+import org.tfwwt.morphological.structures.storage.OmoFormList;
 
 import java.util.List;
 

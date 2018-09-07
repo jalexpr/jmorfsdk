@@ -35,7 +35,13 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package jmorfsdk.load;
+package org.tfwwt.jmorfsdk.load;
+
+import org.tfwwt.jmorfsdk.JMorfSdk;
+import org.tfwwt.jmorfsdk.form.InitialForm;
+import org.tfwwt.jmorfsdk.form.WordForm;
+import org.tfwwt.morphological.structures.internal.Property;
+import template.wrapper.classes.FileHelper;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -43,15 +49,9 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
-import jmorfsdk.JMorfSdk;
-import jmorfsdk.form.InitialForm;
-import jmorfsdk.form.WordForm;
-import morphological.structures.internal.Property;
-import template.wrapper.classes.FileHelper;
 
-import static jmorfsdk.load.Property.MOVE_TO_NEW_LINE;
-import static morphological.structures.internal.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
-import static morphological.structures.load.BDFormString.deCompressDd;
+import static org.tfwwt.morphological.structures.internal.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
+import static org.tfwwt.morphological.structures.load.BDFormString.deCompressDd;
 
 public final class LoadFromFileAndBD {
 
@@ -140,7 +140,7 @@ public final class LoadFromFileAndBD {
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName())
                 .log(Level.SEVERE, String.format("Не ожиданное окончание файла, проверте целостность файлов!%s",
-                        MOVE_TO_NEW_LINE), ex);
+                        Property.MOVE_TO_NEW_LINE), ex);
         }
 
         return hashCode;

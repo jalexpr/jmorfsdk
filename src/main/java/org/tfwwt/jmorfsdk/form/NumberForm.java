@@ -35,75 +35,37 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package jmorfsdk.form;
+package org.tfwwt.jmorfsdk.form;
 
-import morphological.structures.load.BDFormString;
+import org.tfwwt.morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
 
-import java.util.ArrayList;
-import java.util.List;
+public class NumberForm extends Form {
 
-public final class InitialForm extends Form {
+    private final String strNumber;
 
-    private final byte typeOfSpeech;
-    private final ArrayList<Form> wordFormList = new ArrayList<>();
-
-    public InitialForm(int formKey, byte typeOfSpeech, long morfCharacteristics) {
-        super(morfCharacteristics, formKey);
-        this.typeOfSpeech = typeOfSpeech;
-    }
-
-    @Override
-    public String getInitialFormString() {
-        return BDFormString.getStringById(getMyFormKey(), true);
-    }
-
-    @Override
-    public int getInitialFormKey() {
-        return getMyFormKey();
+    public NumberForm(String strNumber) {
+        super(0, 0);
+        this.strNumber = strNumber;
     }
 
     @Override
     public byte getTypeOfSpeech() {
-        return typeOfSpeech;
+        return TypeOfSpeech.NUMERAL;
     }
 
     @Override
-    public boolean isInitialForm(){
+    public String getInitialFormString() {
+        return strNumber;
+    }
+
+    @Override
+    public int getInitialFormKey() {
+        throw new UnsupportedOperationException("Вывод_числовой_последовательности_примените_метод_getInitialFormString"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isInitialForm() {
         return true;
-    }
-
-    public void addWordfFormInList(WordForm wordform) {
-        wordFormList.add(wordform);
-    }
-
-    public void trimToSize() {
-        if (wordFormList != null) {
-            wordFormList.trimToSize();
-        }
-    }
-
-    public List<Form> getWordFormList() {
-        return wordFormList;
-    }
-
-    @Override
-    public int hashCode() {
-        return getMyFormKey();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final InitialForm other = (InitialForm) obj;
-        return this.getMyFormKey() == other.getMyFormKey();
     }
 
     @Override

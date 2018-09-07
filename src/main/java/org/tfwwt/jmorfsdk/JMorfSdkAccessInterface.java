@@ -35,9 +35,9 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package jmorfsdk;
+package org.tfwwt.jmorfsdk;
 
-import morphological.structures.internal.OmoForm;
+import org.tfwwt.morphological.structures.internal.OmoForm;
 
 import java.util.List;
 

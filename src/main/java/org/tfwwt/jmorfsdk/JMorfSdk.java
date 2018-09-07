@@ -35,17 +35,17 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package jmorfsdk;
+package org.tfwwt.jmorfsdk;
 
-import jmorfsdk.form.Form;
-import jmorfsdk.form.InitialForm;
-import jmorfsdk.form.NumberForm;
-import jmorfsdk.load.JMorfSdkLoad;
-import morphological.structures.grammeme.MorfologyParametersHelper;
-import morphological.structures.internal.NumberOmoForm;
-import morphological.structures.internal.OmoForm;
-import morphological.structures.load.BDFormString;
-import morphological.structures.storage.OmoFormList;
+import org.tfwwt.jmorfsdk.form.Form;
+import org.tfwwt.jmorfsdk.form.InitialForm;
+import org.tfwwt.jmorfsdk.form.NumberForm;
+import org.tfwwt.jmorfsdk.load.JMorfSdkLoad;
+import org.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
+import org.tfwwt.morphological.structures.internal.NumberOmoForm;
+import org.tfwwt.morphological.structures.internal.OmoForm;
+import org.tfwwt.morphological.structures.load.BDFormString;
+import org.tfwwt.morphological.structures.storage.OmoFormList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static morphological.structures.load.LoadHelper.getHashCode;
+import static org.tfwwt.morphological.structures.load.LoadHelper.getHashCode;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
