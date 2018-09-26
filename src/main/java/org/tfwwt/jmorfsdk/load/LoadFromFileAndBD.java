@@ -50,7 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
 
-import static org.tfwwt.morphological.structures.internal.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
+import static org.tfwwt.morphological.structures.internal.Property.NAME_HASH_AND_MORF_CHARACTERISTICS;
 import static org.tfwwt.morphological.structures.load.BDFormString.deCompressDd;
 
 public final class LoadFromFileAndBD {
@@ -61,16 +61,19 @@ public final class LoadFromFileAndBD {
 
     private LoadFromFileAndBD() {}
 
-    protected static JMorfSdk loadInAnalysisMode(String pathZipFiel, boolean isLoadGenerationMode) {
+    protected static JMorfSdk loadInAnalysisMode(String pathZipFile, boolean isLoadGenerationMode) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
+        InputStream zipFile = null;
         try {
-            streamHashAndMorfCharacteristic = FileHelper.openZipFile(pathZipFiel, PATH_HASH_AND_MORF_CHARACTERISTICS);
+            zipFile = LoadFromFileAndBD.class.getClassLoader().getResourceAsStream(pathZipFile);
+            streamHashAndMorfCharacteristic = FileHelper.openZipFile(zipFile, NAME_HASH_AND_MORF_CHARACTERISTICS);
             return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationMode);
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
             return JMorfSdk.getEmptyJMorfSdk();
         } finally {
             FileHelper.closeFile(streamHashAndMorfCharacteristic);
+            FileHelper.closeFile(zipFile);
         }
     }
 
