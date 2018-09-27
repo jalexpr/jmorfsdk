@@ -35,37 +35,64 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form;
 
-import org.tfwwt.morphological.structures.internal.OmoForm;
+public final class WordForm extends Form {
 
-import java.util.List;
+    private final InitialForm initialForm;
 
-public interface JMorfSdkAccessInterface {
+    public WordForm(int formKey, long morfCharacteristics, InitialForm initialForm) {
+        super(morfCharacteristics, formKey);
+        this.initialForm = initialForm;
+        initialForm.addWordfFormInList(this);
+    }
 
-    public boolean isFormExistsInDictionary(String strForm);
+    @Override
+    public String getInitialFormString() {
+        return initialForm.getInitialFormString();
+    }
 
-    /**
-     * @param strForm - String формы
-     * @return 0 - если форма может быть и в начальной, и в неначальной формой,
-     * 1 - форма является начальной, -1 - форма является неначальной, -2 -
-     * такого слова нет
-     * @throws java.lang.Exception - на слуай, если слово не найдено в словаре
-     */
-    public byte isInitialForm(String strForm) throws Exception;
+    @Override
+    public int getInitialFormKey() {
+        return initialForm.getInitialFormKey();
+    }
 
-    public List<Byte> getTypeOfSpeechs(String strForm) throws Exception;
+    @Override
+    public byte getTypeOfSpeech() {
+        return initialForm.getTypeOfSpeech();
+    }
 
-    public List<Long> getMorfologyCharacteristics(String strForm) throws Exception;
+    @Override
+    public boolean isInitialForm(){
+        return false;
+    }
 
-    public List<String> getStringInitialForm(String strForm) throws Exception;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WordForm other = (WordForm) obj;
+        if (this.getMyFormKey() != other.getMyFormKey()) {
+            return false;
+        }
+        return true;
+    }
 
-    public List<OmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
+    @Override
+    public int hashCode() {
+        return getMyFormKey();
+    }
 
-    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception;
-    
-    public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception;
-    
-    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception;
+    @Override
+    public Form getInitialForm() {
+        return initialForm;
+    }
 
 }

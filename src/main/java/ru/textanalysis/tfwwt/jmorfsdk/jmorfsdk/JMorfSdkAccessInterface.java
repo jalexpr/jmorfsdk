@@ -35,53 +35,37 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk;
 
-import org.tfwwt.morphological.structures.load.BDFormString;
+import ru.textanalysis.tfwwt.morphological.structures.internal.OmoForm;
 
-import static org.tfwwt.morphological.structures.load.LoadHelper.getControlHashCode;
-import static org.tfwwt.morphological.structures.load.LoadHelper.getControlValue;
+import java.util.List;
 
-public abstract class Form {
+public interface JMorfSdkAccessInterface {
 
-    public static int formCount = 0;
-    private final long morfCharacteristics;
-    private final int formKeyInBD;
+    public boolean isFormExistsInDictionary(String strForm);
 
-    public Form(long morfCharacteristics, int formKey) {
-        this.morfCharacteristics = morfCharacteristics;
-        this.formKeyInBD = formKey;
-        formCount++;
-    }
+    /**
+     * @param strForm - String формы
+     * @return 0 - если форма может быть и в начальной, и в неначальной формой,
+     * 1 - форма является начальной, -1 - форма является неначальной, -2 -
+     * такого слова нет
+     * @throws java.lang.Exception - на слуай, если слово не найдено в словаре
+     */
+    public byte isInitialForm(String strForm) throws Exception;
 
-    public long getMorfCharacteristics() {
-        return morfCharacteristics;
-    }
+    public List<Byte> getTypeOfSpeechs(String strForm) throws Exception;
 
-    public int getMyFormKey() {
-        return formKeyInBD;
-    }
+    public List<Long> getMorfologyCharacteristics(String strForm) throws Exception;
 
-    public abstract byte getTypeOfSpeech();
+    public List<String> getStringInitialForm(String strForm) throws Exception;
 
-    public abstract String getInitialFormString();
+    public List<OmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
 
-    public abstract int getInitialFormKey();
-
-    public abstract boolean isInitialForm();
-
-    public String getMyString() {
-        return BDFormString.getStringById(getMyFormKey(), false);
-    }
-
-    public boolean isFormSameByControlHash(String string) {
-        return getMyControlValue() == getControlHashCode(string);
-    }
-
-    private int getMyControlValue() {
-        return getControlValue(getMyFormKey());
-    }
-
-    public abstract Form getInitialForm();
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception;
+    
+    public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception;
+    
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception;
 
 }

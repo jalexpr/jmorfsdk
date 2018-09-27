@@ -35,9 +35,9 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form;
 
-import org.tfwwt.morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
+import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
 
 public class NumberForm extends Form {
 

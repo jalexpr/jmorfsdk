@@ -35,36 +35,60 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form;
 
-public final class WordForm extends Form {
+import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
 
-    private final InitialForm initialForm;
+import java.util.ArrayList;
+import java.util.List;
 
-    public WordForm(int formKey, long morfCharacteristics, InitialForm initialForm) {
+public final class InitialForm extends Form {
+
+    private final byte typeOfSpeech;
+    private final ArrayList<Form> wordFormList = new ArrayList<>();
+
+    public InitialForm(int formKey, byte typeOfSpeech, long morfCharacteristics) {
         super(morfCharacteristics, formKey);
-        this.initialForm = initialForm;
-        initialForm.addWordfFormInList(this);
+        this.typeOfSpeech = typeOfSpeech;
     }
 
     @Override
     public String getInitialFormString() {
-        return initialForm.getInitialFormString();
+        return BDFormString.getStringById(getMyFormKey(), true);
     }
 
     @Override
     public int getInitialFormKey() {
-        return initialForm.getInitialFormKey();
+        return getMyFormKey();
     }
 
     @Override
     public byte getTypeOfSpeech() {
-        return initialForm.getTypeOfSpeech();
+        return typeOfSpeech;
     }
 
     @Override
     public boolean isInitialForm(){
-        return false;
+        return true;
+    }
+
+    public void addWordfFormInList(WordForm wordform) {
+        wordFormList.add(wordform);
+    }
+
+    public void trimToSize() {
+        if (wordFormList != null) {
+            wordFormList.trimToSize();
+        }
+    }
+
+    public List<Form> getWordFormList() {
+        return wordFormList;
+    }
+
+    @Override
+    public int hashCode() {
+        return getMyFormKey();
     }
 
     @Override
@@ -78,21 +102,13 @@ public final class WordForm extends Form {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final WordForm other = (WordForm) obj;
-        if (this.getMyFormKey() != other.getMyFormKey()) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return getMyFormKey();
+        final InitialForm other = (InitialForm) obj;
+        return this.getMyFormKey() == other.getMyFormKey();
     }
 
     @Override
     public Form getInitialForm() {
-        return initialForm;
+        return this;
     }
 
 }

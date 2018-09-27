@@ -35,14 +35,14 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk.load;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load;
 
-import org.tfwwt.jmorfsdk.JMorfSdk;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.JMorfSdk;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.tfwwt.morphological.structures.internal.Property.PATH_ZIP_DICTIONARY;
+import static ru.textanalysis.tfwwt.morphological.structures.internal.Property.PATH_ZIP_DICTIONARY;
 
 public abstract class JMorfSdkLoad {
 

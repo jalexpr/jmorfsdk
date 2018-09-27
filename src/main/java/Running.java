@@ -1,10 +1,10 @@
-import org.tfwwt.jmorfsdk.JMorfSdk;
-import org.tfwwt.jmorfsdk.load.JMorfSdkLoad;
-import org.tfwwt.morphological.structures.grammeme.MorfologyParameters.*;
-import org.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
-import org.tfwwt.morphological.structures.internal.OmoForm;
-import org.tfwwt.morphological.structures.load.BDFormString;
-import org.tfwwt.morphological.structures.storage.OmoFormList;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.JMorfSdk;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load.JMorfSdkLoad;
+import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.*;
+import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
+import ru.textanalysis.tfwwt.morphological.structures.internal.OmoForm;
+import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
+import ru.textanalysis.tfwwt.morphological.structures.storage.OmoFormList;
 
 import java.util.List;
 
