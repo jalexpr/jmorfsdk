@@ -133,12 +133,12 @@ public final class LoadFromFileAndBD {
     }
 
     private static long getValueCodeFromBytes(InputStream inputStream, int countByte) {
-        int hashCode = 0;
+        long returnValue = 0;
         try {
             for (int i = 0; i < countByte; i++) {
                 int f = 0xFF & inputStream.read();
                 int g1 = f << (8 * (countByte - 1 - i));
-                hashCode |= g1;
+                returnValue |= g1;
             }
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName())
@@ -146,7 +146,7 @@ public final class LoadFromFileAndBD {
                         Property.MOVE_TO_NEW_LINE), ex);
         }
 
-        return hashCode;
+        return returnValue;
     }
 
 }
