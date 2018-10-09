@@ -35,12 +35,12 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk.load;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load;
 
-import org.tfwwt.jmorfsdk.JMorfSdk;
-import org.tfwwt.jmorfsdk.form.InitialForm;
-import org.tfwwt.jmorfsdk.form.WordForm;
-import org.tfwwt.morphological.structures.internal.Property;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.JMorfSdk;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.InitialForm;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.WordForm;
+import ru.textanalysis.tfwwt.morphological.structures.internal.Property;
 import template.wrapper.classes.FileHelper;
 
 import java.io.BufferedInputStream;
@@ -50,8 +50,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
 
-import static org.tfwwt.morphological.structures.internal.Property.PATH_HASH_AND_MORF_CHARACTERISTICS;
-import static org.tfwwt.morphological.structures.load.BDFormString.deCompressDd;
+import static ru.textanalysis.tfwwt.morphological.structures.internal.Property.NAME_HASH_AND_MORF_CHARACTERISTICS;
+import static ru.textanalysis.tfwwt.morphological.structures.load.BDFormString.deCompressDd;
 
 public final class LoadFromFileAndBD {
 
@@ -61,16 +61,19 @@ public final class LoadFromFileAndBD {
 
     private LoadFromFileAndBD() {}
 
-    protected static JMorfSdk loadInAnalysisMode(String pathZipFiel, boolean isLoadGenerationMode) {
+    protected static JMorfSdk loadInAnalysisMode(String pathZipFile, boolean isLoadGenerationMode) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
+        InputStream zipFile = null;
         try {
-            streamHashAndMorfCharacteristic = FileHelper.openZipFile(pathZipFiel, PATH_HASH_AND_MORF_CHARACTERISTICS);
+            zipFile = LoadFromFileAndBD.class.getClassLoader().getResourceAsStream(pathZipFile);
+            streamHashAndMorfCharacteristic = FileHelper.openZipFile(zipFile, NAME_HASH_AND_MORF_CHARACTERISTICS);
             return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationMode);
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
             return JMorfSdk.getEmptyJMorfSdk();
         } finally {
             FileHelper.closeFile(streamHashAndMorfCharacteristic);
+            FileHelper.closeFile(zipFile);
         }
     }
 
@@ -130,12 +133,12 @@ public final class LoadFromFileAndBD {
     }
 
     private static long getValueCodeFromBytes(InputStream inputStream, int countByte) {
-        int hashCode = 0;
+        long returnValue = 0;
         try {
             for (int i = 0; i < countByte; i++) {
                 int f = 0xFF & inputStream.read();
                 int g1 = f << (8 * (countByte - 1 - i));
-                hashCode |= g1;
+                returnValue |= g1;
             }
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName())
@@ -143,7 +146,7 @@ public final class LoadFromFileAndBD {
                         Property.MOVE_TO_NEW_LINE), ex);
         }
 
-        return hashCode;
+        return returnValue;
     }
 
 }

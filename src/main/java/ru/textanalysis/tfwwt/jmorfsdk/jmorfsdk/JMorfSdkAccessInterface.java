@@ -35,9 +35,9 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk;
 
-import org.tfwwt.morphological.structures.internal.OmoForm;
+import ru.textanalysis.tfwwt.morphological.structures.internal.IOmoForm;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public interface JMorfSdkAccessInterface {
 
     public List<String> getStringInitialForm(String strForm) throws Exception;
 
-    public List<OmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
+    public List<IOmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
 
     public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception;
     

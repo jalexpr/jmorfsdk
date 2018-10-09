@@ -35,80 +35,53 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form;
 
-import org.tfwwt.morphological.structures.load.BDFormString;
+import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
 
-import java.util.ArrayList;
-import java.util.List;
+import static ru.textanalysis.tfwwt.morphological.structures.load.LoadHelper.getControlHashCode;
+import static ru.textanalysis.tfwwt.morphological.structures.load.LoadHelper.getControlValue;
 
-public final class InitialForm extends Form {
+public abstract class Form {
 
-    private final byte typeOfSpeech;
-    private final ArrayList<Form> wordFormList = new ArrayList<>();
+    public static int formCount = 0;
+    private final long morfCharacteristics;
+    private final int formKeyInBD;
 
-    public InitialForm(int formKey, byte typeOfSpeech, long morfCharacteristics) {
-        super(morfCharacteristics, formKey);
-        this.typeOfSpeech = typeOfSpeech;
+    public Form(long morfCharacteristics, int formKey) {
+        this.morfCharacteristics = morfCharacteristics;
+        this.formKeyInBD = formKey;
+        formCount++;
     }
 
-    @Override
-    public String getInitialFormString() {
-        return BDFormString.getStringById(getMyFormKey(), true);
+    public long getMorfCharacteristics() {
+        return morfCharacteristics;
     }
 
-    @Override
-    public int getInitialFormKey() {
-        return getMyFormKey();
+    public int getMyFormKey() {
+        return formKeyInBD;
     }
 
-    @Override
-    public byte getTypeOfSpeech() {
-        return typeOfSpeech;
+    public abstract byte getTypeOfSpeech();
+
+    public abstract String getInitialFormString();
+
+    public abstract int getInitialFormKey();
+
+    public abstract boolean isInitialForm();
+
+    public String getMyString() {
+        return BDFormString.getStringById(getMyFormKey(), false);
     }
 
-    @Override
-    public boolean isInitialForm(){
-        return true;
+    public boolean isFormSameByControlHash(String string) {
+        return getMyControlValue() == getControlHashCode(string);
     }
 
-    public void addWordfFormInList(WordForm wordform) {
-        wordFormList.add(wordform);
+    private int getMyControlValue() {
+        return getControlValue(getMyFormKey());
     }
 
-    public void trimToSize() {
-        if (wordFormList != null) {
-            wordFormList.trimToSize();
-        }
-    }
-
-    public List<Form> getWordFormList() {
-        return wordFormList;
-    }
-
-    @Override
-    public int hashCode() {
-        return getMyFormKey();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final InitialForm other = (InitialForm) obj;
-        return this.getMyFormKey() == other.getMyFormKey();
-    }
-
-    @Override
-    public Form getInitialForm() {
-        return this;
-    }
+    public abstract Form getInitialForm();
 
 }

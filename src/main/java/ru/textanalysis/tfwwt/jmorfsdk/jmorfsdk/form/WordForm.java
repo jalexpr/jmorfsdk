@@ -35,53 +35,64 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form;
 
-import org.tfwwt.morphological.structures.load.BDFormString;
+public final class WordForm extends Form {
 
-import static org.tfwwt.morphological.structures.load.LoadHelper.getControlHashCode;
-import static org.tfwwt.morphological.structures.load.LoadHelper.getControlValue;
+    private final InitialForm initialForm;
 
-public abstract class Form {
-
-    public static int formCount = 0;
-    private final long morfCharacteristics;
-    private final int formKeyInBD;
-
-    public Form(long morfCharacteristics, int formKey) {
-        this.morfCharacteristics = morfCharacteristics;
-        this.formKeyInBD = formKey;
-        formCount++;
+    public WordForm(int formKey, long morfCharacteristics, InitialForm initialForm) {
+        super(morfCharacteristics, formKey);
+        this.initialForm = initialForm;
+        initialForm.addWordfFormInList(this);
     }
 
-    public long getMorfCharacteristics() {
-        return morfCharacteristics;
+    @Override
+    public String getInitialFormString() {
+        return initialForm.getInitialFormString();
     }
 
-    public int getMyFormKey() {
-        return formKeyInBD;
+    @Override
+    public int getInitialFormKey() {
+        return initialForm.getInitialFormKey();
     }
 
-    public abstract byte getTypeOfSpeech();
-
-    public abstract String getInitialFormString();
-
-    public abstract int getInitialFormKey();
-
-    public abstract boolean isInitialForm();
-
-    public String getMyString() {
-        return BDFormString.getStringById(getMyFormKey(), false);
+    @Override
+    public byte getTypeOfSpeech() {
+        return initialForm.getTypeOfSpeech();
     }
 
-    public boolean isFormSameByControlHash(String string) {
-        return getMyControlValue() == getControlHashCode(string);
+    @Override
+    public boolean isInitialForm(){
+        return false;
     }
 
-    private int getMyControlValue() {
-        return getControlValue(getMyFormKey());
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WordForm other = (WordForm) obj;
+        if (this.getMyFormKey() != other.getMyFormKey()) {
+            return false;
+        }
+        return true;
     }
 
-    public abstract Form getInitialForm();
+    @Override
+    public int hashCode() {
+        return getMyFormKey();
+    }
+
+    @Override
+    public Form getInitialForm() {
+        return initialForm;
+    }
 
 }

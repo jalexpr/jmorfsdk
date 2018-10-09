@@ -35,17 +35,17 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package org.tfwwt.jmorfsdk;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk;
 
-import org.tfwwt.jmorfsdk.form.Form;
-import org.tfwwt.jmorfsdk.form.InitialForm;
-import org.tfwwt.jmorfsdk.form.NumberForm;
-import org.tfwwt.jmorfsdk.load.JMorfSdkLoad;
-import org.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
-import org.tfwwt.morphological.structures.internal.NumberOmoForm;
-import org.tfwwt.morphological.structures.internal.OmoForm;
-import org.tfwwt.morphological.structures.load.BDFormString;
-import org.tfwwt.morphological.structures.storage.OmoFormList;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.Form;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.InitialForm;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.NumberForm;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load.JMorfSdkLoad;
+import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
+import ru.textanalysis.tfwwt.morphological.structures.internal.NumberOmoForm;
+import ru.textanalysis.tfwwt.morphological.structures.internal.OmoForm;
+import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
+import ru.textanalysis.tfwwt.morphological.structures.storage.OmoFormList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.tfwwt.morphological.structures.load.LoadHelper.getHashCode;
+import static ru.textanalysis.tfwwt.morphological.structures.load.LoadHelper.getHashCode;
 
 public final class JMorfSdk implements JMorfSdkAccessInterface {
 
