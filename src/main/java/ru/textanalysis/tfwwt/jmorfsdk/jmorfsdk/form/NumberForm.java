@@ -35,9 +35,9 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form;
 
-import morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
+import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
 
 public class NumberForm extends Form {
 
@@ -67,4 +67,10 @@ public class NumberForm extends Form {
     public boolean isInitialForm() {
         return true;
     }
+
+    @Override
+    public Form getInitialForm() {
+        return this;
+    }
+
 }
