@@ -27,7 +27,6 @@ task copyDictionaryOfMorphologicalStructures(type: Copy) {
 }
 
 task copyDictionaryInJar(type: Copy) {
-
     dependsOn copyDictionaryOfMorphologicalStructures
 
     from 'dictionary'
@@ -36,7 +35,6 @@ task copyDictionaryInJar(type: Copy) {
 }
 
 jar {
-
     dependsOn copyDictionaryInJar
 
     manifest.attributes("Main-Class": mainClassName);
@@ -47,6 +45,35 @@ jar {
             it.isDirectory() ? it : zipTree(it)
         }
     }
+
 }
 
+javadoc {
+    options.encoding = 'UTF-8'
+}
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/resources']
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/resources']
+        }
+    }
+}
+
+processResources {
+    from ('dictionary') {
+        include '*.*'
+    }
+}
