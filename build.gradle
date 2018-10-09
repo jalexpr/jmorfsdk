@@ -35,6 +35,7 @@ task copyDictionaryInJar(type: Copy) {
 }
 
 jar {
+    compileJava.options.encoding = 'UTF-8'
     dependsOn copyDictionaryInJar
 
     manifest.attributes("Main-Class": mainClassName);
