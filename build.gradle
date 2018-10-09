@@ -53,32 +53,6 @@ javadoc {
     options.encoding = 'UTF-8'
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-        }
-        resources {
-            srcDirs = ['src/resources']
-        }
-    }
-
-    test {
-        java {
-            srcDirs = ['src/test/java']
-        }
-        resources {
-            srcDirs = ['src/resources']
-        }
-    }
-}
-
-processResources {
-    from ('dictionary') {
-        include '*.*'
-    }
-}
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
