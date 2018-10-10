@@ -1,19 +1,65 @@
 # JMorfSdk<br>
+## Архитектура
+
 <b>JMorfSdk</b> - главный класс, содержит <b>HashMap</b> словоформ (<b>OmoForm</b>). <br>
 <br>
 <b>Form</b> - форма слова содержит в себе набор характеристик, имеет набор характеристик, которые меняются в зависимости от словоформы (число, падеж и т.д.) <br>
 <b>WordForm</b> - словоформа, наследуется от <b>Form</b>, имеет ссылку на <b>InitialForm</b>. <br>
 <b>InitialForm</b> наследуется от <b>Form</b> - словоформа в начальной форме слова, имеет ссылки на все производные словоформы (<b>WordfForm</b>). <br>
 <b>MorphologyParameters</b> - набор констант для морфологических характеристик. <br>
-Пример работы с библиотекой описан в <b>Running</b> <br>
 <br>
-<br>
+
+
+## Начало работы с библиотекой 
+
+Загрузка библиотеки:
+```
+JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
+```
+Пример получения словоформ:
+```
+List<OmoForm> characteristics5 = jMorfSdk.getAllCharacteristicsOfForm("мыл");
+characteristics5.forEach((form) -> {
+    System.out.println(form);
+});
+```
+Пример получения форм слова с заданными морфологическими характеристками:
+```
+jMorfSdk.getAllCharacteristicsOfForm("мыла").forEach((form) -> {
+    //Пример поиска формы в родительном падеже
+    if (form.getTheMorfCharacteristics(Case.IDENTIFIER) == Case.GENITIVE) {
+        System.out.println("Форма в родительном падеже " + form);
+    }
+    
+    if (form.getTypeOfSpeech() == TypeOfSpeech.VERB) {
+        System.out.println("Форма с глаголом найдена " + form);
+    }
+});
+```
+Пример фильтрации слов по морфологической характеристике:
+```
+List<String> words = Arrays.asList("красного", "красный", "морозное", "солнечная", "бежать", "доска", "топор", "шла");
+for (String word : words) {
+    jMorfSdk.getAllCharacteristicsOfForm(word).forEach(form -> {
+        if (form.getTheMorfCharacteristics(MorfologyParameters.Gender.class) == MorfologyParameters.Gender.FEMININ) {
+            System.out.println(form + " - " + word);
+        }
+    });
+}
+```
+
+Дополнительные пример работы с библиотекой описаны в <b>Running.java</b> <br>
+
+## Версии библиотеки
+
 v 2.10.5 от 12.03.2018<br>
 1) Исправлен баг связанных с хэш-кодом:<br>
   а) Добавлен новый алгоритм получения хэш-кода. <br>
   b) Добавлена двойная проверка соответствия формы и строкового представления искомых формы. <br>
 2) Все повторяющиеся обертки классов вынесены в проект <b>TemplateWrapperClasses</b> (https://github.com/jalexpr/TemplateWrapperClasses), для уменьшения повторяющихся строк кода. <br>
 <br>
+<br>
+=======<br>
 <br>
 v 2.10.4 от 04.03.2018<br>
 1) Полностью переработана конвертация исходного в словарь в формы JMorfSdk, что значительно фиксит ошибки и небольшие баги, которые оставались при предыдущем способе конвертации.<br>
