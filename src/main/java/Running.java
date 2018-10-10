@@ -1,25 +1,22 @@
-import jmorfsdk.JMorfSdk;
-import jmorfsdk.load.JMorfSdkLoad;
-import morphological.structures.grammeme.MorfologyParameters.*;
-import morphological.structures.grammeme.MorfologyParametersHelper;
-import morphological.structures.internal.OmoForm;
-import morphological.structures.load.BDFormString;
-import morphological.structures.storage.OmoFormList;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.JMorfSdk;
+import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load.JMorfSdkLoad;
+import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.*;
+import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
+import ru.textanalysis.tfwwt.morphological.structures.internal.IOmoForm;
+import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
+import ru.textanalysis.tfwwt.morphological.structures.storage.OmoFormList;
 
 import java.util.List;
 
-
 public class Running {
-
     public static void main(String[] args) throws Exception {
-
         //Пример загрузки библиотеки
         JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
 //        BDInitialFormString.printAll(true);
 
         System.err.println("");
         //Пример получения характеристик заданой формы
-        List<OmoForm> characteristics;
+        List<IOmoForm> characteristics;
 
         characteristics = jMorfSdk.getAllCharacteristicsOfForm("мама");
         characteristics.forEach((form) -> {
@@ -38,12 +35,12 @@ public class Running {
             }
         });
 
-        List<OmoForm> characteristics1 = jMorfSdk.getAllCharacteristicsOfForm("замок");
+        List<IOmoForm> characteristics1 = jMorfSdk.getAllCharacteristicsOfForm("замок");
         characteristics1.forEach((form) -> {
             System.out.println(form);
         });
 
-        List<OmoForm> characteristics2 = jMorfSdk.getAllCharacteristicsOfForm("по");
+        List<IOmoForm> characteristics2 = jMorfSdk.getAllCharacteristicsOfForm("по");
         characteristics2.forEach((form) -> {
             System.out.println(form);
         });
@@ -62,7 +59,7 @@ public class Running {
         }
 
 //        try{
-//            List<OmoForm> characteristics3 = jMorfSdk.getAllCharacteristicsOfForm("чтотакое");
+//            List<IOmoForm> characteristics3 = jMorfSdk.getAllCharacteristicsOfForm("чтотакое");
 //                characteristics3.forEach((form) -> {
 //                System.out.println(form);
 //            });
@@ -70,7 +67,7 @@ public class Running {
 //            Logger.getLogger(Running.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 
-        List<OmoForm> characteristics5 = jMorfSdk.getAllCharacteristicsOfForm("мыл");
+        List<IOmoForm> characteristics5 = jMorfSdk.getAllCharacteristicsOfForm("мыл");
         characteristics5.forEach((form) -> {
             System.out.println(form);
         });
@@ -90,7 +87,7 @@ public class Running {
 
         System.out.println("_____");
 
-        OmoForm omoForm;
+        IOmoForm omoForm;
         Long morfCharacteristic;
 
         omoForm = jMorfSdk.getAllCharacteristicsOfForm("выпит").get(0);
@@ -104,8 +101,11 @@ public class Running {
 
         System.out.println("_____");
 
-        jMorfSdk.getAllCharacteristicsOfForm("село").forEach((form) -> {
-            if(form.getTheMorfCharacteristics(Time.class) == Time.PAST) {
+        jMorfSdk.getAllCharacteristicsOfForm("дорогой").forEach((form) -> {
+            if(form.isContainsTypeOfSpeech(TypeOfSpeech.NOUN)) {
+                System.out.println(form);
+            }
+            if(form.isContainsMorphCharacteristic(Case.class, Case.GENITIVE)) {
                 System.out.println(form);
             }
         });
@@ -125,23 +125,23 @@ public class Running {
             System.out.println(wordString);
         });
 
-        List<OmoForm> characteristics7 = jMorfSdk.getAllCharacteristicsOfForm("что-то");
+        List<IOmoForm> characteristics7 = jMorfSdk.getAllCharacteristicsOfForm("что-то");
         characteristics7.forEach((form) -> {
             System.out.println(form);
         });
 
-        List<OmoForm> characteristics8 = jMorfSdk.getAllCharacteristicsOfForm("123");
+        List<IOmoForm> characteristics8 = jMorfSdk.getAllCharacteristicsOfForm("123");
         characteristics8.forEach((form) -> {
             System.out.println(form);
         });
 
-        List<OmoForm> characteristics9 = jMorfSdk.getAllCharacteristicsOfForm("что-нибудь");
+        List<IOmoForm> characteristics9 = jMorfSdk.getAllCharacteristicsOfForm("что-нибудь");
         characteristics9.forEach((form) -> {
             System.out.println(form);
         });
 
         try {
-            List<OmoForm> characteristics6 = jMorfSdk.getAllCharacteristicsOfForm("подает");
+            List<IOmoForm> characteristics6 = jMorfSdk.getAllCharacteristicsOfForm("подает");
             characteristics6.forEach((form) -> {
                 System.out.println(form);
             });
@@ -150,7 +150,7 @@ public class Running {
         }
 
         System.out.println("________________________________________");
-        List<OmoForm> characteristics10 = jMorfSdk.getAllCharacteristicsOfForm("мама");
+        List<IOmoForm> characteristics10 = jMorfSdk.getAllCharacteristicsOfForm("мама");
         characteristics10.forEach((form) -> {
             System.out.println(form.getInitialFormString());
         });

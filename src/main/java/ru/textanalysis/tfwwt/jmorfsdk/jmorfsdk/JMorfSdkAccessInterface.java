@@ -35,74 +35,37 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk;
 
-import java.util.ArrayList;
+import ru.textanalysis.tfwwt.morphological.structures.internal.IOmoForm;
+
 import java.util.List;
 
-import morphological.structures.load.BDFormString;
+public interface JMorfSdkAccessInterface {
 
-public final class InitialForm extends Form {
+    public boolean isFormExistsInDictionary(String strForm);
 
-    private final byte typeOfSpeech;
-    private final ArrayList<Form> wordFormList = new ArrayList<>();
+    /**
+     * @param strForm - String формы
+     * @return 0 - если форма может быть и в начальной, и в неначальной формой,
+     * 1 - форма является начальной, -1 - форма является неначальной, -2 -
+     * такого слова нет
+     * @throws java.lang.Exception - на слуай, если слово не найдено в словаре
+     */
+    public byte isInitialForm(String strForm) throws Exception;
 
-    public InitialForm(int formKey, byte typeOfSpeech, long morfCharacteristics) {
-        super(morfCharacteristics, formKey);
-        this.typeOfSpeech = typeOfSpeech;
-    }
+    public List<Byte> getTypeOfSpeechs(String strForm) throws Exception;
 
-    @Override
-    public String getInitialFormString() {
-        return BDFormString.getStringById(getMyFormKey(), true);
-    }
+    public List<Long> getMorfologyCharacteristics(String strForm) throws Exception;
 
-    @Override
-    public int getInitialFormKey() {
-        return getMyFormKey();
-    }
+    public List<String> getStringInitialForm(String strForm) throws Exception;
 
-    @Override
-    public byte getTypeOfSpeech() {
-        return typeOfSpeech;
-    }
+    public List<IOmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
 
-    @Override
-    public boolean isInitialForm(){
-        return true;
-    }
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception;
+    
+    public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception;
+    
+    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception;
 
-    public void addWordfFormInList(WordForm wordform) {
-        wordFormList.add(wordform);
-    }
-
-    public void trimToSize() {
-        if (wordFormList != null) {
-            wordFormList.trimToSize();
-        }
-    }
-
-    public List<Form> getWordFormList() {
-        return wordFormList;
-    }
-
-    @Override
-    public int hashCode() {
-        return getMyFormKey();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final InitialForm other = (InitialForm) obj;
-        return this.getMyFormKey() == other.getMyFormKey();
-    }
 }
