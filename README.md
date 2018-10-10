@@ -8,7 +8,9 @@
 <b>InitialForm</b> наследуется от <b>Form</b> - словоформа в начальной форме слова, имеет ссылки на все производные словоформы (<b>WordfForm</b>). <br>
 <b>MorphologyParameters</b> - набор констант для морфологических характеристик. <br>
 <br>
-
+<br>
+## Репозиторий
+https://search.maven.org/artifact/ru.textanalysis.tfwwt/jmorfsdk/
 
 ## Начало работы с библиотекой 
 
