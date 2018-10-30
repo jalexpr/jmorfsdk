@@ -35,12 +35,12 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk;
+package ru.textanalysis.tfwwt.jmorfsdk;
 
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.Form;
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.InitialForm;
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.NumberForm;
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load.JMorfSdkLoad;
+import ru.textanalysis.tfwwt.jmorfsdk.form.Form;
+import ru.textanalysis.tfwwt.jmorfsdk.form.InitialForm;
+import ru.textanalysis.tfwwt.jmorfsdk.form.NumberForm;
+import ru.textanalysis.tfwwt.jmorfsdk.load.JMorfSdkLoad;
 import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
 import ru.textanalysis.tfwwt.morphological.structures.internal.NumberOmoForm;
 import ru.textanalysis.tfwwt.morphological.structures.internal.OmoForm;
