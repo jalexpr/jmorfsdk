@@ -35,7 +35,7 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load;
+package ru.textanalysis.tfwwt.jmorfsdk.load;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

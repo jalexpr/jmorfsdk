@@ -35,11 +35,11 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load;
+package ru.textanalysis.tfwwt.jmorfsdk.load;
 
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.JMorfSdk;
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.InitialForm;
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form.WordForm;
+import ru.textanalysis.tfwwt.jmorfsdk.JMorfSdk;
+import ru.textanalysis.tfwwt.jmorfsdk.form.InitialForm;
+import ru.textanalysis.tfwwt.jmorfsdk.form.WordForm;
 import ru.textanalysis.tfwwt.morphological.structures.internal.Property;
 import template.wrapper.classes.FileHelper;
 

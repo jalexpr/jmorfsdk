@@ -35,7 +35,7 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.form;
+package ru.textanalysis.tfwwt.jmorfsdk.form;
 
 import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
 

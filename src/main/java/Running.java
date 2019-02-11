@@ -1,5 +1,5 @@
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.JMorfSdk;
-import ru.textanalysis.tfwwt.jmorfsdk.jmorfsdk.load.JMorfSdkLoad;
+import ru.textanalysis.tfwwt.jmorfsdk.JMorfSdk;
+import ru.textanalysis.tfwwt.jmorfsdk.load.JMorfSdkLoad;
 import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.*;
 import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
 import ru.textanalysis.tfwwt.morphological.structures.internal.IOmoForm;
@@ -15,6 +15,22 @@ public class Running {
 //        BDInitialFormString.printAll(true);
 
         System.err.println("");
+        {
+            Long start = System.currentTimeMillis();
+            for (long i = 0; i < 900_000; i++) {
+                jMorfSdk.getAllCharacteristicsOfForm("стол");
+            }
+            long finish = System.currentTimeMillis();
+            System.out.println(finish - start);
+        }
+        {
+            Long start = System.currentTimeMillis();
+            for(long i = 0; i < 900_000;i++) {
+                jMorfSdk.getDerivativeForm("село", TypeOfSpeech.NOUN);
+            }
+            long finish = System.currentTimeMillis();
+            System.out.println(finish - start);
+        }
         //Пример получения характеристик заданой формы
         List<IOmoForm> characteristics;
 
