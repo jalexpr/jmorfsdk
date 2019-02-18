@@ -2,13 +2,16 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-version '2.10.6'
+version '2.10.7'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 mainClassName = 'Running'
 
-repositories {
-    jcenter()
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 configurations {
@@ -17,11 +20,11 @@ configurations {
 }
 
 dependencies {
-    morphologicalStructures project(':MorphologicalStructures')
+    implementation 'com.github.jalexpr:MorphologicalStructures:master-SNAPSHOT'
 }
 
 task copyDictionaryOfMorphologicalStructures(type: Copy) {
-        from 'C:/TFWWT/MorphologicalStructures/dictionary/'
+        from '../MorphologicalStructures/dictionary/'
         into 'dictionary'
         include 'dictionary.*'
 }
