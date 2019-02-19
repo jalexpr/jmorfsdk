@@ -70,3 +70,7 @@ artifacts {
     archives sourcesJar
     archives javadocJar
 }
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}

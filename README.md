@@ -10,7 +10,10 @@
 <br>
 <br>
 ## Репозиторий
+Стабильные сборки доступны:
 https://search.maven.org/artifact/ru.textanalysis.tfwwt/jmorfsdk/
+Сборки SNAPSHOT доступны:
+https://jitpack.io/#jalexpr/JMorfSdk
 
 ## Начало работы с библиотекой 
 
