@@ -53,21 +53,20 @@ import java.util.zip.ZipInputStream;
 import static ru.textanalysis.tfwwt.morphological.structures.internal.Property.NAME_HASH_AND_MORF_CHARACTERISTICS;
 import static ru.textanalysis.tfwwt.morphological.structures.load.BDFormString.deCompressDd;
 
-public final class LoadFromFileAndBD {
-
+final class LoadFromFileAndBD {
     static {
         deCompressDd();
     }
 
     private LoadFromFileAndBD() {}
 
-    protected static JMorfSdk loadInAnalysisMode(String pathZipFile, boolean isLoadGenerationMode) {
+    protected static JMorfSdk loadInAnalysisMode(String pathZipFile) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
         InputStream zipFile = null;
         try {
             zipFile = LoadFromFileAndBD.class.getClassLoader().getResourceAsStream(pathZipFile);
             streamHashAndMorfCharacteristic = FileHelper.openZipFile(zipFile, NAME_HASH_AND_MORF_CHARACTERISTICS);
-            return loadJMorfSdk(streamHashAndMorfCharacteristic, isLoadGenerationMode);
+            return loadJMorfSdk(streamHashAndMorfCharacteristic);
         } catch (IOException ex) {
             Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
             return JMorfSdk.getEmptyJMorfSdk();
@@ -77,15 +76,14 @@ public final class LoadFromFileAndBD {
         }
     }
 
-    private static JMorfSdk loadJMorfSdk(InputStream inputStreamHashAndMorfCharacteristics, boolean isLoadFormInInitialForm) {
-
+    private static JMorfSdk loadJMorfSdk(InputStream inputStreamHashAndMorfCharacteristics) {
         JMorfSdk jMorfSdk = JMorfSdk.getEmptyJMorfSdk();
         try (BufferedInputStream inputStream = new BufferedInputStream(inputStreamHashAndMorfCharacteristics)) {
             while (inputStream.available() > 0) {
                 int hashCode = getIntFromBytes(inputStream);
                 InitialForm initialForm = createInitialForm(inputStream);
                 jMorfSdk.addForm(hashCode, initialForm);
-                addWordForm(jMorfSdk, initialForm, inputStream, isLoadFormInInitialForm);
+                addWordForm(jMorfSdk, initialForm, inputStream);
             }
             inputStream.close();
         } catch (IOException ex) {
@@ -102,14 +100,12 @@ public final class LoadFromFileAndBD {
                 getMorfCharacteristicsFromBytes(inputStream));
     }
 
-    private static void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream, boolean isLoadFormInInitialForm) {
+    private static void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream) {
         int nextHashCode = getIntFromBytes(inputStream);
         while (nextHashCode != Property.CONTROL_VALUE) {
             WordForm wordForm = new WordForm(getIdForm(inputStream), getMorfCharacteristicsFromBytes(inputStream), initialForm);
             jMorfSdk.addForm(nextHashCode, wordForm);
-            if (isLoadFormInInitialForm) {
-                initialForm.addWordfFormInList(wordForm);
-            }
+            initialForm.addWordfFormInList(wordForm);
             nextHashCode = getIntFromBytes(inputStream);
         }
         initialForm.trimToSize();

@@ -14,23 +14,23 @@ public class Running {
         JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
 //        BDInitialFormString.printAll(true);
 
-        System.err.println("");
-        {
-            Long start = System.currentTimeMillis();
-            for (long i = 0; i < 900_000; i++) {
-                jMorfSdk.getAllCharacteristicsOfForm("стол");
-            }
-            long finish = System.currentTimeMillis();
-            System.out.println(finish - start);
-        }
-        {
-            Long start = System.currentTimeMillis();
-            for(long i = 0; i < 900_000;i++) {
-                jMorfSdk.getDerivativeForm("село", TypeOfSpeech.NOUN);
-            }
-            long finish = System.currentTimeMillis();
-            System.out.println(finish - start);
-        }
+//        System.err.println("");
+//        {
+//            Long start = System.currentTimeMillis();
+//            for (long i = 0; i < 900_000; i++) {
+//                jMorfSdk.getAllCharacteristicsOfForm("стол");
+//            }
+//            long finish = System.currentTimeMillis();
+//            System.out.println(finish - start);
+//        }
+//        {
+//            Long start = System.currentTimeMillis();
+//            for(long i = 0; i < 900_000;i++) {
+//                jMorfSdk.getDerivativeForm("село", TypeOfSpeech.NOUN);
+//            }
+//            long finish = System.currentTimeMillis();
+//            System.out.println(finish - start);
+//        }
         //Пример получения характеристик заданой формы
         List<IOmoForm> characteristics;
 

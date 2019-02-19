@@ -44,66 +44,65 @@ import java.util.logging.Logger;
 
 import static ru.textanalysis.tfwwt.morphological.structures.internal.Property.PATH_ZIP_DICTIONARY;
 
+/**
+ * Load JMorfSdk with parameters or by default.
+ * Lazy initialization once.
+ */
 public abstract class JMorfSdkLoad {
-
+    private static JMorfSdk jMorfSdk = null;
     private static final boolean IS_OUTPUT_MESSAGES_TO_CONSOLE_DEFAULT = true;
 
+    /**
+     * load JMorfSdk
+     * @return JMorfSdk
+     */
     public static JMorfSdk loadFullLibrary() {
         return loadFullLibrary(PATH_ZIP_DICTIONARY, IS_OUTPUT_MESSAGES_TO_CONSOLE_DEFAULT);
     }
 
+    /**
+     * load JMorfSdk
+     * @param isOutputMessagesToConsole - is output messages to console
+     * @return JMorfSdk
+     */
     public static JMorfSdk loadFullLibrary(boolean isOutputMessagesToConsole) {
         return loadFullLibrary(PATH_ZIP_DICTIONARY, isOutputMessagesToConsole);
     }
 
+    /**
+     * load JMorfSdk
+     * @param pathZipFile - path to dictionary
+     * @return JMorfSdk
+     */
     public static JMorfSdk loadFullLibrary(String pathZipFile) {
         return loadFullLibrary(pathZipFile, IS_OUTPUT_MESSAGES_TO_CONSOLE_DEFAULT);
     }
 
+    /**
+     * load JMorfSdk
+     * @param pathZipFile - path to dictionary
+     * @param isOutputMessagesToConsole - is output messages to console
+     * @return JMorfSdk
+     */
     public static JMorfSdk loadFullLibrary(String pathZipFile, boolean isOutputMessagesToConsole) {
-        return loadJMorfSdk(pathZipFile, isOutputMessagesToConsole, true);
+        return loadJMorfSdk(pathZipFile, isOutputMessagesToConsole);
     }
 
-    @Deprecated
-    public static JMorfSdk loadInGenerationMode() {
-        return loadInGenerationMode(IS_OUTPUT_MESSAGES_TO_CONSOLE_DEFAULT);
-    }
-
-    @Deprecated
-    public static JMorfSdk loadInGenerationMode(boolean isOutputMessagesToConsole) {
-        return loadFullLibrary(isOutputMessagesToConsole);
-    }
-
-    public static JMorfSdk loadInAnalysisMode() {
-        return loadInAnalysisMode(PATH_ZIP_DICTIONARY, IS_OUTPUT_MESSAGES_TO_CONSOLE_DEFAULT);
-    }
-
-    public static JMorfSdk loadInAnalysisMode(boolean isOutputMessagesToConsole) {
-        return loadInAnalysisMode(PATH_ZIP_DICTIONARY, isOutputMessagesToConsole);
-    }
-
-    public static JMorfSdk loadInAnalysisMode(String pathZipFile) {
-        return loadInAnalysisMode(pathZipFile, IS_OUTPUT_MESSAGES_TO_CONSOLE_DEFAULT);
-    }
-
-
-    public static JMorfSdk loadInAnalysisMode(String pathZipFile, boolean isOutputMessagesToConsole) {
-        return loadJMorfSdk(pathZipFile, isOutputMessagesToConsole, false);
-    }
-
-    private static JMorfSdk loadJMorfSdk(String pathZipFile, boolean isOutputMessagesToConsole, boolean isLoadGenerationMode) {
-        JMorfSdk jMorfSdk;
-        try {
-            outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
-            jMorfSdk = LoadFromFileAndBD.loadInAnalysisMode(pathZipFile, isLoadGenerationMode);
-            System.gc();
-            Runtime.getRuntime().gc();
-            outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
-            return jMorfSdk;
-        } catch (Exception ex) {
-            Logger.getLogger(JMorfSdkLoad.class.getName()).log(Level.WARNING, null, ex);
-            return JMorfSdk.getEmptyJMorfSdk();
+    private synchronized static JMorfSdk loadJMorfSdk(String pathZipFile, boolean isOutputMessagesToConsole) {
+        if (jMorfSdk == null) {
+            try {
+                outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
+                jMorfSdk = LoadFromFileAndBD.loadInAnalysisMode(pathZipFile);
+                System.gc();
+                Runtime.getRuntime().gc();
+                outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
+                return jMorfSdk;
+            } catch (Exception ex) {
+                Logger.getLogger(JMorfSdkLoad.class.getName()).log(Level.WARNING, null, ex);
+                return JMorfSdk.getEmptyJMorfSdk();
+            }
         }
+        return jMorfSdk;
     }
 
     private static void outputMessagesToConsole(String messages, boolean isOutputMessagesToConsole) {
