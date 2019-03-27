@@ -37,13 +37,15 @@
  */
 package ru.textanalysis.tfwwt.jmorfsdk;
 
-import ru.textanalysis.tfwwt.jmorfsdk.form.Form;
 import ru.textanalysis.tfwwt.jmorfsdk.form.InitialForm;
 import ru.textanalysis.tfwwt.jmorfsdk.form.NumberForm;
 import ru.textanalysis.tfwwt.jmorfsdk.load.JMorfSdkLoad;
 import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
 import ru.textanalysis.tfwwt.morphological.structures.internal.NumberOmoForm;
 import ru.textanalysis.tfwwt.morphological.structures.internal.OmoForm;
+import ru.textanalysis.tfwwt.morphological.structures.internal.form.Form;
+import ru.textanalysis.tfwwt.morphological.structures.internal.form.GetCharacteristics;
+import ru.textanalysis.tfwwt.morphological.structures.internal.ref.RefOmoFormList;
 import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
 import ru.textanalysis.tfwwt.morphological.structures.storage.OmoFormList;
 
@@ -113,19 +115,17 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public List<Byte> getTypeOfSpeechs(String strForm) {
-
-        List<Byte> typeOfSpeechsList = new LinkedList<>();
-
-        for (Form form : getListFormByString(strForm)) {
-            typeOfSpeechsList.add(form.getTypeOfSpeech());
-        }
-        return typeOfSpeechsList;
+    public List<Byte> getTypeOfSpeeches(String strForm) {
+        List<Byte> typeOfSpeechesList = new LinkedList<>();
+        getListFormByString(strForm).forEach(form ->
+                typeOfSpeechesList.add(form.getTypeOfSpeech())
+        );
+        return typeOfSpeechesList;
     }
 
     private List<Form> getListFormByString(String strForm) {
         try {
-            if(isNumber(strForm)) {
+            if (isNumber(strForm)) {
                 return getListNumber(strForm);
             } else {
                 return createListFormByString(strForm);
@@ -140,8 +140,8 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     private List<Form> getListNumber(String strForm) throws Exception {
-        if(strForm.matches("[0-9]+")) {
-            LinkedList listNumber = new LinkedList<>();
+        if (strForm.matches("[0-9]+")) {
+            LinkedList<Form> listNumber = new LinkedList<>();
             listNumber.add(new NumberForm(strForm));
             return listNumber;
         } else {
@@ -154,7 +154,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
         List<Form> listForm = new LinkedList<>();
         if (omoForms.containsKey(hashCode)) {
             omoForms.get(hashCode).forEach((form) -> {
-                if(form.isFormSameByControlHash(strForm)) {
+                if (form.isFormSameByControlHash(strForm)) {
                     listForm.add(form);
                 }
             });
@@ -165,45 +165,37 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     @Override
-    public List<Long> getMorfologyCharacteristics(String strForm) {
-
-        List<Long> morfologyCharacteristics = new LinkedList<>();
-
-        for (Form form : getListFormByString(strForm)) {
-            morfologyCharacteristics.add(form.getMorfCharacteristics());
-        }
-        return morfologyCharacteristics;
+    public List<Long> getMorphologyCharacteristics(String strForm) {
+        List<Long> morphologyCharacteristics = new LinkedList<>();
+        getListFormByString(strForm).forEach(form ->
+                morphologyCharacteristics.add(form.getMorphCharacteristics())
+        );
+        return morphologyCharacteristics;
     }
 
     @Override
     public List<String> getStringInitialForm(String strForm) {
-
         List<String> stringFormList = new LinkedList<>();
-
-        for (Form form : getListFormByString(strForm)) {
-            stringFormList.add(form.getInitialFormString());
-        }
-
+        getListFormByString(strForm).forEach(form ->
+                stringFormList.add(form.getInitialFormString())
+        );
         return stringFormList;
     }
 
     @Override
     public OmoFormList getAllCharacteristicsOfForm(String strForm) {
-
         OmoFormList list = new OmoFormList();
-
-        for (Form form : getListFormByString(strForm)) {
+        getListFormByString(strForm).forEach(form -> {
             OmoForm characteristicsOfForm;
             try {
                 characteristicsOfForm = new OmoForm(form.getInitialFormKey(), form.getMyFormKey(),
-                    form.getTypeOfSpeech(),
-                    form.getMorfCharacteristics());
+                        form.getTypeOfSpeech(),
+                        form.getMorphCharacteristics());
             } catch (UnsupportedOperationException ex) {
                 characteristicsOfForm = new NumberOmoForm(form.getInitialFormString());
             }
             list.add(characteristicsOfForm);
-        }
-
+        });
         return list;
     }
 
@@ -217,44 +209,34 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     private List<String> selectByMorfCharacteristics(List<InitialForm> initialFormList, long morfCharacteristics) throws Exception {
-
         long mask = getMask(morfCharacteristics);
-
         List<String> listWordString = new LinkedList<>();
-
         initialFormList.forEach((initialForm) -> {
             initialForm.getWordFormList().forEach((wordForm) -> {
-                if ((wordForm.getMorfCharacteristics() & mask) == morfCharacteristics) {
+                if ((wordForm.getMorphCharacteristics() & mask) == morfCharacteristics) {
                     listWordString.add(BDFormString.getStringById(wordForm.getMyFormKey(), false));
                 }
             });
         });
-
         if (listWordString.isEmpty()) {
             throw new Exception(String.format("В словаре отсутствует производное слов с характеристиками: %s", morfCharacteristics));
         }
-
         return listWordString;
     }
 
     private long getMask(long morfCharacteristics) {
-
         long mask = 0;
-
         for (long identifier : MorfologyParametersHelper.getIdentifiers()) {
             if ((morfCharacteristics & identifier) != 0) {
                 mask |= identifier;
             }
         }
-
         return mask;
     }
 
     @Override
     public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception {
-
         List<InitialForm> initialFormList = selectInitialFormByTypeOfSpeech(selectOnlyInitialFormListByString(stringInitialForm), typeOfSpeech);
-
         try {
             return selectByMorfCharacteristics(initialFormList, morfCharacteristics);
         } catch (Exception ex) {
@@ -263,38 +245,27 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     private List<InitialForm> selectInitialFormByTypeOfSpeech(List<InitialForm> initialFormList, byte typeOfSpeech) {
-
         for (InitialForm form : initialFormList) {
             if (form.getTypeOfSpeech() != typeOfSpeech) {
                 initialFormList.remove(form);
             }
         }
-
         return initialFormList;
     }
 
-    private List<InitialForm> selectOnlyInitialFormListByString(String stringInitialForm) throws Exception {
-
+    private List<InitialForm> selectOnlyInitialFormListByString(String stringInitialForm) {
         List<InitialForm> initialForms = new LinkedList<>();
-
-        for (Form form : getListFormByString(stringInitialForm)) {
+        getListFormByString(stringInitialForm).forEach(form -> {
             if (form instanceof InitialForm) {
                 initialForms.add((InitialForm) form);
             }
-        }
-
-        if (initialForms == null) {
-            throw new Exception(String.format("String = %s Данный текст не является начальной формой слова!", stringInitialForm));
-        }
-
+        });
         return initialForms;
     }
 
     @Override
     public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception {
-
         List<String> wordStringList = new LinkedList<>();
-
         selectOnlyInitialFormListByString(stringInitialForm).forEach((initialForm) -> {
             initialForm.getWordFormList().forEach((wordForm) -> {
                 if (wordForm.getTypeOfSpeech() == typeOfSpeech) {
@@ -312,23 +283,28 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
 
     public static void createSmallDictionary(String nameDictionary, String[] words) {
         JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
-        List<Form> initialForm = getListInitialFormForListForm(getFormsByWords(jMorfSdk, words));
+        List<GetCharacteristics> initialForm = getListInitialFormForListForm(getFormsByWords(jMorfSdk, words));
+        //todo
     }
 
-    private static List<Form> getListInitialFormForListForm(List<Form> forms) {
-        List<Form> inirialForms = new ArrayList<>();
+    private static List<GetCharacteristics> getListInitialFormForListForm(List<Form> forms) {
+        List<GetCharacteristics> initialForms = new ArrayList<>();
         forms.forEach((form) -> {
-            inirialForms.add(form.getInitialForm());
+            initialForms.add(form.getInitialForm());
         });
-        return inirialForms;
+        return initialForms;
     }
 
     private static List<Form> getFormsByWords(JMorfSdk jMorfSdk, String[] words) {
         List<Form> forms = new ArrayList<>();
-        for(String word : words) {
+        for (String word : words) {
             forms.addAll(jMorfSdk.getListFormByString(word));
         }
         return forms;
     }
 
+    @Override
+    public RefOmoFormList getRefOmoFormList(String strForm) {
+        return new RefOmoFormList(getListFormByString(strForm));
+    }
 }

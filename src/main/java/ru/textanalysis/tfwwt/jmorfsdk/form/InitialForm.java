@@ -37,6 +37,7 @@
  */
 package ru.textanalysis.tfwwt.jmorfsdk.form;
 
+import ru.textanalysis.tfwwt.morphological.structures.internal.form.Form;
 import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
 
 import java.util.ArrayList;

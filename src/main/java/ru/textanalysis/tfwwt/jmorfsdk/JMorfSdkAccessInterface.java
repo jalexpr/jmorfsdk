@@ -38,6 +38,7 @@
 package ru.textanalysis.tfwwt.jmorfsdk;
 
 import ru.textanalysis.tfwwt.morphological.structures.internal.IOmoForm;
+import ru.textanalysis.tfwwt.morphological.structures.internal.ref.RefOmoFormList;
 
 import java.util.List;
 
@@ -52,20 +53,21 @@ public interface JMorfSdkAccessInterface {
      * такого слова нет
      * @throws java.lang.Exception - на слуай, если слово не найдено в словаре
      */
-    public byte isInitialForm(String strForm) throws Exception;
+    byte isInitialForm(String strForm) throws Exception;
 
-    public List<Byte> getTypeOfSpeechs(String strForm) throws Exception;
+    List<Byte> getTypeOfSpeeches(String strForm) throws Exception;
 
-    public List<Long> getMorfologyCharacteristics(String strForm) throws Exception;
+    List<Long> getMorphologyCharacteristics(String strForm) throws Exception;
 
-    public List<String> getStringInitialForm(String strForm) throws Exception;
+    List<String> getStringInitialForm(String strForm) throws Exception;
 
-    public List<IOmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
+    List<IOmoForm> getAllCharacteristicsOfForm(String strForm) throws Exception;
 
-    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception;
+    List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech) throws Exception;
     
-    public List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception;
+    List<String> getDerivativeForm(String stringInitialForm, long morfCharacteristics) throws Exception;
     
-    public List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception;
+    List<String> getDerivativeForm(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics) throws Exception;
 
+    RefOmoFormList getRefOmoFormList(String strForm);
 }

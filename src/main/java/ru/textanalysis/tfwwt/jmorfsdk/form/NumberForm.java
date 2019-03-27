@@ -38,6 +38,7 @@
 package ru.textanalysis.tfwwt.jmorfsdk.form;
 
 import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
+import ru.textanalysis.tfwwt.morphological.structures.internal.form.Form;
 
 public class NumberForm extends Form {
 

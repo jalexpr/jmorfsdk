@@ -37,6 +37,8 @@
  */
 package ru.textanalysis.tfwwt.jmorfsdk.form;
 
+import ru.textanalysis.tfwwt.morphological.structures.internal.form.Form;
+
 public final class WordForm extends Form {
 
     private final InitialForm initialForm;

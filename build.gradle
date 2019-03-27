@@ -20,7 +20,8 @@ configurations {
 }
 
 dependencies {
-    implementation 'com.github.jalexpr:MorphologicalStructures:master-SNAPSHOT'
+    compile  project(':MorphologicalStructures')
+    compile  project(':TemplateWrapperClasses')
 }
 
 task copyDictionaryOfMorphologicalStructures(type: Copy) {
