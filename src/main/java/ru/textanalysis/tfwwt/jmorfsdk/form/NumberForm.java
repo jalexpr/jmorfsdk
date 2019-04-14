@@ -74,4 +74,12 @@ public class NumberForm extends Form {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "NumberForm{" +
+                "strNumber='" + strNumber + '\'' +
+                ", morphCharacteristics=" + morphCharacteristics +
+                ", formKeyInBD=" + formKeyInBD +
+                '}';
+    }
 }

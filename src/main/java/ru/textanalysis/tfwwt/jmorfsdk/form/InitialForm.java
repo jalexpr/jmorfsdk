@@ -112,4 +112,13 @@ public final class InitialForm extends Form {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "InitialForm{" +
+                "typeOfSpeech=" + typeOfSpeech +
+                ", wordFormList=" + wordFormList +
+                ", morphCharacteristics=" + morphCharacteristics +
+                ", formKeyInBD=" + formKeyInBD +
+                '}';
+    }
 }
