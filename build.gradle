@@ -20,8 +20,10 @@ configurations {
 }
 
 dependencies {
-    compile  project(':MorphologicalStructures')
-    compile  project(':TemplateWrapperClasses')
+//    compile  project(':MorphologicalStructures')
+//    compile  project(':TemplateWrapperClasses')
+    implementation 'com.github.jalexpr:MorphologicalStructures:b09988fbd9'
+    implementation 'com.github.jalexpr:TemplateWrapperClasses:12223956f2'
 }
 
 task copyDictionaryOfMorphologicalStructures(type: Copy) {
