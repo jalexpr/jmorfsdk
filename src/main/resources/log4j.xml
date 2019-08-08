@@ -9,7 +9,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/${application.name}.log</file>
+        <file>log/jmorfsdk.log</file>
         <encoder>
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %class:%line - %msg%n</Pattern>
         </encoder>
