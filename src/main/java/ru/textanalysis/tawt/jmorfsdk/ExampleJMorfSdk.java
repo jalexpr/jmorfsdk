@@ -1,24 +1,25 @@
-import ru.textanalysis.tfwwt.jmorfsdk.JMorfSdk;
-import ru.textanalysis.tfwwt.jmorfsdk.load.JMorfSdkLoad;
-import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.*;
-import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
-import ru.textanalysis.tfwwt.morphological.structures.internal.IOmoForm;
-import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
-import ru.textanalysis.tfwwt.morphological.structures.storage.OmoFormList;
+package ru.textanalysis.tawt.jmorfsdk;
+
+import ru.textanalysis.tawt.jmorfsdk.loader.JMorfSdkFactory;
+import ru.textanalysis.tawt.ms.grammeme.MorfologyParameters.*;
+import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
+import ru.textanalysis.tawt.ms.internal.IOmoForm;
+import ru.textanalysis.tawt.ms.loader.BDFormString;
+import ru.textanalysis.tawt.ms.storage.OmoFormList;
 
 import java.util.List;
 
-public class Running {
+public class ExampleJMorfSdk {
     public static void main(String[] args) throws Exception {
         //Пример загрузки библиотеки
-        JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
+        JMorfSdk jMorfSdk = JMorfSdkFactory.loadFullLibrary();
 //        BDInitialFormString.printAll(true);
 
 //        System.err.println("");
 //        {
 //            Long start = System.currentTimeMillis();
 //            for (long i = 0; i < 900_000; i++) {
-//                jMorfSdk.getAllCharacteristicsOfForm("стол");
+//                jMorfSdk.getAllCharcteristicsOfForm("стол");
 //            }
 //            long finish = System.currentTimeMillis();
 //            System.out.println(finish - start);

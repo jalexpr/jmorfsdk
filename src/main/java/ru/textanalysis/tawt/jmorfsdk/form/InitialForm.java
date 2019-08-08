@@ -35,10 +35,10 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.form;
+package ru.textanalysis.tawt.jmorfsdk.form;
 
-import ru.textanalysis.tfwwt.morphological.structures.internal.form.Form;
-import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
+import ru.textanalysis.tawt.ms.internal.form.Form;
+import ru.textanalysis.tawt.ms.loader.BDFormString;
 
 import java.util.ArrayList;
 import java.util.List;

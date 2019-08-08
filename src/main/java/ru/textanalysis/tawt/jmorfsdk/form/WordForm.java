@@ -35,49 +35,72 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.form;
+package ru.textanalysis.tawt.jmorfsdk.form;
 
-import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParameters.TypeOfSpeech;
-import ru.textanalysis.tfwwt.morphological.structures.internal.form.Form;
+import ru.textanalysis.tawt.ms.internal.form.Form;
 
-public class NumberForm extends Form {
+public final class WordForm extends Form {
 
-    private final String strNumber;
+    private final InitialForm initialForm;
 
-    public NumberForm(String strNumber) {
-        super(0, 0);
-        this.strNumber = strNumber;
-    }
-
-    @Override
-    public byte getTypeOfSpeech() {
-        return TypeOfSpeech.NUMERAL;
+    public WordForm(int formKey, long morfCharacteristics, InitialForm initialForm) {
+        super(morfCharacteristics, formKey);
+        this.initialForm = initialForm;
+        initialForm.addWordfFormInList(this);
     }
 
     @Override
     public String getInitialFormString() {
-        return strNumber;
+        return initialForm.getInitialFormString();
     }
 
     @Override
     public int getInitialFormKey() {
-        throw new UnsupportedOperationException("Вывод_числовой_последовательности_примените_метод_getInitialFormString"); //To change body of generated methods, choose Tools | Templates.
+        return initialForm.getInitialFormKey();
     }
 
     @Override
-    public boolean isInitialForm() {
+    public byte getTypeOfSpeech() {
+        return initialForm.getTypeOfSpeech();
+    }
+
+    @Override
+    public boolean isInitialForm(){
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WordForm other = (WordForm) obj;
+        if (this.getMyFormKey() != other.getMyFormKey()) {
+            return false;
+        }
         return true;
     }
 
     @Override
+    public int hashCode() {
+        return getMyFormKey();
+    }
+
+    @Override
     public Form getInitialForm() {
-        return this;
+        return initialForm;
     }
 
     @Override
     public String toString() {
-        return "NumberForm{" +
-                "strNumber='" + strNumber + '\'' +
+        return "WordForm{" +
+                "initialForm=" + initialForm +
                 ", morphCharacteristics=" + morphCharacteristics +
                 ", formKeyInBD=" + formKeyInBD +
                 '}';

@@ -35,7 +35,7 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.load;
+package ru.textanalysis.tawt.jmorfsdk.loader;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -49,7 +49,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class Property {
-
     public static final String PROPERTY_FILE = "property_JMorfSdk.xml";
     public static final String MOVE_TO_NEW_LINE = System.lineSeparator();
     public static final String MY_REPOSITORY = "https://github.com/jalexpr/JMorfSdk/";

@@ -35,40 +35,45 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.load;
+package ru.textanalysis.tawt.jmorfsdk.loader;
 
-import ru.textanalysis.tfwwt.jmorfsdk.JMorfSdk;
-import ru.textanalysis.tfwwt.jmorfsdk.form.InitialForm;
-import ru.textanalysis.tfwwt.jmorfsdk.form.WordForm;
-import ru.textanalysis.tfwwt.morphological.structures.internal.Property;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.textanalysis.tawt.jmorfsdk.JMorfSdk;
+import ru.textanalysis.tawt.jmorfsdk.form.InitialForm;
+import ru.textanalysis.tawt.jmorfsdk.form.WordForm;
 import template.wrapper.classes.FileHelper;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
 
-import static ru.textanalysis.tfwwt.morphological.structures.internal.Property.NAME_HASH_AND_MORF_CHARACTERISTICS;
-import static ru.textanalysis.tfwwt.morphological.structures.load.BDFormString.deCompressDd;
+import static ru.textanalysis.tawt.ms.internal.Property.CONTROL_VALUE;
+import static ru.textanalysis.tawt.ms.internal.Property.NAME_HASH_AND_MORF_CHARACTERISTICS;
+import static ru.textanalysis.tawt.ms.loader.BDFormString.deCompressDd;
 
-final class LoadFromFileAndBD {
+final class LoaderFromFileAndBD {
+    private static final Logger log = LoggerFactory.getLogger(LoaderFromFileAndBD.class);
+
     static {
         deCompressDd();
     }
 
-    private LoadFromFileAndBD() {}
+    private LoaderFromFileAndBD() {}
 
-    protected static JMorfSdk loadInAnalysisMode(String pathZipFile) {
+    static JMorfSdk loadInAnalysisMode(String pathZipFile) {
         ZipInputStream streamHashAndMorfCharacteristic = null;
         InputStream zipFile = null;
         try {
-            zipFile = LoadFromFileAndBD.class.getClassLoader().getResourceAsStream(pathZipFile);
+            zipFile = LoaderFromFileAndBD.class.getClassLoader().getResourceAsStream(pathZipFile);
+            if (zipFile == null) {
+                throw new IOException("Cannot found zip: " + pathZipFile);
+            }
             streamHashAndMorfCharacteristic = FileHelper.openZipFile(zipFile, NAME_HASH_AND_MORF_CHARACTERISTICS);
             return loadJMorfSdk(streamHashAndMorfCharacteristic);
         } catch (IOException ex) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
+            log.warn("Cannot load JMorfSdk. " + ex.getMessage(), ex);
             return JMorfSdk.getEmptyJMorfSdk();
         } finally {
             FileHelper.closeFile(streamHashAndMorfCharacteristic);
@@ -85,9 +90,8 @@ final class LoadFromFileAndBD {
                 jMorfSdk.addForm(hashCode, initialForm);
                 addWordForm(jMorfSdk, initialForm, inputStream);
             }
-            inputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName()).log(Level.SEVERE, null, ex);
+            log.warn("Cannot load JMorfSdk. " + ex.getMessage(), ex);
         }
 
         return jMorfSdk;
@@ -102,7 +106,7 @@ final class LoadFromFileAndBD {
 
     private static void addWordForm(JMorfSdk jMorfSdk, InitialForm initialForm, InputStream inputStream) {
         int nextHashCode = getIntFromBytes(inputStream);
-        while (nextHashCode != Property.CONTROL_VALUE) {
+        while (nextHashCode != CONTROL_VALUE) {
             WordForm wordForm = new WordForm(getIdForm(inputStream), getMorfCharacteristicsFromBytes(inputStream), initialForm);
             jMorfSdk.addForm(nextHashCode, wordForm);
             initialForm.addWordfFormInList(wordForm);
@@ -120,8 +124,7 @@ final class LoadFromFileAndBD {
     }
 
     private static byte getTypeOfSpeechFromBytes(InputStream inputStream) throws IOException {
-        byte typeOfSpeech = (byte) inputStream.read();
-        return typeOfSpeech;
+        return (byte) inputStream.read();
     }
 
     private static long getMorfCharacteristicsFromBytes(InputStream inputStream) {
@@ -137,9 +140,9 @@ final class LoadFromFileAndBD {
                 returnValue |= g1;
             }
         } catch (IOException ex) {
-            Logger.getLogger(LoadFromFileAndBD.class.getName())
-                .log(Level.SEVERE, String.format("Не ожиданное окончание файла, проверте целостность файлов!%s",
-                        Property.MOVE_TO_NEW_LINE), ex);
+            String message = String.format("Не ожиданное окончание файла, проверте целостность файлов!%s.\n%s",
+            Property.MOVE_TO_NEW_LINE, ex.getMessage());
+            log.warn(message, ex);
         }
 
         return returnValue;

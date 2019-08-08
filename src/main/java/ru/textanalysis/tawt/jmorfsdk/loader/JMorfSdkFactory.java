@@ -35,20 +35,21 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk.load;
+package ru.textanalysis.tawt.jmorfsdk.loader;
 
-import ru.textanalysis.tfwwt.jmorfsdk.JMorfSdk;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.textanalysis.tawt.jmorfsdk.JMorfSdk;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static ru.textanalysis.tfwwt.morphological.structures.internal.Property.PATH_ZIP_DICTIONARY;
+import static ru.textanalysis.tawt.ms.internal.Property.PATH_ZIP_DICTIONARY;
 
 /**
  * Load JMorfSdk with parameters or by default.
  * Lazy initialization once.
  */
-public abstract class JMorfSdkLoad {
+public abstract class JMorfSdkFactory {
+    private static Logger log = LoggerFactory.getLogger(JMorfSdkFactory.class);
+
     private static JMorfSdk jMorfSdk = null;
     private static final boolean IS_OUTPUT_MESSAGES_TO_CONSOLE_DEFAULT = true;
 
@@ -92,13 +93,13 @@ public abstract class JMorfSdkLoad {
         if (jMorfSdk == null) {
             try {
                 outputMessagesToConsole("Старт загрузки библиотеки", isOutputMessagesToConsole);
-                jMorfSdk = LoadFromFileAndBD.loadInAnalysisMode(pathZipFile);
+                jMorfSdk = LoaderFromFileAndBD.loadInAnalysisMode(pathZipFile);
                 System.gc();
                 Runtime.getRuntime().gc();
                 outputMessagesToConsole("Библиотека готова к работе.", isOutputMessagesToConsole);
                 return jMorfSdk;
             } catch (Exception ex) {
-                Logger.getLogger(JMorfSdkLoad.class.getName()).log(Level.WARNING, null, ex);
+                log.warn(ex.getMessage(), ex);
                 return JMorfSdk.getEmptyJMorfSdk();
             }
         }
@@ -109,5 +110,6 @@ public abstract class JMorfSdkLoad {
         if (isOutputMessagesToConsole) {
             System.out.println(messages);
         }
+        log.info(messages);
     }
 }

@@ -1,8 +1,0 @@
-
-rootProject.name = 'JMorfSdk'
-
-include 'MorphologicalStructures'
-project(':MorphologicalStructures').projectDir = new File('../MorphologicalStructures')
-
-include 'TemplateWrapperClasses'
-project(':TemplateWrapperClasses').projectDir = new File('../TemplateWrapperClasses')

@@ -35,19 +35,19 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk;
+package ru.textanalysis.tawt.jmorfsdk;
 
-import ru.textanalysis.tfwwt.jmorfsdk.form.InitialForm;
-import ru.textanalysis.tfwwt.jmorfsdk.form.NumberForm;
-import ru.textanalysis.tfwwt.jmorfsdk.load.JMorfSdkLoad;
-import ru.textanalysis.tfwwt.morphological.structures.grammeme.MorfologyParametersHelper;
-import ru.textanalysis.tfwwt.morphological.structures.internal.NumberOmoForm;
-import ru.textanalysis.tfwwt.morphological.structures.internal.OmoForm;
-import ru.textanalysis.tfwwt.morphological.structures.internal.form.Form;
-import ru.textanalysis.tfwwt.morphological.structures.internal.form.GetCharacteristics;
-import ru.textanalysis.tfwwt.morphological.structures.internal.ref.RefOmoFormList;
-import ru.textanalysis.tfwwt.morphological.structures.load.BDFormString;
-import ru.textanalysis.tfwwt.morphological.structures.storage.OmoFormList;
+import ru.textanalysis.tawt.jmorfsdk.form.InitialForm;
+import ru.textanalysis.tawt.jmorfsdk.form.NumberForm;
+import ru.textanalysis.tawt.jmorfsdk.loader.JMorfSdkFactory;
+import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
+import ru.textanalysis.tawt.ms.internal.NumberOmoForm;
+import ru.textanalysis.tawt.ms.internal.OmoForm;
+import ru.textanalysis.tawt.ms.internal.form.Form;
+import ru.textanalysis.tawt.ms.internal.form.GetCharacteristics;
+import ru.textanalysis.tawt.ms.internal.ref.RefOmoFormList;
+import ru.textanalysis.tawt.ms.loader.BDFormString;
+import ru.textanalysis.tawt.ms.storage.OmoFormList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -55,9 +55,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static ru.textanalysis.tfwwt.morphological.structures.load.LoadHelper.getHashCode;
+import static ru.textanalysis.tawt.ms.loader.LoadHelper.getHashCode;
 
-public final class JMorfSdk implements JMorfSdkAccessInterface {
+public final class JMorfSdk implements MorfSdk {
 
     private Map<Integer, List<Form>> omoForms = new ConcurrentHashMap();
 
@@ -282,7 +282,7 @@ public final class JMorfSdk implements JMorfSdkAccessInterface {
     }
 
     public static void createSmallDictionary(String nameDictionary, String[] words) {
-        JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
+        JMorfSdk jMorfSdk = JMorfSdkFactory.loadFullLibrary();
         List<GetCharacteristics> initialForm = getListInitialFormForListForm(getFormsByWords(jMorfSdk, words));
         //todo
     }

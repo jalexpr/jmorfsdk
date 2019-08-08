@@ -35,14 +35,14 @@
  *
  * Благодарим Сергея и Екатерину Полицыных за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.jmorfsdk;
+package ru.textanalysis.tawt.jmorfsdk;
 
-import ru.textanalysis.tfwwt.morphological.structures.internal.IOmoForm;
-import ru.textanalysis.tfwwt.morphological.structures.internal.ref.RefOmoFormList;
+import ru.textanalysis.tawt.ms.internal.IOmoForm;
+import ru.textanalysis.tawt.ms.internal.ref.RefOmoFormList;
 
 import java.util.List;
 
-public interface JMorfSdkAccessInterface {
+public interface MorfSdk {
 
     public boolean isFormExistsInDictionary(String strForm);
 
