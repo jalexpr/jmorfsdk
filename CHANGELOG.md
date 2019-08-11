@@ -5,3 +5,4 @@
 - добавил лицензию (Attribution-NonCommercial-ShareAlike 3.0.pdf)
 - заменил название пакета
 - версия задается через tawt-parent
+- вынес общую часть печати *Form в Form

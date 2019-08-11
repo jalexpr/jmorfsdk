@@ -45,7 +45,7 @@ import java.util.List;
 
 public final class InitialForm extends Form {
 
-    private final byte typeOfSpeech;
+    private byte typeOfSpeech;
     private final ArrayList<Form> wordFormList = new ArrayList<>();
 
     public InitialForm(int formKey, byte typeOfSpeech, long morfCharacteristics) {
@@ -73,14 +73,17 @@ public final class InitialForm extends Form {
         return true;
     }
 
+    @Override
+    public String getMyString() {
+        return BDFormString.getStringById(getMyFormKey(), true);
+    }
+
     public void addWordfFormInList(WordForm wordform) {
         wordFormList.add(wordform);
     }
 
     public void trimToSize() {
-        if (wordFormList != null) {
-            wordFormList.trimToSize();
-        }
+        wordFormList.trimToSize();
     }
 
     public List<Form> getWordFormList() {
@@ -110,15 +113,5 @@ public final class InitialForm extends Form {
     @Override
     public Form getInitialForm() {
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return "InitialForm{" +
-                "typeOfSpeech=" + typeOfSpeech +
-                ", wordFormList=" + wordFormList +
-                ", morphCharacteristics=" + morphCharacteristics +
-                ", formKeyInBD=" + formKeyInBD +
-                '}';
     }
 }

@@ -96,13 +96,4 @@ public final class WordForm extends Form {
     public Form getInitialForm() {
         return initialForm;
     }
-
-    @Override
-    public String toString() {
-        return "WordForm{" +
-                "initialForm=" + initialForm +
-                ", morphCharacteristics=" + morphCharacteristics +
-                ", formKeyInBD=" + formKeyInBD +
-                '}';
-    }
 }
