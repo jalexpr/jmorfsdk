@@ -4,20 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>TAWT JMorfSdk</name>
     <artifactId>jmorfsdk</artifactId>
+    <packaging>jar</packaging>
     <version>${version.tawt.jmorfsdk}</version>
 
     <parent>
-        <artifactId>tawt-parent</artifactId>
         <groupId>ru.textanalysis.tawt</groupId>
-        <version>0.0.1</version>
+        <artifactId>tawt-parent</artifactId>
+        <version>0.0.2</version>
     </parent>
 
     <dependencies>
 <!--        TAWT-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ms</artifactId>
+            <artifactId>morphological-structures</artifactId>
         </dependency>
 
         <!--            Logger-->
