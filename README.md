@@ -16,16 +16,16 @@
 ```
 JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
 ```
-Пример получения словоформ:
+##### Пример получения словоформ:
 ```
 List<OmoForm> characteristics5 = jMorfSdk.getAllCharacteristicsOfForm("мыл");
 characteristics5.forEach((form) -> {
     System.out.println(form);
 });
 ```
-Пример получения форм слова с заданными морфологическими характеристками:
+##### Пример получения форм слова с заданными морфологическими характеристками:
 ```
-jMorfSdk.getAllCharacteristicsOfForm("мыла").forEach((form) -> {
+jMorfSdk.getAllCharacteristicsOfForm("дорогой").forEach((form) -> {
     //Пример поиска формы в родительном падеже
     if (form.getTheMorfCharacteristics(Case.IDENTIFIER) == Case.GENITIVE) {
         System.out.println("Форма в родительном падеже " + form);
@@ -35,10 +35,22 @@ jMorfSdk.getAllCharacteristicsOfForm("мыла").forEach((form) -> {
         System.out.println("Форма с глаголом найдена " + form);
     }
 });
+
+jMorfSdk.getAllCharacteristicsOfForm("дорогой").forEach(form -> {
+	if (form.getTypeOfSpeech() == MorfologyParameters.TypeOfSpeech.NOUN) {
+		System.out.println(form);
+	}
+});
+
 ```
-Пример фильтрации слов по морфологической характеристике:
+##### Вывод
 ```
-List<String> words = Arrays.asList("красного", "красный", "морозное", "солнечная", "бежать", "доска", "топор", "шла");
+initialFormString = дорогой, typeOfSpeech = 18, morfCharacteristics = 4264
+initialFormString = дорога, typeOfSpeech = 17, morfCharacteristics = 363
+```
+##### Пример фильтрации слов по морфологической характеристике:
+```
+List<String> words = Arrays.asList("осенний", "осенней", "площадь", "стол", "играть", "конференций", "на", "бежала");
 for (String word : words) {
     jMorfSdk.getAllCharacteristicsOfForm(word).forEach(form -> {
         if (form.getTheMorfCharacteristics(MorfologyParameters.Gender.class) == MorfologyParameters.Gender.FEMININ) {
@@ -47,6 +59,34 @@ for (String word : words) {
     });
 }
 ```
+##### Вывод
+```
+initialFormString = площадь, typeOfSpeech = 17, morfCharacteristics = 107 - площадь
+initialFormString = площадь, typeOfSpeech = 17, morfCharacteristics = 555 - площадь
+initialFormString = стол, typeOfSpeech = 17, morfCharacteristics = 103 - стол
+initialFormString = стол, typeOfSpeech = 17, morfCharacteristics = 551 - стол
+initialFormString = конференция, typeOfSpeech = 17, morfCharacteristics = 187 - конференций
+```
+
+##### Пример генерации словоформ
+```
+JMorfSdk jMorfSdk = JMorfSdkFactory.loadFullLibrary();
+List<String> forms = jMorfSdk.getDerivativeForm("дерево",
+		MorfologyParameters.TypeOfSpeech.NOUN,
+		MorfologyParameters.Numbers.SINGULAR);
+forms.forEach(System.out::println);
+```
+##### Вывод:
+дерева
+дерева
+дереву
+дереву
+дерево
+дерево
+деревом
+деревом
+дереве
+дереве
 
 Дополнительные пример работы с библиотекой описаны в <b>Running.java</b> <br>
 
