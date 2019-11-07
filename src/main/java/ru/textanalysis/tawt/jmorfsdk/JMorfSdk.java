@@ -41,6 +41,7 @@ import ru.textanalysis.tawt.jmorfsdk.form.InitialForm;
 import ru.textanalysis.tawt.jmorfsdk.form.NumberForm;
 import ru.textanalysis.tawt.jmorfsdk.loader.JMorfSdkFactory;
 import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
+import ru.textanalysis.tawt.ms.interfaces.jmorfsdk.IJMorfSdk;
 import ru.textanalysis.tawt.ms.internal.NumberOmoForm;
 import ru.textanalysis.tawt.ms.internal.OmoForm;
 import ru.textanalysis.tawt.ms.internal.form.Form;
@@ -57,7 +58,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ru.textanalysis.tawt.ms.loader.LoadHelper.getHashCode;
 
-public final class JMorfSdk implements MorfSdk {
+public final class JMorfSdk implements IJMorfSdk {
 
     private Map<Integer, List<Form>> omoForms = new ConcurrentHashMap();
 
