@@ -19,11 +19,11 @@ https://jitpack.io/#jalexpr/JMorfSdk
 
 Загрузка библиотеки:
 ```
-JMorfSdk jMorfSdk = JMorfSdkLoad.loadFullLibrary();
+JMorfSdk jMorfSdk = JMorfSdkFactory.loadFullLibrary();
 ```
 ##### Пример получения словоформ:
 ```
-List<OmoForm> characteristics5 = jMorfSdk.getAllCharacteristicsOfForm("мыл");
+List<IOmoForm> characteristics5 = jMorfSdk.getAllCharacteristicsOfForm("мыл");
 characteristics5.forEach((form) -> {
     System.out.println(form);
 });
@@ -32,19 +32,19 @@ characteristics5.forEach((form) -> {
 ```
 jMorfSdk.getAllCharacteristicsOfForm("дорогой").forEach((form) -> {
     //Пример поиска формы в родительном падеже
-    if (form.getTheMorfCharacteristics(Case.IDENTIFIER) == Case.GENITIVE) {
+    if (form.getTheMorfCharacteristics(MorfologyParameters.Case.IDENTIFIER) == MorfologyParameters.Case.GENITIVE) {
         System.out.println("Форма в родительном падеже " + form);
     }
-    
-    if (form.getTypeOfSpeech() == TypeOfSpeech.VERB) {
+
+    if (form.getTypeOfSpeech() == MorfologyParameters.TypeOfSpeech.VERB) {
         System.out.println("Форма с глаголом найдена " + form);
     }
 });
 
 jMorfSdk.getAllCharacteristicsOfForm("дорогой").forEach(form -> {
-	if (form.getTypeOfSpeech() == MorfologyParameters.TypeOfSpeech.NOUN) {
-		System.out.println(form);
-	}
+    if (form.getTypeOfSpeech() == MorfologyParameters.TypeOfSpeech.NOUN) {
+        System.out.println(form);
+    }
 });
 
 ```
