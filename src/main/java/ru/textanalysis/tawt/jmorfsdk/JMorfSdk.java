@@ -39,6 +39,7 @@ package ru.textanalysis.tawt.jmorfsdk;
 
 import ru.textanalysis.tawt.jmorfsdk.form.InitialForm;
 import ru.textanalysis.tawt.jmorfsdk.form.NumberForm;
+import ru.textanalysis.tawt.jmorfsdk.form.UnfamiliarForm;
 import ru.textanalysis.tawt.jmorfsdk.loader.JMorfSdkFactory;
 import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
 import ru.textanalysis.tawt.ms.interfaces.jmorfsdk.IJMorfSdk;
@@ -160,7 +161,7 @@ public final class JMorfSdk implements IJMorfSdk {
                 }
             });
         } else {
-            throw new Exception("Подходящие слово не было найдено в словаре библиотеки!");
+            listForm.add(new UnfamiliarForm(strForm));
         }
         return listForm;
     }
