@@ -49,6 +49,7 @@ import ru.textanalysis.tawt.ms.internal.form.Form;
 import ru.textanalysis.tawt.ms.internal.form.GetCharacteristics;
 import ru.textanalysis.tawt.ms.internal.ref.RefOmoFormList;
 import ru.textanalysis.tawt.ms.loader.BDFormString;
+import ru.textanalysis.tawt.ms.loader.LoadHelper;
 import ru.textanalysis.tawt.ms.storage.OmoFormList;
 
 import java.util.ArrayList;
@@ -90,7 +91,8 @@ public final class JMorfSdk implements IJMorfSdk {
 
     @Override
     public boolean isFormExistsInDictionary(String strForm) {
-        return omoForms.containsKey(strForm.hashCode());
+        int hashCode = LoadHelper.getHashCode(strForm);
+        return omoForms.containsKey(hashCode);
     }
 
     @Override
