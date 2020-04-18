@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import ru.textanalysis.tawt.jmorfsdk.JMorfSdk;
 import ru.textanalysis.tawt.jmorfsdk.form.InitialForm;
 import ru.textanalysis.tawt.jmorfsdk.form.WordForm;
+import ru.textanalysis.tawt.md.ResourcesUtils;
 import template.wrapper.classes.FileHelper;
 
 import java.io.BufferedInputStream;
@@ -66,7 +67,7 @@ final class LoaderFromFileAndBD {
         ZipInputStream streamHashAndMorfCharacteristic = null;
         InputStream zipFile = null;
         try {
-            zipFile = LoaderFromFileAndBD.class.getClassLoader().getResourceAsStream(pathZipFile);
+            zipFile = ResourcesUtils.getResource(pathZipFile);
             if (zipFile == null) {
                 throw new IOException("Cannot found zip: " + pathZipFile);
             }

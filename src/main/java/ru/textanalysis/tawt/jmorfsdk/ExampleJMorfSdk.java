@@ -63,13 +63,13 @@ public class ExampleJMorfSdk {
         });
 
         //Пример проверки слов в словаре
-        if(jMorfSdk.isFormExistsInDictionary("че")) {
+        if (jMorfSdk.isFormExistsInDictionary("че")) {
             System.out.println("Слово \"че\" найдено");
         } else {
             System.out.println("Слово \"че\" не найдено");
         }
 
-        if(jMorfSdk.isFormExistsInDictionary("чтотакое")) {
+        if (jMorfSdk.isFormExistsInDictionary("чтотакое")) {
             System.out.println("Слово \"чтотакое\" найдено");
         } else {
             System.out.println("Слово \"чтотакое\" не найдено");
@@ -131,10 +131,10 @@ public class ExampleJMorfSdk {
         System.out.println("_____");
 
         jMorfSdk.getAllCharacteristicsOfForm("дорогой").forEach((form) -> {
-            if(form.isContainsTypeOfSpeech(TypeOfSpeech.NOUN)) {
+            if (form.isContainsTypeOfSpeech(TypeOfSpeech.NOUN)) {
                 System.out.println(form);
             }
-            if(form.isContainsMorphCharacteristic(Case.class, Case.GENITIVE)) {
+            if (form.isContainsMorphCharacteristic(Case.class, Case.GENITIVE)) {
                 System.out.println(form);
             }
         });
@@ -150,7 +150,7 @@ public class ExampleJMorfSdk {
         System.out.println("_____");
 
         jMorfSdk.getDerivativeForm("мыло", TypeOfSpeech.NOUN,
-                    Numbers.SINGULAR).forEach((wordString) -> {
+                Numbers.SINGULAR).forEach((wordString) -> {
             System.out.println(wordString);
         });
 
@@ -177,6 +177,11 @@ public class ExampleJMorfSdk {
         } catch (Exception ex) {
             System.out.println(ex);
         }
+
+        List<IOmoForm> characteristic7 = jMorfSdk.getAllCharacteristicsOfForm("424132");
+        characteristic7.forEach((form) -> {
+            System.out.println(form);
+        });
 
         System.out.println("________________________________________");
         List<IOmoForm> characteristics10 = jMorfSdk.getAllCharacteristicsOfForm("мама");

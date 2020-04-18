@@ -21,6 +21,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>morphological-structures</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>morphological-dictionary</artifactId>
+        </dependency>
 
         <!--            Logger-->
         <dependency>
