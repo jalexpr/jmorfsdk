@@ -92,19 +92,19 @@ public class ExampleJMorfSdk {
         OmoFormList omoFormMama = jMorfSdk.getAllCharacteristicsOfForm("мыла");
         System.out.println("печать из встроенной структуры");
         System.out.println(omoFormMama.get(0).getMyFormString());
-        System.out.println(omoFormMama.get(0).isTypeForm());
+        System.out.println(omoFormMama.get(0).getTypeForm());
         System.out.println(omoFormMama.get(0).getInitialFormString());
 
         OmoFormList omoFormMilo = jMorfSdk.getAllCharacteristicsOfForm("мылo");
         System.out.println("печать из встроенной структуры");
         System.out.println(omoFormMilo.get(0).getMyFormString());
-        System.out.println(omoFormMilo.get(0).isTypeForm());
+        System.out.println(omoFormMilo.get(0).getTypeForm());
         System.out.println(omoFormMilo.get(0).getInitialFormString());
 
         OmoFormList omoFormMilO = jMorfSdk.getAllCharacteristicsOfForm("мыло");
         System.out.println("печать из встроенной структуры");
         System.out.println(omoFormMilO.get(0).getMyFormString());
-        System.out.println(omoFormMilO.get(0).isTypeForm());
+        System.out.println(omoFormMilO.get(0).getTypeForm());
         System.out.println(omoFormMilO.get(0).getInitialFormString());
 
         int formKey = omoFormMama.get(0).getMyFormKey();
