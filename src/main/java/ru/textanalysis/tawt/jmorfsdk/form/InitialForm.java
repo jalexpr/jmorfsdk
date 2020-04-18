@@ -37,6 +37,7 @@
  */
 package ru.textanalysis.tawt.jmorfsdk.form;
 
+import ru.textanalysis.tawt.ms.internal.TypeForms;
 import ru.textanalysis.tawt.ms.internal.form.Form;
 import ru.textanalysis.tawt.ms.loader.BDFormString;
 
@@ -44,8 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InitialForm extends Form {
-
-    private byte typeOfSpeech;
+    private final byte typeOfSpeech;
     private final ArrayList<Form> wordFormList = new ArrayList<>();
 
     public InitialForm(int formKey, byte typeOfSpeech, long morfCharacteristics) {
@@ -76,6 +76,11 @@ public class InitialForm extends Form {
     @Override
     public String getMyString() {
         return BDFormString.getStringById(getMyFormKey(), true);
+    }
+
+    @Override
+    public TypeForms isTypeForm() {
+        return TypeForms.INITIAL;
     }
 
     public void addWordfFormInList(WordForm wordform) {

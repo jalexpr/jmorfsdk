@@ -37,6 +37,7 @@
  */
 package ru.textanalysis.tawt.jmorfsdk.form;
 
+import ru.textanalysis.tawt.ms.internal.TypeForms;
 import ru.textanalysis.tawt.ms.internal.form.Form;
 
 public final class WordForm extends Form {
@@ -81,10 +82,7 @@ public final class WordForm extends Form {
             return false;
         }
         final WordForm other = (WordForm) obj;
-        if (this.getMyFormKey() != other.getMyFormKey()) {
-            return false;
-        }
-        return true;
+        return this.getMyFormKey() == other.getMyFormKey();
     }
 
     @Override
@@ -95,5 +93,10 @@ public final class WordForm extends Form {
     @Override
     public Form getInitialForm() {
         return initialForm;
+    }
+
+    @Override
+    public TypeForms isTypeForm() {
+        return TypeForms.WORD;
     }
 }

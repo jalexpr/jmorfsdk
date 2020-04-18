@@ -37,12 +37,22 @@
  */
 package ru.textanalysis.tawt.jmorfsdk.form;
 
-public final class UnfamiliarForm extends InitialForm {
-    private String str;
+import ru.textanalysis.tawt.ms.grammeme.MorfologyParameters;
+import ru.textanalysis.tawt.ms.internal.TypeForms;
+import ru.textanalysis.tawt.ms.internal.form.Form;
+import ru.textanalysis.tawt.ms.internal.form.GetCharacteristics;
+
+public final class UnfamiliarForm extends Form {
+    private final String str;
 
     public UnfamiliarForm(String str) {
-        super(0, Byte.MIN_VALUE,0L);
+        super(0, 0);
         this.str = str;
+    }
+
+    @Override
+    public byte getTypeOfSpeech() {
+        return MorfologyParameters.TypeOfSpeech.UNFAMILIAR;
     }
 
     @Override
@@ -56,6 +66,16 @@ public final class UnfamiliarForm extends InitialForm {
     }
 
     @Override
+    public boolean isInitialForm() {
+        return false;
+    }
+
+    @Override
+    public GetCharacteristics getInitialForm() {
+        return this;
+    }
+
+    @Override
     public String getMyString() {
         return str;
     }
@@ -63,5 +83,10 @@ public final class UnfamiliarForm extends InitialForm {
     @Override
     public int hashCode() {
         return str.hashCode();
+    }
+
+    @Override
+    public TypeForms isTypeForm() {
+        return TypeForms.UNFAMILIAR;
     }
 }

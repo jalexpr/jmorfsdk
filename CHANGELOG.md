@@ -1,3 +1,7 @@
+2.10.15
+--
+- Добавлены классы JMorfSdkException и JMorfSdkRuntimeException
+
 2.10.14
 --
 - исправлен метод JMorfSdk.isFormExistsInDictionary

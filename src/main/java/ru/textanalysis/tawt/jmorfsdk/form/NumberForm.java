@@ -38,10 +38,10 @@
 package ru.textanalysis.tawt.jmorfsdk.form;
 
 import ru.textanalysis.tawt.ms.grammeme.MorfologyParameters.TypeOfSpeech;
+import ru.textanalysis.tawt.ms.internal.TypeForms;
 import ru.textanalysis.tawt.ms.internal.form.Form;
 
 public class NumberForm extends Form {
-
     private final String strNumber;
 
     public NumberForm(String strNumber) {
@@ -61,7 +61,7 @@ public class NumberForm extends Form {
 
     @Override
     public int getInitialFormKey() {
-        throw new UnsupportedOperationException("Вывод_числовой_последовательности_примените_метод_getInitialFormString"); //To change body of generated methods, choose Tools | Templates.
+        return getMyFormKey();
     }
 
     @Override
@@ -81,5 +81,10 @@ public class NumberForm extends Form {
                 ", morphCharacteristics=" + morphCharacteristics +
                 ", formKeyInBD=" + formKeyInBD +
                 '}';
+    }
+
+    @Override
+    public TypeForms isTypeForm() {
+        return TypeForms.NUMBER;
     }
 }

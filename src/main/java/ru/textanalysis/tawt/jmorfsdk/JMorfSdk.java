@@ -37,6 +37,9 @@
  */
 package ru.textanalysis.tawt.jmorfsdk;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.textanalysis.tawt.jmorfsdk.exceptions.JMorfSdkRuntimeException;
 import ru.textanalysis.tawt.jmorfsdk.form.InitialForm;
 import ru.textanalysis.tawt.jmorfsdk.form.NumberForm;
 import ru.textanalysis.tawt.jmorfsdk.form.UnfamiliarForm;
@@ -45,6 +48,7 @@ import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
 import ru.textanalysis.tawt.ms.interfaces.jmorfsdk.IJMorfSdk;
 import ru.textanalysis.tawt.ms.internal.NumberOmoForm;
 import ru.textanalysis.tawt.ms.internal.OmoForm;
+import ru.textanalysis.tawt.ms.internal.UnfamiliarOmoForm;
 import ru.textanalysis.tawt.ms.internal.form.Form;
 import ru.textanalysis.tawt.ms.internal.form.GetCharacteristics;
 import ru.textanalysis.tawt.ms.internal.ref.RefOmoFormList;
@@ -61,10 +65,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import static ru.textanalysis.tawt.ms.loader.LoadHelper.getHashCode;
 
 public final class JMorfSdk implements IJMorfSdk {
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private Map<Integer, List<Form>> omoForms = new ConcurrentHashMap();
 
-    private JMorfSdk() {}
+    private JMorfSdk() {
+    }
 
     public static JMorfSdk getEmptyJMorfSdk() {
         return new JMorfSdk();
@@ -191,12 +197,32 @@ public final class JMorfSdk implements IJMorfSdk {
         OmoFormList list = new OmoFormList();
         getListFormByString(strForm).forEach(form -> {
             OmoForm characteristicsOfForm;
-            try {
-                characteristicsOfForm = new OmoForm(form.getInitialFormKey(), form.getMyFormKey(),
-                        form.getTypeOfSpeech(),
-                        form.getMorphCharacteristics());
-            } catch (UnsupportedOperationException ex) {
-                characteristicsOfForm = new NumberOmoForm(form.getInitialFormString());
+            switch (form.isTypeForm()) {
+                case INITIAL:
+                case WORD:
+                    characteristicsOfForm = new OmoForm(
+                            form.getInitialFormKey(),
+                            form.getMyFormKey(),
+                            form.getTypeOfSpeech(),
+                            form.getMorphCharacteristics());
+                    break;
+                case NUMBER:
+                    characteristicsOfForm = new NumberOmoForm(
+                            form.getInitialFormString(),
+                            -1,
+                            -1,
+                            -1);
+                    break;
+                case UNFAMILIAR:
+                    characteristicsOfForm = new UnfamiliarOmoForm(
+                            form.getInitialFormString(),
+                            -1,
+                            -1,
+                            -1);
+                    break;
+                default:
+                    log.warn("Cannot impl for {}", form.isTypeForm());
+                    throw new JMorfSdkRuntimeException("Cannot impl for " + form.isTypeForm());
             }
             list.add(characteristicsOfForm);
         });
