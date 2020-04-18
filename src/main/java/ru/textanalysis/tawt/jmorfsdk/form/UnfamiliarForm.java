@@ -86,7 +86,7 @@ public final class UnfamiliarForm extends Form {
     }
 
     @Override
-    public TypeForms isTypeForm() {
+    public TypeForms getTypeForm() {
         return TypeForms.UNFAMILIAR;
     }
 }

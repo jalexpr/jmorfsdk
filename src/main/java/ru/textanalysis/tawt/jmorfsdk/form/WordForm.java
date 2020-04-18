@@ -96,7 +96,7 @@ public final class WordForm extends Form {
     }
 
     @Override
-    public TypeForms isTypeForm() {
+    public TypeForms getTypeForm() {
         return TypeForms.WORD;
     }
 }

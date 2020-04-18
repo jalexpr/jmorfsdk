@@ -79,7 +79,7 @@ public class InitialForm extends Form {
     }
 
     @Override
-    public TypeForms isTypeForm() {
+    public TypeForms getTypeForm() {
         return TypeForms.INITIAL;
     }
 

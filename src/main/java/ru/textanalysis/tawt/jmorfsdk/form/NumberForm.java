@@ -84,7 +84,7 @@ public class NumberForm extends Form {
     }
 
     @Override
-    public TypeForms isTypeForm() {
+    public TypeForms getTypeForm() {
         return TypeForms.NUMBER;
     }
 }

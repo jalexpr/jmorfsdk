@@ -197,7 +197,7 @@ public final class JMorfSdk implements IJMorfSdk {
         OmoFormList list = new OmoFormList();
         getListFormByString(strForm).forEach(form -> {
             OmoForm characteristicsOfForm;
-            switch (form.isTypeForm()) {
+            switch (form.getTypeForm()) {
                 case INITIAL:
                 case WORD:
                     characteristicsOfForm = new OmoForm(
@@ -221,8 +221,8 @@ public final class JMorfSdk implements IJMorfSdk {
                             -1);
                     break;
                 default:
-                    log.warn("Cannot impl for {}", form.isTypeForm());
-                    throw new JMorfSdkRuntimeException("Cannot impl for " + form.isTypeForm());
+                    log.warn("Cannot impl for {}", form.getTypeForm());
+                    throw new JMorfSdkRuntimeException("Cannot impl for " + form.getTypeForm());
             }
             list.add(characteristicsOfForm);
         });
