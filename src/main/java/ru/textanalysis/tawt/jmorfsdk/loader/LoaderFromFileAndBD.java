@@ -40,9 +40,9 @@ package ru.textanalysis.tawt.jmorfsdk.loader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.textanalysis.tawt.jmorfsdk.JMorfSdk;
-import ru.textanalysis.tawt.jmorfsdk.form.InitialForm;
-import ru.textanalysis.tawt.jmorfsdk.form.WordForm;
 import ru.textanalysis.tawt.md.ResourcesUtils;
+import ru.textanalysis.tawt.ms.internal.jmorfsdk.InitialForm;
+import ru.textanalysis.tawt.ms.internal.jmorfsdk.WordForm;
 import template.wrapper.classes.FileHelper;
 
 import java.io.BufferedInputStream;
