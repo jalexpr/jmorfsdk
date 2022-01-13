@@ -4,7 +4,8 @@ import ru.textanalysis.tawt.jmorfsdk.JMorfSdk;
 import ru.textanalysis.tawt.jmorfsdk.JMorfSdkFactory;
 import ru.textanalysis.tawt.ms.grammeme.MorfologyParameters.*;
 import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
-import ru.textanalysis.tawt.ms.loader.BDFormString;
+import ru.textanalysis.tawt.ms.loader.DatabaseFactory;
+import ru.textanalysis.tawt.ms.loader.DatabaseStrings;
 import ru.textanalysis.tawt.ms.model.jmorfsdk.Form;
 
 import java.util.List;
@@ -99,8 +100,9 @@ public class JMorfSdkExample {
 		int formInitialFormKey = omoFormMama.get(0).getInitialFormKey();
 
 		System.out.println("печать из встроенного класса для работы с БД");
-		System.out.println(BDFormString.getLiteralById(formKey));
-		System.out.println(BDFormString.getLiteralById(formInitialFormKey));
+		DatabaseStrings databaseStrings = DatabaseFactory.getInstanceDatabaseStrings();
+		System.out.println(databaseStrings.getLiteralById(formKey));
+		System.out.println(databaseStrings.getLiteralById(formInitialFormKey));
 
 		System.out.println("_____");
 
