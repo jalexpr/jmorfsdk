@@ -62,6 +62,7 @@ final class LoaderFromFileAndBD {
                 .formKey(getIntFromBytes(inputStream))
                 .typeOfSpeech(getTypeOfSpeechFromBytes(inputStream))
                 .morfCharacteristics(getMorfCharacteristicsFromBytes(inputStream))
+                .link(getLinkFromBytes(inputStream))
                 .derivativeForms(loadDerivative(jMorfSdk, inputStream))
                 .build();
         jMorfSdk.addForm(hashCode, initialForm);
@@ -71,7 +72,7 @@ final class LoaderFromFileAndBD {
         int nextHashCode = getIntFromBytes(inputStream);
         List<DerivativeForm> derivativeForms = new ArrayList<>();
         while (nextHashCode != CONTROL_VALUE) {
-            DerivativeForm derivativeForm = new DerivativeForm(getIdForm(inputStream), getMorfCharacteristicsFromBytes(inputStream));
+            DerivativeForm derivativeForm = new DerivativeForm(getIdForm(inputStream), getMorfCharacteristicsFromBytes(inputStream), getLinkFromBytes(inputStream));
             jMorfSdk.addForm(nextHashCode, derivativeForm);
             nextHashCode = getIntFromBytes(inputStream);
             derivativeForms.add(derivativeForm);
@@ -95,12 +96,16 @@ final class LoaderFromFileAndBD {
         return getValueCodeFromBytes(inputStream, 8);
     }
 
+    private long getLinkFromBytes(InputStream inputStream) {
+        return getValueCodeFromBytes(inputStream, 8);
+    }
+
     private long getValueCodeFromBytes(InputStream inputStream, int countByte) {
         long returnValue = 0;
         try {
             for (int i = 0; i < countByte; i++) {
-                int f = 0xFF & inputStream.read();
-                int g1 = f << (8 * (countByte - 1 - i));
+                long f = 0xFF & inputStream.read();
+                long g1 = f << (8 * (countByte - 1 - i));
                 returnValue |= g1;
             }
         } catch (IOException ex) {
