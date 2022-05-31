@@ -8,7 +8,10 @@ import ru.textanalysis.tawt.ms.model.jmorfsdk.InitialForm;
 import ru.textanalysis.tawt.ms.model.jmorfsdk.NumberForm;
 import ru.textanalysis.tawt.ms.model.jmorfsdk.UnfamiliarForm;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -194,6 +197,6 @@ final class JMorfSdkImpl implements JMorfSdk {
 
 	@Override
 	public List<Form> getOmoForms(String literal) {
-		return new ArrayList<>(getFormsByString(literal.toLowerCase(Locale.ROOT)));
+		return new ArrayList<>(getFormsByString(literal));
 	}
 }
