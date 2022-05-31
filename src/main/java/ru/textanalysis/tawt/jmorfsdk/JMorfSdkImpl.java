@@ -37,6 +37,9 @@ final class JMorfSdkImpl implements JMorfSdk {
 
 	@Override
 	public boolean isFormExistsInDictionary(String literal) {
+		if (isNumber(literal)) {
+			return true;
+		}
 		int hashCode = LoadHelper.getHashCode(literal);
 		return allForms.containsKey(hashCode);
 	}
@@ -80,15 +83,26 @@ final class JMorfSdkImpl implements JMorfSdk {
 	}
 
 	private boolean isNumber(String literal) {
-		return literal.matches("[0-9]+");
+		return literal.matches("[0-9]+[:.,-]?[0-9]*");
 	}
 
 	private List<Form> createListFormByString(String literal) {
 		int hashCode = getHashCode(literal);
 		if (allForms.containsKey(hashCode)) {
-			return allForms.get(hashCode).stream()
-				.filter(form -> form.isFormSameByControlHash(literal))
-				.collect(Collectors.toList());
+			List<Form> resultForms = allForms.get(hashCode).stream()
+					.filter(form -> form.isFormSameByControlHash(literal))
+					.collect(Collectors.toList());
+			for (int i = resultForms.size() - 1; i >= 0; i--) {
+				if (resultForms.get(i).getTypeOfSpeech() == 0) {
+					long link = resultForms.get(i).getLink();
+					long linkHashCode = link >> 32;
+					resultForms.addAll(allForms.get((int) linkHashCode).stream()
+							.filter(form -> form.getMyFormKey() == (int) link)
+							.collect(Collectors.toList()));
+					resultForms.remove(i);
+				}
+			}
+			return resultForms;
 		} else {
 			return List.of(new UnfamiliarForm(literal));
 		}
