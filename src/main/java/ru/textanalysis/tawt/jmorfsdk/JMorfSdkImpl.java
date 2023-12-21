@@ -1,18 +1,17 @@
 package ru.textanalysis.tawt.jmorfsdk;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.textanalysis.tawt.jmorfsdk.predicter.JMorfSdkPredicter;
 import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
 import ru.textanalysis.tawt.ms.loader.LoadHelper;
-import ru.textanalysis.tawt.ms.model.jmorfsdk.Form;
-import ru.textanalysis.tawt.ms.model.jmorfsdk.InitialForm;
-import ru.textanalysis.tawt.ms.model.jmorfsdk.NumberForm;
-import ru.textanalysis.tawt.ms.model.jmorfsdk.UnfamiliarForm;
+import ru.textanalysis.tawt.ms.model.jmorfsdk.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static ru.textanalysis.tawt.ms.loader.LoadHelper.getHashCode;
@@ -21,6 +20,7 @@ import static ru.textanalysis.tawt.ms.loader.LoadHelper.getHashCode;
 final class JMorfSdkImpl implements JMorfSdk {
 
 	private Map<Integer, List<Form>> allForms = new ConcurrentHashMap<>();
+	private final JMorfSdkPredicter jMorfSdkPredicter = new JMorfSdkPredicter(allForms);
 
 	JMorfSdkImpl() {
 	}
@@ -29,10 +29,48 @@ final class JMorfSdkImpl implements JMorfSdk {
 		allForms.computeIfAbsent(hashCode, i -> new ArrayList<>()).add(form);
 	}
 
+	void addPrefix(String prefix, List<PrefixMorfCharacteristicsChanges> characteristicsChanges) {
+		jMorfSdkPredicter.addPrefix(prefix, characteristicsChanges);
+	}
+
+	void addPostfix(String postfix, List<PostfixMorfCharacteristics> postfixMorfCharacteristics) {
+		jMorfSdkPredicter.addPostfix(postfix, postfixMorfCharacteristics);
+	}
+
+	void setPredictSetting(boolean isLoadInfoToPredictCharacteristics) {
+		jMorfSdkPredicter.setPredictSetting(isLoadInfoToPredictCharacteristics);
+	}
+
 	@Override
 	public void finish() {
 		allForms.clear();
 		allForms = null;
+		jMorfSdkPredicter.finish();
+	}
+
+	@Override
+	public boolean containsTrie(String word) {
+		return jMorfSdkPredicter.containsTrie(word);
+	}
+
+	@Override
+	public String findLongestWordPrefix(String word) {
+		return jMorfSdkPredicter.findLongestWordPrefix(word);
+	}
+
+	@Override
+	public String findLongestWordPostfix(String word) {
+		return jMorfSdkPredicter.findLongestWordPostfix(word);
+	}
+
+	@Override
+	public List<String> findAllWordPrefixes(String word) {
+		return jMorfSdkPredicter.findAllWordPrefixes(word);
+	}
+
+	@Override
+	public List<String> findAllWordPostfixes(String word) {
+		return jMorfSdkPredicter.findAllWordPostfixes(word);
 	}
 
 	@Override
@@ -42,6 +80,21 @@ final class JMorfSdkImpl implements JMorfSdk {
 		}
 		int hashCode = LoadHelper.getHashCode(literal);
 		return allForms.containsKey(hashCode);
+	}
+
+	@Override
+	public boolean isFormExistsInDictionary(byte[] literal) {
+		int hashCode = LoadHelper.getHashCode(literal);
+		return allForms.containsKey(hashCode);
+	}
+
+	@Override
+	public boolean isPostfixExistsInDictionary(String literal) {
+		return jMorfSdkPredicter.isPostfixExistsInDictionary(literal);
+	}
+
+	public List<PostfixMorfCharacteristics> getPostfixInfoByPostfix(String literal) {
+		return jMorfSdkPredicter.getPostfixInfoByPostfix(literal);
 	}
 
 	@Override
@@ -88,23 +141,64 @@ final class JMorfSdkImpl implements JMorfSdk {
 
 	private List<Form> createListFormByString(String literal) {
 		int hashCode = getHashCode(literal);
+		byte[] encoded = null;
+		String wordPrefix = null;
+		boolean isOutPrefixedFormFound = false;
+		if (!allForms.containsKey(hashCode)) {
+			if (jMorfSdkPredicter.getPredictSetting()) {
+				if (literal.contains("-")) {
+					boolean serviceWordPart = jMorfSdkPredicter.checkComplicatedWordForServiceParts(literal);
+					String[] complicatedWordParts = literal.split("-");
+					if (serviceWordPart) {
+						List<Form> wordWithServicePartForms = jMorfSdkPredicter.getFormsOfWordWithServicePart(literal, complicatedWordParts);
+						if (!wordWithServicePartForms.isEmpty()) {
+							return wordWithServicePartForms;
+						}
+					} else {
+						List<Form> wordWithIndependentPartsForms = jMorfSdkPredicter.getFormsOfWordWithIndependentParts(literal, complicatedWordParts);
+						if (!wordWithIndependentPartsForms.isEmpty()) {
+							return wordWithIndependentPartsForms;
+						}
+					}
+					return List.of(new UnfamiliarForm(literal));
+				} else {
+					List<String> wordPrefixes = findAllWordPrefixes(literal);
+					for (String prefix : wordPrefixes) {
+						CharBuffer buffer = CharBuffer.wrap(literal.toCharArray(), prefix.length(), literal.length() - prefix.length());
+						encoded = StandardCharsets.UTF_8.encode(buffer).array();
+						if (isFormExistsInDictionary(encoded)) {
+							wordPrefix = prefix;
+							isOutPrefixedFormFound = true;
+							hashCode = getHashCode(encoded);
+							break;
+						}
+					}
+				}
+			} else {
+				return List.of(new UnfamiliarForm(literal));
+			}
+		}
+		String finalWord = encoded == null ? literal : new String(encoded, StandardCharsets.UTF_8);
 		if (allForms.containsKey(hashCode)) {
 			List<Form> resultForms = allForms.get(hashCode).stream()
-					.filter(form -> form.isFormSameByControlHash(literal))
-					.collect(Collectors.toList());
+				.filter(form -> form.isFormSameByControlHash(finalWord))
+				.collect(Collectors.toList());
 			for (int i = resultForms.size() - 1; i >= 0; i--) {
 				if (resultForms.get(i).getTypeOfSpeech() == 0) {
 					long link = resultForms.get(i).getLink();
 					long linkHashCode = link >> 32;
 					resultForms.addAll(allForms.get((int) linkHashCode).stream()
-							.filter(form -> form.getMyFormKey() == (int) link)
-							.collect(Collectors.toList()));
+						.filter(form -> form.getMyFormKey() == (int) link)
+						.toList());
 					resultForms.remove(i);
 				}
 			}
+			if (isOutPrefixedFormFound) {
+				return jMorfSdkPredicter.getWordFormsWithOutPrefixedAnalysis(literal, wordPrefix, resultForms);
+			}
 			return resultForms;
 		} else {
-			return List.of(new UnfamiliarForm(literal));
+			return jMorfSdkPredicter.getWordFormsWithPostfixAnalysis(literal);
 		}
 	}
 
@@ -197,6 +291,6 @@ final class JMorfSdkImpl implements JMorfSdk {
 
 	@Override
 	public List<Form> getOmoForms(String literal) {
-		return new ArrayList<>(getFormsByString(literal));
+		return new ArrayList<>(getFormsByString(literal.toLowerCase(Locale.ROOT)));
 	}
 }

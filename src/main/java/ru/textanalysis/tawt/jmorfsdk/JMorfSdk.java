@@ -45,6 +45,10 @@ public interface JMorfSdk {
 
 	boolean isFormExistsInDictionary(String literal);
 
+	boolean isFormExistsInDictionary(byte[] literal);
+
+	boolean isPostfixExistsInDictionary(String literal);
+
 	/**
 	 * @param literal - String формы
 	 *
@@ -53,6 +57,16 @@ public interface JMorfSdk {
 	 * такого слова нет
 	 */
 	byte isInitialForm(String literal);
+
+	boolean containsTrie(String word);
+
+	String findLongestWordPrefix(String word);
+
+	String findLongestWordPostfix(String word);
+
+	List<String> findAllWordPrefixes(String word);
+
+	List<String> findAllWordPostfixes(String word);
 
 	List<Byte> getTypeOfSpeeches(String literal);
 
