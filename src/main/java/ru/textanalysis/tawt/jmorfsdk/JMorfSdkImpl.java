@@ -6,6 +6,9 @@ import ru.textanalysis.tawt.ms.grammeme.MorfologyParametersHelper;
 import ru.textanalysis.tawt.ms.loader.LoadHelper;
 import ru.textanalysis.tawt.ms.model.jmorfsdk.*;
 
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -80,6 +83,12 @@ final class JMorfSdkImpl implements JMorfSdk {
 	}
 
 	@Override
+	public boolean isFormExistsInDictionary(byte[] literal) {
+		int hashCode = LoadHelper.getHashCode(literal);
+		return allForms.containsKey(hashCode);
+	}
+
+	@Override
 	public boolean isPostfixExistsInDictionary(String literal) {
 		return jMorfSdkPredicter.isPostfixExistsInDictionary(literal);
 	}
@@ -132,16 +141,16 @@ final class JMorfSdkImpl implements JMorfSdk {
 
 	private List<Form> createListFormByString(String literal) {
 		int hashCode = getHashCode(literal);
-		String word = null;
+		byte[] encoded = null;
 		String wordPrefix = null;
 		boolean isOutPrefixedFormFound = false;
 		if (!allForms.containsKey(hashCode)) {
 			if (jMorfSdkPredicter.getPredictSetting()) {
 				if (literal.contains("-")) {
-					int serviceWordPart = jMorfSdkPredicter.checkComplicatedWordForServiceParts(literal);
+					boolean serviceWordPart = jMorfSdkPredicter.checkComplicatedWordForServiceParts(literal);
 					String[] complicatedWordParts = literal.split("-");
-					if (serviceWordPart != -1) {
-						List<Form> wordWithServicePartForms = jMorfSdkPredicter.getFormsOfWordWithServicePart(literal, serviceWordPart, complicatedWordParts);
+					if (serviceWordPart) {
+						List<Form> wordWithServicePartForms = jMorfSdkPredicter.getFormsOfWordWithServicePart(literal, complicatedWordParts);
 						if (!wordWithServicePartForms.isEmpty()) {
 							return wordWithServicePartForms;
 						}
@@ -155,11 +164,12 @@ final class JMorfSdkImpl implements JMorfSdk {
 				} else {
 					List<String> wordPrefixes = findAllWordPrefixes(literal);
 					for (String prefix : wordPrefixes) {
-						word = literal.replaceFirst(Pattern.quote(prefix), "");
-						if (isFormExistsInDictionary(word)) {
+						CharBuffer buffer = CharBuffer.wrap(literal.toCharArray(), prefix.length(), literal.length() - prefix.length());
+						encoded = StandardCharsets.UTF_8.encode(buffer).array();
+						if (isFormExistsInDictionary(encoded)) {
 							wordPrefix = prefix;
 							isOutPrefixedFormFound = true;
-							hashCode = getHashCode(word);
+							hashCode = getHashCode(encoded);
 							break;
 						}
 					}
@@ -168,7 +178,7 @@ final class JMorfSdkImpl implements JMorfSdk {
 				return List.of(new UnfamiliarForm(literal));
 			}
 		}
-		String finalWord = word == null ? literal : word;
+		String finalWord = encoded == null ? literal : new String(encoded, StandardCharsets.UTF_8);
 		if (allForms.containsKey(hashCode)) {
 			List<Form> resultForms = allForms.get(hashCode).stream()
 				.filter(form -> form.isFormSameByControlHash(finalWord))
@@ -179,7 +189,7 @@ final class JMorfSdkImpl implements JMorfSdk {
 					long linkHashCode = link >> 32;
 					resultForms.addAll(allForms.get((int) linkHashCode).stream()
 						.filter(form -> form.getMyFormKey() == (int) link)
-						.collect(Collectors.toList()));
+						.toList());
 					resultForms.remove(i);
 				}
 			}
