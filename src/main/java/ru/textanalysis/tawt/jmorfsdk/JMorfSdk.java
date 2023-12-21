@@ -45,6 +45,8 @@ public interface JMorfSdk {
 
 	boolean isFormExistsInDictionary(String literal);
 
+	boolean isFormExistsInDictionary(byte[] literal);
+
 	boolean isPostfixExistsInDictionary(String literal);
 
 	/**

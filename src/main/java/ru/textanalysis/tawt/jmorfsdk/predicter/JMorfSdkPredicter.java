@@ -1,9 +1,7 @@
 package ru.textanalysis.tawt.jmorfsdk.predicter;
 
 import ru.textanalysis.tawt.ms.grammeme.MorfologyParameters;
-import ru.textanalysis.tawt.ms.model.jmorfsdk.Form;
-import ru.textanalysis.tawt.ms.model.jmorfsdk.InitialForm;
-import ru.textanalysis.tawt.ms.model.jmorfsdk.UnfamiliarForm;
+import ru.textanalysis.tawt.ms.model.jmorfsdk.*;
 import ru.textanalysis.tawt.ms.model.jmorfsdk.command.PredictedFormCreateCommand;
 
 import java.util.*;
@@ -128,48 +126,35 @@ public class JMorfSdkPredicter {
 			.filter(form -> form.isFormSameByControlHash(complicatedWordParts[1]))
 			.collect(Collectors.toList());
 		if (!resultForms.isEmpty()) {
-			return createPredictedFormsForWordWithDash(literal, 0, complicatedWordParts, resultForms);
+			return createPredictedFormsForWordWithDash(literal, complicatedWordParts, resultForms);
 		}
 		return Collections.emptyList();
 	}
 
-	public List<Form> getFormsOfWordWithServicePart(String literal, int serviceWordPart, String[] complicatedWordParts) {
-		List<Form> resultForms = null;
-		if (serviceWordPart == 0) {
-			if (!allForms.containsKey(getHashCode(complicatedWordParts[1]))) {
-				return List.of(new UnfamiliarForm(literal));
-			}
-			resultForms = allForms.get(getHashCode(complicatedWordParts[1])).stream()
-				.filter(form -> form.isFormSameByControlHash(complicatedWordParts[1]))
-				.collect(Collectors.toList());
-		} else if (serviceWordPart == 1) {
-			if (!allForms.containsKey(getHashCode(complicatedWordParts[0]))) {
-				return List.of(new UnfamiliarForm(literal));
-			}
-			resultForms = allForms.get(getHashCode(complicatedWordParts[0])).stream()
-				.filter(form -> form.isFormSameByControlHash(complicatedWordParts[0]))
-				.collect(Collectors.toList());
+	public List<Form> getFormsOfWordWithServicePart(String literal, String[] complicatedWordParts) {
+		if (!allForms.containsKey(getHashCode(complicatedWordParts[1]))) {
+			return List.of(new UnfamiliarForm(literal));
 		}
-		if (resultForms != null && !resultForms.isEmpty()) {
-			if (serviceWordPart == 0 && Objects.equals(complicatedWordParts[0], "по")) {
-				for (Form resultForm : resultForms) {
-					if (MorfologyParameters.TypeOfSpeech.ADJECTIVE_FULL == resultForm.getTypeOfSpeech() &&
-						resultForm.isContainsMorphCharacteristic(MorfologyParameters.Case.class, MorfologyParameters.Case.DATIVE)) {
-						return List.of(buildPredictedInitialForm(PredictedFormCreateCommand.builder()
-							.initialFormString(literal)
-							.typeOfSpeech(MorfologyParameters.TypeOfSpeech.ADVERB)
-							.initialFormMorphCharacteristics(0L)
-							.build())
-						);
-					}
+		List<Form> resultForms = allForms.get(getHashCode(complicatedWordParts[1])).stream()
+			.filter(form -> form.isFormSameByControlHash(complicatedWordParts[1]))
+			.collect(Collectors.toList());
+		if (!resultForms.isEmpty()) {
+			for (Form resultForm : resultForms) {
+				if (MorfologyParameters.TypeOfSpeech.ADJECTIVE_FULL == resultForm.getTypeOfSpeech() &&
+					resultForm.isContainsMorphCharacteristic(MorfologyParameters.Case.class, MorfologyParameters.Case.DATIVE)) {
+					return List.of(buildPredictedInitialForm(PredictedFormCreateCommand.builder()
+						.initialFormString(literal)
+						.typeOfSpeech(MorfologyParameters.TypeOfSpeech.ADVERB)
+						.initialFormMorphCharacteristics(0L)
+						.build())
+					);
 				}
 			}
-			return createPredictedFormsForWordWithDash(literal, serviceWordPart, complicatedWordParts, resultForms);
 		}
-		return Collections.emptyList();
+		return List.of(new UnfamiliarForm(literal));
 	}
 
-	private List<Form> createPredictedFormsForWordWithDash(String literal, int serviceWordPart, String[] complicatedWordParts, List<Form> resultForms) {
+	private List<Form> createPredictedFormsForWordWithDash(String literal, String[] complicatedWordParts, List<Form> resultForms) {
 		List<Form> predictedForms = new ArrayList<>();
 		for (Form resultForm : resultForms) {
 			if (resultForm.isInitialForm()) {
@@ -180,7 +165,7 @@ public class JMorfSdkPredicter {
 					.build())
 				);
 			} else {
-				String initialFormString = serviceWordPart == 1 ? resultForm.getMyString() + "-" + complicatedWordParts[1] : complicatedWordParts[0] + "-" + resultForm.getMyString();
+				String initialFormString = complicatedWordParts[0] + "-" + resultForm.getMyString();
 				predictedForms.add(buildPredictedDerivativeForm(PredictedFormCreateCommand.builder()
 					.derivativeFormString(literal)
 					.derivativeFormMorphCharacteristics(resultForm.getMorphCharacteristics())
@@ -194,16 +179,9 @@ public class JMorfSdkPredicter {
 		return predictedForms;
 	}
 
-	public int checkComplicatedWordForServiceParts(String literal) {
+	public boolean checkComplicatedWordForServiceParts(String literal) {
 		String[] complicatedWordParts = literal.split("-");
-		if (complicatedWordParts.length == 2) {
-			if (List.of("то", "либо", "нибудь").contains(complicatedWordParts[1])) {
-				return 1;
-			} else if (List.of("кое", "по").contains(complicatedWordParts[0])) {
-				return 0;
-			}
-		}
-		return -1;
+		return complicatedWordParts[0].equals("по");
 	}
 
 	private Form buildPredictedDerivativeForm(PredictedFormCreateCommand command) {
