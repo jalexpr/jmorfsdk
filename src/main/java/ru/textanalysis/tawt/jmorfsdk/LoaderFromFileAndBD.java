@@ -13,8 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static ru.textanalysis.tawt.ms.model.Property.CONTROL_VALUE;
+import static ru.textanalysis.tawt.md.MorphologicalDictionaryProperty.MD_VERSION;
+import static ru.textanalysis.tawt.ms.model.MorphologicalStructuresProperty.CONTROL_VALUE;
+import static ru.textanalysis.tawt.ms.model.MorphologicalStructuresProperty.MS_VERSION;
 
 @Slf4j
 final class LoaderFromFileAndBD {
@@ -39,6 +42,18 @@ final class LoaderFromFileAndBD {
     }
 
     private void deCompress() {
+		//По умолчанию idea говорит что проверка всегда false, однако, это всегда так, если не забыли поднять версию MS и MD
+		// noinspection ConstantValue
+		if (!Objects.equals(MS_VERSION, MD_VERSION)) {
+			log.warn(
+				"""
+					The MS ({}) and MD ({}) versions are not the same.
+					There is a possibility of errors in reading the morphological forms of words or in the correct textual representation of words.
+					""",
+				MS_VERSION,
+				MD_VERSION
+			);
+		}
         databaseStrings.decompressDd();
         databaseLemmas.decompressDd();
     }
