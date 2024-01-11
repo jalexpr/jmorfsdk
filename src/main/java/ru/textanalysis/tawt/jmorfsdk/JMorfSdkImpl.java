@@ -136,7 +136,7 @@ final class JMorfSdkImpl implements JMorfSdk {
 	@Override
 	public List<String> getDerivativeFormLiterals(String initialFormLiteral, byte typeOfSpeech, long morfCharacteristics) {
 		List<InitialForm> initialForms = selectOnlyInitialFormsByString(initialFormLiteral).stream()
-			.filter(form -> form.getTypeOfSpeech() != typeOfSpeech)
+			.filter(form -> form.getTypeOfSpeech() == typeOfSpeech)
 			.collect(Collectors.toList());
 
 		List<String> derivativeFormLiterals = selectByMorfCharacteristics(initialForms, morfCharacteristics);
@@ -149,9 +149,9 @@ final class JMorfSdkImpl implements JMorfSdk {
 	@Override
 	public List<String> getDerivativeFormLiterals(String literalInitialForm, byte typeOfSpeech) {
 		List<String> literals = selectOnlyInitialFormsByString(literalInitialForm).stream()
+			.filter(form -> form.getTypeOfSpeech() == typeOfSpeech)
 			.map(InitialForm::getDerivativeForms)
 			.flatMap(Collection::stream)
-			.filter(derivative -> derivative.getTypeOfSpeech() == typeOfSpeech)
 			.map(Form::getMyString)
 			.collect(Collectors.toList());
 		if (literals.isEmpty()) {
