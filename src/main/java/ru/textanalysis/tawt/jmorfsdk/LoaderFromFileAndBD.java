@@ -17,10 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static ru.textanalysis.tawt.md.MorphologicalDictionaryProperty.MD_VERSION;
-import static ru.textanalysis.tawt.ms.model.MorphologicalStructuresProperty.CONTROL_VALUE;
-import static ru.textanalysis.tawt.ms.model.MorphologicalStructuresProperty.MS_VERSION;
-import static ru.textanalysis.tawt.ms.model.Property.*;
-import static ru.textanalysis.tawt.ms.model.Property.PREFIX_OFFSET_INFO;
+import static ru.textanalysis.tawt.ms.model.MorphologicalStructuresProperty.*;
 
 @Slf4j
 final class LoaderFromFileAndBD {
