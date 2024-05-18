@@ -20,6 +20,7 @@ import static ru.textanalysis.tawt.ms.loader.LoadHelper.getHashCode;
 final class JMorfSdkImpl implements JMorfSdk {
 
 	private Map<Integer, List<Form>> allForms = new ConcurrentHashMap<>();
+	private Map<Integer, List<Form>> allFormsByMeyKey = new ConcurrentHashMap<>();
 	private final JMorfSdkPredicter jMorfSdkPredicter = new JMorfSdkPredicter(allForms);
 
 	JMorfSdkImpl() {
@@ -27,6 +28,7 @@ final class JMorfSdkImpl implements JMorfSdk {
 
 	void addForm(int hashCode, Form form) {
 		allForms.computeIfAbsent(hashCode, i -> new ArrayList<>()).add(form);
+		allFormsByMeyKey.computeIfAbsent(form.getMyFormKey(), i -> new ArrayList<>()).add(form);
 	}
 
 	void addPrefix(String prefix, List<PrefixMorfCharacteristicsChanges> characteristicsChanges) {
@@ -45,6 +47,8 @@ final class JMorfSdkImpl implements JMorfSdk {
 	public void finish() {
 		allForms.clear();
 		allForms = null;
+		allFormsByMeyKey.clear();
+		allFormsByMeyKey = null;
 		jMorfSdkPredicter.finish();
 	}
 
@@ -238,6 +242,11 @@ final class JMorfSdkImpl implements JMorfSdk {
 			log.debug("В словаре отсутствует производные слова, слова: {} с характеристиками: {}", initialFormLiteral, morfCharacteristics);
 		}
 		return derivativeFormLiterals;
+	}
+
+	@Override
+	public List<Form> getOmoForms(int myKey) {
+		return allFormsByMeyKey.get(myKey);
 	}
 
 	@Override

@@ -80,6 +80,8 @@ public interface JMorfSdk {
 
 	List<String> getDerivativeFormLiterals(String stringInitialForm, byte typeOfSpeech, long morfCharacteristics);
 
+	List<Form> getOmoForms(int myKey);
+
 	List<Form> getOmoForms(String literal);
 
 	void finish();
