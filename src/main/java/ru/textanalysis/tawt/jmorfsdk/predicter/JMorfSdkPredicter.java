@@ -4,7 +4,10 @@ import ru.textanalysis.tawt.ms.grammeme.MorfologyParameters;
 import ru.textanalysis.tawt.ms.model.jmorfsdk.*;
 import ru.textanalysis.tawt.ms.model.jmorfsdk.command.PredictedFormCreateCommand;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -119,6 +122,9 @@ public class JMorfSdkPredicter {
 	}
 
 	public List<Form> getFormsOfWordWithIndependentParts(String literal, String[] complicatedWordParts) {
+		if (complicatedWordParts.length <= 1) {
+			return Collections.emptyList();
+		}
 		if (!allForms.containsKey(getHashCode(complicatedWordParts[1]))) {
 			return List.of(new UnfamiliarForm(literal));
 		}
@@ -181,7 +187,7 @@ public class JMorfSdkPredicter {
 
 	public boolean checkComplicatedWordForServiceParts(String literal) {
 		String[] complicatedWordParts = literal.split("-");
-		return complicatedWordParts[0].equals("по");
+		return complicatedWordParts.length != 0 && complicatedWordParts[0].equals("по");
 	}
 
 	private Form buildPredictedDerivativeForm(PredictedFormCreateCommand command) {
